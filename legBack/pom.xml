@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>eu.europa.europarl.csio</groupId>
+		<artifactId>CSIO_Eleg</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	
+	
+	<artifactId>legBack</artifactId>
+	<packaging>war</packaging>
+	<name>legBack</name>
+	<description>Form to setup rules in e-legislate</description>
+
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+
+
+	<dependencies>
+		<!-- Angular Front End -->
+		<dependency>
+			<groupId>eu.europa.europarl.csio</groupId>
+			<artifactId>legFront</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	
+	
+		<!-- Spring Boot: web -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Utilisé pour la partie DAO -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		
+
+		<!-- Utilisé pour la connexion à la BDD -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- pour le restart auto après modif du code -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- Spring Boot: security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ep-foundry.toolbox</groupId>
+			<artifactId>ep-foundry-spring-security</artifactId>
+			<version>4.1.5</version>
+			<scope>system</scope>
+			<systemPath>F:/java_projects/CSIO_Legislate/legBack/src/main/webapp/WEB-INF/lib/ep-foundry-spring-security-4.1.5.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Spring Boot: tests -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+	</dependencies>
+
+	<build>
+		<finalName>${app.name}</finalName>
+		<!-- Lors de la compilation du projet maven grace au plugin ci-dessous 
+			compile le code angular et l'installe dans l'archive war sous WEB-INF/classes/static -->
+		<resources>
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+				<excludes>
+					<exclude>**/conf/**</exclude>
+					<exclude>**/static/**</exclude>
+				</excludes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack angular distribution</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>eu.europa.europarl.csio</groupId>
+									<artifactId>legFront</artifactId>
+									<overWrite>true</overWrite>
+									<includes>**/*</includes>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>${project.build.directory}/${app.name}/WEB-INF/classes/static</outputDirectory>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>tomcat</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>tomcat</spring.profiles.active>
+			</properties>
+		</profile>
+
+	</profiles>
+
+</project>

@@ -1,0 +1,141 @@
+/* ----- Media ----- */
+
+@media screen and (max-width: 1200px) {
+	.scroll #header #login { display:none;}
+}
+
+@media screen and (max-width: 1024px) {
+	
+	/*  ----- Clip ----- */
+	.clip h1 { font-size: 2em;}
+	
+	/*  ----- Crumb ----- */
+	#crumb { padding:0 15px 15px 15px; margin-top: 0 !important; margin-bottom: 0 !important;}
+	
+	/* ----- Page-Title-----*/
+	#page-title { margin: 0;  margin-top: 6px !important; margin-bottom: 25px !important;}
+	
+	/* ----- Listing ----- */
+	.listing-programmes .thumb { width: 50%;}
+	
+	/* -----  Article ----- */
+	#article { width: calc(100% - 250px); }
+	
+	/* -----  Badge ----- */
+	#badge { display: block; float: none; margin: 0 auto 15px auto; position: relative;}
+	
+	/* ----- Aside -----*/
+	#aside { width: 225px; margin: 0;}
+	
+	
+}
+
+@media screen and (max-width: 768px) {
+	
+	/* ----- Login----- */
+	#header #login a span { display:none;}
+	#header #login a:before { margin-right: 0;}
+	
+	/* ----- Mobile-Menu ----- */
+	.btn-mobile {
+		position: relative;
+		width:50px;
+		height:50px;
+		padding:10px;
+		margin: 0 auto;
+		background:#333;
+		border-radius:2px;
+		cursor:pointer;
+		z-index:10;
+	}
+	.btn-mobile span {
+		display:block;
+		width:100%;
+		height:4px;
+		background:#fff;
+		border-radius:2px;
+		margin:5px 0;
+	}
+	.btn-mobile span:nth-of-type(2n) { width:50%;}
+	.btn-mobile.open span { width:50%;}
+	.btn-mobile.open span:nth-of-type(2n) { width:100%;}
+	
+	/* ----- Header ----- */
+	#header { padding: 25px 0 15px 0;}
+	#header nav { padding: 0; z-index: 1;}
+	#header nav ul {
+		margin-top:-25px; 
+		display: block;
+		width:100%;
+		padding: 30px;
+		background: #eee;
+		box-shadow: 0 15px 15px rgba(0,0,0,.3);
+		z-index: 1;
+	}
+	#header nav ul li { display: block; float: none; width: 120px; margin: 0 auto; padding: 15px;}
+	#header nav ul li:before { display: none;}
+	#header nav ul li a {}
+	#header nav ul { display:none;}
+	body.mobile-menu-open  #header nav ul { display:block;}
+
+	
+	/* ----- Constructor ----- */
+	h1, #header #logo h1 { font-size:2.5em;}
+	#main { padding:25px; padding-bottom: 100px;}
+	#footer { padding:100px 25px 30px 25px;}
+	
+	/*  ----- Page-Title ----- */
+	#page-title h1 { font-size: 2.5em;}
+	#page-title h1:before,
+	#page-title h1:after { display: none;}
+
+	
+	/* ----- Listing ----- */
+	.listing-projects .thumb .th-title h4 { font-size: 1.3em; }
+	.listing-programmes .thumb { width: 100%;}
+	.listing-programmes .thumb .thumb-wrap { display:block;}
+	
+	/* ----- Pager ----- */
+	.pager li { margin: 0 2px 4px 0;}
+	
+	/* ----- Filter----- */
+	.filter { padding: 15px 25px !important; margin: -25px -25px 35px -25px; width: calc(100% + 50px);}
+	.filter .col-select { float:none; display: block; margin: 5px 0; width: 100% !important; clear: both;}
+	.filter .col-select .select2-container { min-width:100% !important; max-width:100% !important;}
+	
+	/* ----- Article -----*/
+	#article { float: none; width: 100%; }
+	#article h1 { font-size: 2.5em;}
+	
+	/* ----- Aside -----*/
+	#aside { float: none; width: 100%; margin: 0;}
+	
+	/* ----- Footer -----*/
+	#footer { margin-bottom: 70px;}
+	#footer #foot-left,
+	#footer #foot-right { margin: 0; padding: 0; float: none; width: 100%;}
+	#footer #foot-bottom { margin: 0 -50px -30px -50px; padding: 15px 50px 15px 50px;}
+	
+	/* ----- Scroll-To-Top ----- */
+	.scrollToTop { right:50%; margin-right: -25px; }
+	.scroll .scrollToTop { bottom:15px;}
+
+}
+
+
+
+@media screen and (max-width: 560px) {
+	
+	/*  ----- Clip ----- */
+	.clip { padding: 50px !important; padding-bottom: 150px !important;  background-image: none !important;}
+	
+
+}
+
+
+
+
+
+
+
+

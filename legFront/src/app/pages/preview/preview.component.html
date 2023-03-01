@@ -1,0 +1,268 @@
+<header id="header">
+    <div id="logo">
+        <h1><a href="#">RDM Rules Manager</a></h1>
+    </div>
+
+    <div id="login">
+        <a class="ico-user"><span>login</span></a>
+
+    </div>
+</header>
+<main id="main">
+    <form [formGroup]="previewForm" (ngSubmit)="onSubmit()">
+
+        <!-- Input Parameters-->
+        <!-- 1st line Input Parameters-->
+        <div class="alert alert-primary">
+            INPUT PARAMETERS
+        </div>
+        <div class="row mb-3 form-group">
+            <div class="col-sm-4">
+                <label class="col-form-label">Procedure Type</label>
+                <select class="form-select" formControlName="procedureType">
+                    <option *ngFor="let p of procedureType | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label">Document Type</label>
+                <select class="form-select" formControlName="documentType">
+                    <option *ngFor="let p of documentType | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label">Document Status</label>
+                <select class="form-select" formControlName="documentStatus">
+                    <option *ngFor="let p of documentStatus | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <!-- 2nd line Input Parameters-->
+        <div class="row mb-3 form-group">
+            <div class="col-sm-3">
+                <label class="col-form-label">Doc With Joint?</label>
+                <select class="form-select" formControlName="docWithJoint">
+                    <option *ngFor="let p of docWithJoint | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label">Doc With Assoc?</label>
+                <select class="form-select" formControlName="docWithAssoc">
+                    <option *ngFor="let p of docWithAssoc | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label">Reading</label>
+                <select class="form-select" formControlName="reading">
+                    <option *ngFor="let p of reading | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}} </option>
+                </select>
+                <label class="col-form-label form-text ico-info">
+                    This is a tooltip
+                </label>
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label">Form</label>
+                <select class="form-select" formControlName="form">
+                    <option *ngFor="let p of form | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}} </option>
+                </select>
+                <label class="col-form-label form-text ico-info">
+                    This is a tooltip
+                </label>
+            </div>
+        </div>
+
+        <hr>
+        <!-- Output Commands-->
+        <div class="alert alert-primary">
+            OUTPUT COMMANDS
+        </div>
+        <div class="row mb-3 form-group">
+            <div class="col-sm-3">
+                <label class="col-form-label">[Procedure Number]</label>
+                <input class="form-control" type="text" formControlName="procedureNumber">
+                <label class="col-form-label form-text ico-info">
+                    The Procedure Number can be unknow in certain cases
+                </label>
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label">[Generating Date]</label>
+                <div class="input-group">
+                    <input class="form-control" ngbDatepicker #d="ngbDatepicker"
+                        formControlName="generatingDate" /><button class="btn btn-outline-secondary bi bi-calendar3"
+                        (click)="d.toggle()" type="button"></button>
+                </div>
+                <label class="col-form-label form-text ico-info">
+                    Date the document is created
+                </label>
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label">[Send To Top Date]</label>
+                <div class="input-group">
+                    <input class="form-control" ngbDatepicker #sendtotop="ngbDatepicker"
+                        formControlName="sendToTopDate" /><button class="btn btn-outline-secondary bi bi-calendar3"
+                        (click)="sendtotop.toggle()" type="button"></button>
+                </div>
+                <label class="col-form-label form-text ico-info">
+                    Date the document is sent to top for verification
+                </label>
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label">[Send To TRAD Date]</label>
+                <div class="input-group">
+                    <input class="form-control" ngbDatepicker #sendtotrad="ngbDatepicker"
+                        formControlName="sendToTradDate" /><button class="btn btn-outline-secondary bi bi-calendar3"
+                        (click)="sendtotrad.toggle()" type="button"></button>
+                </div>
+                <label class="col-form-label form-text ico-info">
+                    Date the document is bookout for Translation
+                </label>
+            </div>
+        </div>
+        <div class="row mb-3 form-group">
+            <div class="col-sm-4">
+                <label class="col-form-label">[PE Number]</label>
+                <input class="form-control" type="text" formControlName="peNumber">
+                <label class="col-form-label form-text ico-info">
+                    The Number can be unknow in certain cases
+                </label>
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label">[EPADES Ref]</label>
+                <input class="form-control" type="text" formControlName="epadesRef">
+                <label class="col-form-label form-text ico-info">
+                    XML or DOCX
+                </label>
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label">[Doc Language]</label>
+                <input class="form-control" type="text" formControlName="docLanguage">
+                <label class="col-form-label form-text ico-info">
+                    Can be XM
+                </label>
+            </div>
+        </div>
+        <div class="row mb-3 form-group">
+            <div class="col-sm-6">
+                <label class="col-form-label">[Prefix Title]</label>
+                <input class="form-control" type="text" formControlName="prefixTitle">
+                <label class="col-form-label form-text ico-info">
+                    Title is always defined in ITER (reference)
+                </label>
+            </div>
+            <div class="col-sm-6">
+                <label class="col-form-label">[ITER Title]</label>
+                <input class="form-control" type="text" formControlName="iterTitle">
+                <label class="col-form-label form-text ico-info">
+                    Please be careful with the first letter (upper or lower case)
+                </label>
+            </div>
+        </div>
+        <div class="row mb-3 form-group">
+            <div class="col-sm-6">
+                <label class="col-form-label">[Authoring Committee]</label>
+                <select class="form-select" formControlName="authoringCommittee">
+                    <option *ngFor="let p of authoringCommittee | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                    </option>
+                </select>
+                <label class="col-form-label form-text ico-info">
+                    For OPCD and OPCF not Joint Committee
+                </label>
+            </div>
+            <div class="col-sm-6">
+                <label class="col-form-label">[Lead Committee]</label>
+                <select class="form-select" formControlName="leadCommittee">
+                    <option *ngFor="let p of leadCommittee | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3 form-group">
+            <div class="col-sm-4">
+                <label class="col-form-label">[List Of Rapporteurs]</label>
+                <select class="form-select" multiple formControlName="listOfRapporteurs">
+                    <option *ngFor="let p of listOfRapporteurs | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                    </option>
+                </select>
+                <label class="col-form-label form-text ico-info">
+                    Multiple selection allowed
+                </label>
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label">[Author Of Proposal]</label>
+                <select class="form-select" multiple formControlName="authorOfProposal">
+                    <option *ngFor="let p of listOfRapporteurs | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                    </option>
+                </select>
+                <label class="col-form-label form-text ico-info">
+                    Multiple selection allowed
+                </label>
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label">[List Of Assoc / Rapporteurs]</label>
+                <select class="form-select" multiple formControlName="listOfAssoc">
+                    <option *ngFor="let p of listOfAssoc | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                    </option>
+                </select>
+                <label class="col-form-label form-text ico-info">
+                    Multiple selection allowed
+                </label>
+            </div>
+        </div>
+        <button class="btn btn-small ico-valide-cerc btn-green" type="submit"
+            [disabled]="!previewForm.valid">Submit</button>
+    </form>
+
+    <br>
+    <!--Visu part-->
+    <div class="info" *ngIf="rules">Preview of the cover page only</div>
+    <div id="box" *ngIf="rules">
+        <div  class="epname">European Parliament</div>
+        <div *ngFor="let r of rules">
+            
+            <div [ngClass] = "r.format" *ngIf="r.part=='Cover Page'">{{r.initialValue}}&nbsp;
+                <span class="rule">Rule:&nbsp;{{r.id}}</span>
+            </div>
+            <!-- Cas particulier pour la langue affichée à deux endroits-->
+            <div class = "doclanguageright" *ngIf="r.label=='DocLanguage'">{{r.initialValue}}&nbsp;
+                <span class="rule">Rule:&nbsp;{{r.id}}</span>
+            </div>
+        </div>
+    </div>
+    <br>
+    <!--tab of rules part-->
+    <div class="table-responsive" *ngIf="rules">
+        <table class="table table-striped table-administration">
+            <tbody>
+                <tr>
+                    <th>Id</th>
+                    <th>Part</th>
+                    <th>Label</th>
+                    <th>Condition</th>
+                    <th>Command</th>
+                    <th>Mandatory</th>
+                    <th>Input Value</th>
+                    <th>Position</th>
+                    <th>Format (css name)</th>
+
+                </tr>
+                <tr *ngFor="let r of rules">
+                    <td>{{r.id}}</td>
+                    <td>{{r.part}}</td>
+                    <td>{{r.label}}</td>
+                    <td>{{r.condition}}</td>
+                    <td>{{r.command}}</td>
+                    <td>{{r.mandatory}}</td>
+                    <td>{{r.initialValue}}</td>
+                    <td>{{r.position}}</td>
+                    <td>{{r.format}}</td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div><!-- End-Table-Responsive -->
+
+</main>

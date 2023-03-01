@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.7</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
+	<name>CSIO eleg</name>
+	<description>CSIO RDM Rules Manager</description>
+
+	<groupId>eu.europa.europarl.csio</groupId>
+	<artifactId>CSIO_Eleg</artifactId>
+	<version>1.0.0</version>
+	
+	<!-- Packaging pom pour le projet parent -->
+	<packaging>pom</packaging>
+
+	<properties>
+		<app.name>eleg</app.name>
+		<!-- Default project properties -->
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+
+	
+
+  	<modules>
+   		<module>legBack</module>
+       	<module>legFront</module>          
+  	</modules>
+
+	
+
+	<build>
+		<defaultGoal>install</defaultGoal>
+	</build>
+</project>

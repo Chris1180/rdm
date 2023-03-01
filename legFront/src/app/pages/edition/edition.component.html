@@ -1,0 +1,166 @@
+<header id="header">
+    <div id="logo">
+        <h1><a href="#">RDM Rules Manager</a></h1>
+    </div>
+
+    <div id="login">
+        <a class="ico-user"><span>login</span></a>
+
+    </div>
+</header>
+<main id="main">
+    <form [formGroup]="ruleForm" (ngSubmit)="onSubmit()">
+        <!-- Part-->
+        <div class="row align-items-center mb-3">
+            <label class="col-sm-2 col-form-label">Part</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" formControlName="part">
+                <!--<select class="form-select" formControlName="part">
+                    <option *ngFor="let p of parts" [ngValue]="p">{{p}} </option>
+                </select>-->
+            </div>
+            <div class="col-sm-4">
+                <span class="form-text ico-info">
+                    This is a tooltip
+                </span>
+            </div>
+        </div>
+        
+        <!-- Label-->
+        <div class="row align-items-center mb-3">
+            <label class="col-sm-2 col-form-label">Label</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" formControlName="label">
+            </div>
+            <div class="col-sm-4">
+                <span class="form-text ico-info">
+                    This is a tooltip
+                </span>
+            </div>
+        </div>
+        
+        <!-- Condition -->
+        <div class="row align-items-center mb-3">
+            <label class="col-sm-2 col-form-label">Condition</label>
+            <div class="col-sm-6">
+                <textarea class="form-control" rows="2" formControlName="condition"></textarea>
+            </div>
+            <div class="col-sm-4">
+                <span class="form-text ico-info">
+                    This is a tooltip
+                </span>
+            </div>
+        </div>
+        <!-- Command -->
+        <div class="row align-items-center mb-3">
+            <label class="col-sm-2 col-form-label">Command</label>
+            <div class="col-sm-6">
+                <textarea class="form-control" rows="3" formControlName="command"></textarea>
+            </div>
+            <div class="col-sm-4">
+                <span class="form-text ico-info">
+                    This is a tooltip
+                </span>
+            </div>
+        </div>
+        <!-- Mandatory -->
+        <div class="row align-items-center mb-3">
+            <label class="col-sm-2 col-form-label">Mandatory</label>
+            <div class="col-sm-6">
+                <input class="form-check-input" type="checkbox" formControlName="mandatory">
+            </div>
+            <div class="col-sm-4">
+                <span class="form-text ico-info">
+                    This is a tooltip
+                </span>
+            </div>
+        </div>
+        <!-- Initial Value -->
+        <div class="row align-items-center mb-3">
+            <label class="col-sm-2 col-form-label">Initial Value</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" formControlName="initialValue">
+            </div>
+            <div class="col-sm-4">
+                <span class="form-text ico-info">
+                    This is a tooltip
+                </span>
+            </div>
+        </div>
+        <!-- Position -->
+        <div class="row align-items-center mb-3">
+            <label class="col-sm-2 col-form-label">Position</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" formControlName="position">
+            </div>
+            <div class="col-sm-4">
+                <span class="form-text ico-info">
+                    This is a tooltip
+                </span>
+            </div>
+        </div>
+        <!-- Format -->
+        <div class="row align-items-center mb-3">
+            <label class="col-sm-2 col-form-label">Format</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" formControlName="format">
+            </div>
+            <div class="col-sm-4">
+                <span class="form-text ico-info">
+                    This is a tooltip
+                </span>
+            </div>
+        </div>
+        <!-- Comment -->
+        <div class="row align-items-center mb-3">
+            <label class="col-sm-2 col-form-label">Comment</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" formControlName="comment">
+            </div>
+            <div class="col-sm-4">
+                <span class="form-text ico-info">
+                    This is a tooltip
+                </span>
+            </div>
+        </div>
+        <!-- Application -->
+        <div class="row align-items-center mb-3">
+            <label class="col-sm-2 col-form-label">Application</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" formControlName="application">
+            </div>
+            <div class="col-sm-4">
+                <span class="form-text ico-info">
+                    This is a tooltip
+                </span>
+            </div>
+        </div>
+        <!-- Example -->
+        <div class="row align-items-center mb-3">
+            <label class="col-sm-2 col-form-label">Example</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" formControlName="example">
+            </div>
+            <div class="col-sm-4">
+                <span class="form-text ico-info">
+                    This is a tooltip
+                </span>
+            </div>
+        </div>
+
+        <div class="row align-items-center mb-3">
+            <div class="col-sm-4">
+                
+            </div>
+            <div class="col-sm-4">
+                <button class="btn btn-small ico-valide-cerc btn-green">Submit</button>
+                <button class="btn btn-small ico-delete" (click)="onCancel()" type="button">Cancel</button>
+            </div>
+            <div class="col-sm-4">
+                
+            </div>
+        </div>
+        
+        
+    </form>
+</main>

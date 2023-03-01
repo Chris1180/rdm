@@ -1,0 +1,30 @@
+/* ----- FIX ----- */
+.listing-programmes app-program-view {
+  width: 33.333%;
+  margin: 0 0 25px 0;
+  padding: 0;
+}
+
+.listing-programmes app-program-view .thumb {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: table;
+  height: 100%;
+}
+
+.listing-projects .thumb:first-child { border-top: 0;}
+.listing-projects app-project-view:first-child .thumb { border-top: 1px solid rgba(0,0,0,.1);}
+
+ng-component { display: block;  position: relative;}
+ng-component:after { display:table; clear: both; content: "";}
+
+
+/* ----- FIX Media ----- */
+@media screen and (max-width: 980px) {
+	.listing-programmes app-program-view { width: 50%; }
+}
+
+@media screen and (max-width: 767px) {
+	.listing-programmes app-program-view {  width:100%;}
+}

@@ -1,0 +1,18 @@
+/* ----- Fonts ----- */
+@font-face { 
+	font-family:'Open Sans';
+	src:url('../fonts/OpenSans-Light.ttf');
+	font-weight: 400;
+}
+@font-face { 
+	font-family:'Open Sans';
+	src:url('../fonts/OpenSans-ExtraBold.ttf');
+	font-weight: 700;
+}
+
+/* ----- Ico - Fonts ----- */
+@font-face {
+	font-family:'icon-font';
+	src:url('../fonts/icon-font.ttf');
+	
+}

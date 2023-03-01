@@ -1,0 +1,146 @@
+@charset "utf-8";
+/* ----- Print ----- */
+
+@media print  {
+	
+	a[href]:after {
+		display: none;
+		visibility: hidden;
+   	}
+    .section-progress .section-progress-body .box,
+	#aside .box { page-break-inside:avoid; }
+	
+}
+
+/* ----- Body ----- */
+body {
+	margin:0;
+	padding: 0;
+	font-size: 8pt;
+	background-color: #fff;
+	background-image: none;
+}
+#bg {
+	background-color: #fff;
+	background-image: none;
+}
+
+
+/* ----- Reset ----- */
+h1, h2, h3, h4, h5, h6, p { margin:0 0 15px 0; padding: 0; line-height: 1.2em;}
+h1 { font-size:2em;}
+h3 { font-size:1.2em;}
+p { line-height: 1.3em;}
+
+p.date { font-size:7pt; color: #999;}
+p.date,
+p.date + p.last-update,
+#article-title p.date { margin-top:-7px;} 
+p.date span.label { padding: 1px 4px; font-size: 7pt; border-color: #999; color: #999;}
+p.last-update span.ico-info:before { color:#999;}
+
+
+/* ----- Hide ----- */
+#bg,
+#header #navigation,
+#header nav,
+#header #login,
+#crumb,
+#page-title,
+.btn-black,
+#footer,
+.edition { display:none !important;}
+
+
+/* ----- Show ----- */
+.section-progress-body { display:block !important;}
+
+
+/* ----- Header ----- */
+#header { border-bottom:2px solid #333; margin-bottom: 15px; padding:0 0 15px 0;}
+#header #logo { margin:0;}
+#header #logo h1 { font-size:2em;}
+
+
+/* ----- Main ----- */
+#main { padding:0;}
+
+
+/* ----- Article ----- */
+#article-title { padding-bottom: 0 !important; margin-bottom: 15px;}
+#article { float: none; width: 100%;}
+#article + div {
+	position: relative !important;
+	width: auto !important;
+	height: auto !important;
+	display: block;
+	vertical-align: baseline;
+	float: none  !important;
+}
+
+
+/* ----- Aside ----- */
+#aside {
+    float: none !important;
+	margin: 25px auto !important;
+    position: relative !important;
+	top: auto !important;
+	left: auto !important;
+	bottom: auto !important;
+	right: auto !important;
+	width: 100% !important;
+}
+#aside .box { display: block; float: left; width: 25%; min-height: 275px;}
+#aside .box-sponsor { border: 5px solid #eee;}
+#aside .box-delegate { display:none;}
+
+/* ----- Badge ----- */
+#badge {
+    float: none !important;
+    margin: 0 auto;
+    position: relative !important;
+	top: auto !important;
+	left: auto !important;
+	bottom: auto !important;
+	right: auto !important;
+}
+#badge.is_stuck + div { display: none !important;}
+
+
+
+/* ----- Progress ----- */
+.section-progress {
+	width: 100%;
+	margin: 0 0 15px 0;
+	padding: 0;
+	border:0;
+	background: #fff;
+}
+.section-progress-head { padding-top:15px;}
+.section-progress .section-progress-head h3 { font-size:1.3em;}
+.section-progress .section-progress-head h3:before { display:none;}
+.section-progress .section-progress-body { padding-top:0;}
+.section-progress .section-progress-body .box {
+	border-bottom:none;
+	background: #fff;
+	margin: 0;
+	padding: 0;
+}
+.progress { height:1px; background: #fff; background-image:none; margin: 25px 0 15px 0;}
+.progress .progress-bar { border:1px solid #333 !important; height: 2px; max-width: calc(100% - 30px) !important;}
+.progress .progress-value {
+    color: #333;
+    background: none !important;
+	border:1px solid #333 !important;
+}
+.progress .progress-value {
+	font-size:8pt;
+    bottom: -14px;
+	right: -30px;
+	background: #333;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+}
+
+

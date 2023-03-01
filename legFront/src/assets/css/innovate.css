@@ -1,0 +1,297 @@
+/* ------------------------- INNOVATE 2020 Filip Fedulov ------------------------- */
+
+
+
+/* --- Body --- */
+body { background:#112539;}
+
+
+/* --- Colors --- */
+.color { color:#112539;}
+.color-light { color:#63AACA;}
+.second-color { color:#63AACA;}
+.second-color-light {}
+.second-color-extralight { color:#d9ecf0;}
+
+/* --- Header --- */
+#header { padding: 60px 15px 15px 15px; }
+#header #logo h1 a { color: #fff;}
+#header #logo h1 a span { color: #63AACA;}
+
+#header #login a { border: none; background: #63AACA; color: #fff;}
+#header #login a:hover { border: none; background: #63AACA; color: #fff;}
+
+/* --- Navigation --- */
+#header nav ul li a { color: #fff;}
+#header nav ul li.active a { color: #63AACA;}
+#header nav ul li.active a:after { background-color: #63AACA;}
+#header nav ul li a:after { background-color: #63AACA;}
+#header nav ul li:before { background: #63AACA;}
+
+/* --- Crumb --- */
+#crumb { display:none;}
+
+/* --- Page-Title --- */
+#page-title { 
+	margin:0;
+	margin-bottom: 35px;
+	margin-top: -15px;
+	color: #fff;
+	display:none;
+}
+#page-title h1:after,
+#page-title h1:before { color:#fff; background: #fff;} 
+
+
+/* --- Main --- */
+#main {
+	background:rgba(255,255,255,.9);
+}
+
+.filter { background:#112539;}
+.input-select {
+	background-color: #fff;
+	border: none;
+	border-radius: 16px;
+	height: 36px;
+	padding: 0 10px;
+}
+
+
+.pager li.active > a { background: #112539; }
+
+
+/* --- Footer --- */
+#footer {
+	padding: 0 50px ;
+	margin-top:0;
+	background: #112539;
+}
+#footer #foot-left,
+#footer #foot-right { display:none;}
+#footer #foot-bottom {background: #112539;}
+
+/* --- Scroll --- */
+.scrollToTop {
+	background: #112539;
+	color: #63AACA !important;
+	border: 1px solid #63AACA;
+	
+}
+
+
+
+/* --- ---------------------------------------------------------- --- */
+h1.innovate-title {
+	text-align: center;
+	color:#112539;
+	font-size: 2.25em;
+	margin-bottom: 10px;
+	font-weight: 300;
+}
+h3.innovate-date {
+	text-align: center;
+	color:#63AACA;
+	font-size: 2.25em;
+}
+p.state-valide { text-align: center; color:#63AACA;
+}
+p.state-valide:before {font-size: 3em;}
+
+
+
+/* --- ---------------------------------------------------------- --- */
+/* --- Programmes --- */
+.programme {}
+.programme h2.title { text-align: center; margin-bottom: 30px;}
+.programme h3.title { text-align: center; margin-bottom: 30px;}
+
+/* --- Workshop --- */
+.workshop {
+	position: relative;
+	display:block;
+	background: #fff;
+	border-radius: 30px 0 30px 30px;
+	margin-bottom: 30px;
+}
+.workshop .workshop-title {
+	padding: 15px 30px;
+	background: #112539;
+	border-radius: 30px 0 30px 30px;
+	position: sticky;
+	top: 0;
+	z-index: 10;
+}
+.workshop .workshop-content { padding: 30px; padding-bottom: 10px;}
+.workshop .workshop-title h4 {
+	font-weight:800;
+	font-size: 1.2em;
+	color:#fff;
+	margin-bottom: 0;
+}
+.ico-block { position: relative; padding-left: 30px;}
+.ico-block:before { position: absolute; left: 0; top: 1px; font-size: 1.4em; color:#fff;}
+.workshop .workshop-title p.date { font-size: .9em; margin:0 0 10px 0; color: #fff; font-weight: bold;}
+.workshop .workshop-title p.date .label {  margin-right: 4px; background: #63AACA; color: #fff; font-weight: 300;}
+.workshop .workshop-title p.date span.ad {font-weight: 300; color: #63AACA;}
+
+/* --- Activities --- */
+ul.activities {
+	margin:0;
+	padding: 0;
+	padding-left: 9px;
+	list-style: none;
+}
+ul.activities li {
+	display: block;
+	margin: 0;
+	padding: 0;
+	padding-left: 22px;
+	margin-bottom: 30px;
+	position: relative;
+}
+ul.activities li:before {
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 3px;
+	height: 100%;
+	background: #63AACA;
+	border-radius: 3px;
+	content: "";
+}
+ul.activities li h4 {
+	margin:0;
+	color: #63AACA;
+}
+ul.activities li .actor p { color: #112539; margin: 0;}
+ul.activities li .actor p label {}
+ul.activities li .actor p span { color: #999;}
+
+ul.activities li .action {
+	display: block;
+	padding: 5px 15px 5px 25px;
+	margin: 10px 0 0 -22px;
+	background: #d9ecf0;
+}
+
+.radio input[type=radio]:checked + span {
+  	font-weight: bold;
+	color: #408af6;
+}
+.radio input[type=radio]:disabled + span {
+	color: #999;
+	cursor: not-allowed;
+}
+.checkbox input[type=checkbox]:checked + span {
+  	font-weight: bold;
+	color: #408af6;
+}
+.checkbox input[type=checkbox]:disabled + span {
+	color: #999;
+	cursor: not-allowed;
+}
+
+/* --- Workshop-Single --- */
+.workshop-single {
+	border: 2px solid #63AACA;
+	padding: 30px 30px 15px 30px;
+	background: #d9ecf0;
+}
+.workshop-single h4 {
+	font-weight:800;
+	font-size: 1.2em;
+	color: #112539;
+	color:#63AACA;
+	margin-bottom: 0;
+}
+.workshop-single .action { padding: 15px;
+	}
+/* --- Btn-Group-Workshop --- */
+.btn-group-workshop { margin: 30px 0 0 0; text-align: center;}
+.btn-group-workshop .btn-green { background-color: #112539;}
+
+
+
+
+
+/* --- ---------------------------------------------------------- --- */
+/* --- Registration --- */
+.registration {}
+.registration h2.title { text-align: center; margin-bottom: 30px;}
+.registration h3.title { text-align: center; margin-bottom: 30px;}
+
+/* --- Workshop --- */
+.registration .workshop {
+	position: relative;
+	display:block;
+	background: #fff;
+	border-radius: 30px;
+}
+.registration .workshop .workshop-title {
+	background: #63AACA;
+	position: relative;
+	top: auto;
+}
+.registration .workshop .workshop-content { padding: 30px; padding-bottom: 10px;}
+.registration .workshop .workshop-title h4 {color:#fff;}
+.registration .ico-block:before {  color:#fff;}
+.registration .workshop .workshop-title p.date { font-size: .9em; margin:0 0 10px 0; color: #fff; font-weight: bold;}
+.registration .workshop .workshop-title p.date .label {   background: #fff; color:#63AACA;}
+.registration .workshop .workshop-title p.date span.ad {font-weight: 300; color: #63AACA;}
+
+.registration .action { padding: 15px 15px 15px 23px;}
+.registration .action p { margin:0; font-weight: bold;}
+.registration ul.activities li .actor p { color: #63AACA; }
+
+.registration .workshop-single { padding: 15px 30px 5px 30px; background: #d9ecf0;}
+
+
+
+
+
+/* --- ---------------------------------------------------------- --- */
+/* --- Administration --- */
+.table-administration { margin:30px 0 0 0; border: 0 !important; border-bottom: 1px solid rgba(0,0,0,.1) !important; background: #fff !important;}
+.table-administration tr th {
+	padding: 15px !important;
+	background: #63AACA;
+	color: #fff;
+	border: 0 !important;
+}
+.table-administration tr td {
+	padding: 15px !important;
+	vertical-align: middle !important;
+	border: 0 !important;
+	border-bottom: 1px solid #ddd !important;
+}
+.table-administration tr:nth-of-type(odd) td {
+	background-color: #ddd;
+}
+
+
+
+
+
+/* --- ---------------------------------------------------------- --- */
+/* --- Media --- */
+@media screen and (max-width: 768px) {
+	#header { padding: 25px 0 15px 0;}
+	#header nav { margin-bottom: 0;}
+	body.mobile-menu-open #header { padding-bottom:0;}
+	body.mobile-menu-open #header nav ul { background: #112539;}
+	#header nav ul li {
+		width: auto;
+		max-width: 200px;
+	}
+	.filter .input-select { width: 100%;}
+}
+
+
+
+
+
+
+
