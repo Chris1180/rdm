@@ -152,7 +152,7 @@ export class FormComponent implements OnInit {
   }
 
   addNewRule() {
-    this.ruleService.setRuleToBeEdited({id: 0, part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '', example: '',
+    this.ruleService.setRuleToBeEdited({id: 0, part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '', outputValue: '', example: '',
     position: '', format: '', comment: '', application: ''})
     this.router.navigate(['/Edition']);
   }

@@ -222,13 +222,15 @@
     <div id="box" *ngIf="rules">
         <div  class="epname">European Parliament</div>
         <div *ngFor="let r of rules">
-            
-            <div [ngClass] = "r.format" *ngIf="r.part=='Cover Page'">{{r.initialValue}}&nbsp;
-                <span class="rule">Rule:&nbsp;{{r.id}}</span>
+            <ng-template #RuleNumber>
+                <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                    Rule:&nbsp;{{r.id}}
+                </span>
+            </ng-template>
+            <div [ngClass] = "r.format" *ngIf="r.part=='Cover Page'" [ngbTooltip]='RuleNumber'>{{r.outputValue}}
             </div>
             <!-- Cas particulier pour la langue affichée à deux endroits-->
-            <div class = "doclanguageright" *ngIf="r.label=='DocLanguage'">{{r.initialValue}}&nbsp;
-                <span class="rule">Rule:&nbsp;{{r.id}}</span>
+            <div class = "doclanguageright" *ngIf="r.label=='DocLanguage'" [ngbTooltip]='RuleNumber'>{{r.outputValue}}
             </div>
         </div>
     </div>
@@ -245,7 +247,7 @@
                     <th>Command</th>
                     <th>Mandatory</th>
                     <th>Input Value</th>
-                    <th>Position</th>
+                    <th>outputValue</th>
                     <th>Format (css name)</th>
 
                 </tr>
@@ -257,7 +259,7 @@
                     <td>{{r.command}}</td>
                     <td>{{r.mandatory}}</td>
                     <td>{{r.initialValue}}</td>
-                    <td>{{r.position}}</td>
+                    <td>{{r.outputValue}}</td>
                     <td>{{r.format}}</td>
 
                 </tr>

@@ -84,7 +84,6 @@ export class PreviewComponent implements OnInit {
     });
   }
   onSubmit(): void {
-    // to be done
     //console.log(this.previewForm.value);
     this.checkRules.check(this.previewForm.value);
     this.rules = this.checkRules.getRulesApplied();

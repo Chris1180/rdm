@@ -6,6 +6,7 @@ export interface Rule {
     command : string;
     mandatory : boolean;
     initialValue : string;
+    outputValue : string;
     example : string;
     position : string;
     format : string;

@@ -30,7 +30,7 @@ export class RulesService {
       this.apiUrl = `http://${window.location.hostname}:8080/`
     }
     
-    this.setRuleToBeEdited({id: 0, part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '', example: '',
+    this.setRuleToBeEdited({id: 0, part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '',outputValue: '', example: '',
              position: '', format: '', comment: '', application: ''})
   }
 

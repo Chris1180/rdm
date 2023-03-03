@@ -86,7 +86,9 @@ export class CheckRulesService {
     this.rules.forEach(r => {
       if (r.condition.trim() == "VRAI" || r.condition.trim() == "TRUE" || r.condition.trim() == ""){
         if (r.command.startsWith('[')){
-          r.initialValue = this.getInputValue(r.command, r.initialValue);
+          r.outputValue = this.getInputValue(r.command, r.initialValue);
+        }else{
+          r.outputValue = r.initialValue;
         }
         console.log("eval true "+ r.condition.trim() + " => "+ r.id);
         this.rulesApplied.push(r);
@@ -148,11 +150,12 @@ export class CheckRulesService {
             
             if (r.command.includes('[')){
               if(r.label.includes("of the")){
-                r.initialValue = "of the ".concat(this.getInputValue(r.command, r.initialValue));
+                r.outputValue = "of the ".concat(this.getInputValue(r.command, r.initialValue));
               }else{
-                r.initialValue = this.getInputValue(r.command, r.initialValue);
-              }
-              
+                r.outputValue = this.getInputValue(r.command, r.initialValue);
+              }  
+            }else {
+              r.outputValue = r.initialValue;
             }
 
             if (r.label == "List Authoring Rapporteurs - Prefix" && !r.command.includes('[')) {
@@ -165,7 +168,7 @@ export class CheckRulesService {
             }
 
             if(r.label == "Justification Rule"){
-              r.initialValue = r.command;
+              r.outputValue = r.command;
             }
             this.rulesApplied.push(r);
           }else {
@@ -194,39 +197,40 @@ export class CheckRulesService {
 
   getInputValue (command : string, initialValue : string){
      // on met la valeur collecté dans initialvalue
-     //initialValue : string =""; 
+     let outputValue : string =""; 
      
      switch (command.trim()) {
       case "[Authoring Committee]":
-        initialValue = this.form.authoringCommittee;
+        outputValue = this.form.authoringCommittee;
         break;
       case "[Epades Ref]":
-        initialValue = this.form.epadesRef;
+        outputValue = this.form.epadesRef;
         break;
       case "[Document Language]":
-        initialValue = this.form.docLanguage;
+        outputValue = this.form.docLanguage;
         break;
       case "[PE Number]":
-        initialValue = this.form.peNumber;
+        outputValue = this.form.peNumber;
         break;
       case "[Lead Committee]":
-        initialValue = this.form.leadCommittee;
+        outputValue = this.form.leadCommittee;
         break;
       case "[Procedure Number]":
-        if (this.form.procedureNumber!="") initialValue = this.form.procedureNumber;  
+        if (this.form.procedureNumber!="") outputValue = this.form.procedureNumber; 
+        else outputValue = initialValue;
       break;
       case "[Generation Date]":
-        initialValue = this.form.generatingDate.day+"."+this.form.generatingDate.month+"."+this.form.generatingDate.year;  
+        outputValue = this.form.generatingDate.day+"."+this.form.generatingDate.month+"."+this.form.generatingDate.year;  
       break;
       case "[PREFIX_TITLE] + [ITER_TITLE]":
-        if (this.form.iterTitle!="") initialValue = this.form.prefixTitle+" "+this.form.iterTitle;
-        else initialValue =  this.form.prefixTitle+" "+ initialValue;
+        if (this.form.iterTitle!="") outputValue = this.form.prefixTitle+" "+this.form.iterTitle;
+        else outputValue =  this.form.prefixTitle+" "+ initialValue;
       break;
       case "with recommandation to the Commission [PREFIX_TITLE] + [ITER_TITLE]":
-        initialValue = "with recommandation to the Commission "+this.form.prefixTitle+" "+this.form.iterTitle;  
+        outputValue = "with recommandation to the Commission "+this.form.prefixTitle+" "+this.form.iterTitle;  
       break;
       case "on discharge in respect of the implementation [PREFIX_TITLE] + [ITER_TITLE]":
-        initialValue = "on discharge in respect of the implementation "+this.form.prefixTitle+" "+this.form.iterTitle;  
+        outputValue = "on discharge in respect of the implementation "+this.form.prefixTitle+" "+this.form.iterTitle;  
       break;
       case "On behalf of the [Authoring Committee]:":
         // prefixe ajouté à la liste des rapporteurs
@@ -235,28 +239,28 @@ export class CheckRulesService {
         //initialValue = "";
       break;
       case "[List of Rapporters]":
-        initialValue = ((this.form.prefixListOfRapporteurs!=''? this.form.prefixListOfRapporteurs+": ":"")+this.form.listOfRapporteurs+" "+this.form.suffixListOfRapporteurs).trim();  
+        outputValue = ((this.form.prefixListOfRapporteurs!=''? this.form.prefixListOfRapporteurs+": ":"")+this.form.listOfRapporteurs+" "+this.form.suffixListOfRapporteurs).trim();  
       break;
       case "[Sent-to-TOP date]":
-        initialValue = this.form.sendToTopDate.day+"."+this.form.sendToTopDate.month+"."+this.form.sendToTopDate.year;  
+        outputValue = this.form.sendToTopDate.day+"."+this.form.sendToTopDate.month+"."+this.form.sendToTopDate.year;  
       break;
       case "[Sent-to-TRAD date]":
-        initialValue = this.form.sendToTradDate.day+"."+this.form.sendToTradDate.month+"."+this.form.sendToTradDate.year;  
+        outputValue = this.form.sendToTradDate.day+"."+this.form.sendToTradDate.month+"."+this.form.sendToTradDate.year;  
       break;
       case "[Author(s) of the proposal]":
-        initialValue = "Author(s) of the proposal: "+this.form.authorOfProposal;  
+        outputValue = "Author(s) of the proposal: "+this.form.authorOfProposal;  
       break;
       case "[List of Rapporteurs/Associated Committee]":            
         for (let index = 0; index < this.form.listOfAssoc.length; index++) {
-          initialValue += this.form.listOfAssoc[index]+"\n";
+          outputValue += this.form.listOfAssoc[index]+"\n";
         }
-        console.info(initialValue)  
+        //console.info(initialValue)  
       break;
       default:
-        initialValue = "not defined";
+        outputValue = "not defined";
         break;
     }
-    return initialValue;
+    return outputValue;
   }
 
 

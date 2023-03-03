@@ -53,6 +53,7 @@
     padding-bottom: 25px;
     margin-left: 60px;
     margin-right: 60px;
+    white-space: pre-line
 }
 .doclanguage{
     position: absolute;
@@ -105,12 +106,12 @@
 }
 .leadcommittee{
     position: absolute;
-    top: 370px;
+    top: 390px;
     left: 250px;
 }
 .reporttitle{
     position: absolute;
-    top: 400px;
+    top: 420px;
     left: 250px; 
 }
 .authoringcommittee{
