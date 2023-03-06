@@ -123,10 +123,11 @@
     position: absolute;
     top: 450px;
     left: 250px;
+    white-space: pre-line
 }
 .authoringcommitteerule{
     position: absolute;
-    top: 470px;
+    top: 540px;
     left: 250px;
 }
 .rapporteurs{
