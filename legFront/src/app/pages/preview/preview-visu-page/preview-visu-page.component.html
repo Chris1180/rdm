@@ -1,0 +1,16 @@
+<div class="info" *ngIf="rules">Preview of the cover page only</div>
+    <div id="box" *ngIf="rules">
+        <div  class="epname">European Parliament</div>
+        <div *ngFor="let r of rules">
+            <ng-template #RuleNumber>
+                <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                    Rule:&nbsp;{{r.id}}
+                </span>
+            </ng-template>
+            <div [ngClass] = "r.format" *ngIf="r.part=='Cover Page'" [ngbTooltip]='RuleNumber'>{{r.outputValue}}
+            </div>
+            <!-- Cas particulier pour la langue affichée à deux endroits-->
+            <div class = "doclanguageright" *ngIf="r.label=='DocLanguage'" [ngbTooltip]='RuleNumber'>{{r.outputValue}}
+            </div>
+        </div>
+    </div>
