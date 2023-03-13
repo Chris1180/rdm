@@ -15,6 +15,7 @@ import { ListOfAssoc } from 'src/app/model/outputParameters/listOfAssoc';
 import { ListOfRapporteurs } from 'src/app/model/outputParameters/listOfRapporteurs';
 import { Rule } from 'src/app/model/rule';
 import { CheckRulesService } from 'src/app/shared/check-rules.service';
+import { RulesService } from 'src/app/shared/rules.service';
 
 
 
@@ -41,10 +42,25 @@ export class PreviewComponent implements OnInit {
   d = new Date();
 
   rules! : Rule[];
+  errorMessage?: string;
   
-  constructor(private checkRules: CheckRulesService) { }
+  constructor(private checkRules: CheckRulesService, private ruleService: RulesService) { }
 
   ngOnInit(): void {
+    // vérifie si le service est déjà initialisé avec les infos du Back-End
+    if (!this.ruleService.getRules()) {
+      console.log('init component for the first time')
+      this.ruleService.initCompo().subscribe({
+        next: (data) => {
+          //initialise le service avec les info du Back-End
+          this.ruleService.setRules(data);
+        },
+        error: (err) => {
+          this.errorMessage = err;
+          console.log("Une erreur est remontée" + this.errorMessage);
+        }
+      });
+    }
     this.previewForm = new FormGroup({
       procedureType : new FormControl('INI'),
       documentType : new FormControl('OPCD'),

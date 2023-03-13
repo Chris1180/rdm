@@ -89,7 +89,7 @@ export class FormComponent implements OnInit {
     this.filterFormGroup.get('label')?.setValue('allLabel');
     this.filterFormGroup.get('position')?.setValue('allPosition');
     this.filterFormGroup.get('keyword')?.setValue('');
-    this.onFilterChange(0);
+    //this.onFilterChange(0);
   }
 
   deleteRule(r: Rule) {
@@ -119,29 +119,38 @@ export class FormComponent implements OnInit {
     });
   }
 
-  onFilterChange(page: number) {
+  onFilterChange(page: number = 0) { 
+    if (!this.filterFormGroup) {
+      this.filterFormGroup = new FormGroup({
+        part: new FormControl("allPart"), //valeur par defaut
+        label: new FormControl("allLabel"),
+        position: new FormControl("allPosition"),
+        keyword: new FormControl("")
+      });            
+    }
     this.ruleService.rulesFiltered(this.filterFormGroup.get('part')?.value, this.filterFormGroup.get('label')?.value, this.filterFormGroup.get('position')?.value, this.filterFormGroup.get('keyword')?.value, page, this.pageSize).subscribe({
       next: (data) => {
         this.rules = data.rules;
         this.currentPage = page;
         this.totalPages = data.totalPages;
-        this.totalResults = data.totalResults;
-        if (this.totalPages == 0) {
-          this.errorMessage = "No Result Found"
-        }
-        
-      },
-      error: (err) => {
-        this.errorMessage = err;
-      },
+          this.totalResults = data.totalResults;
+          if (this.totalPages == 0) {
+            this.errorMessage = "No Result Found"
+          }
+          
+        },
+        error: (err) => {
+          this.errorMessage = err;
+        },
       complete: () => {
         // met à jour les filtres en fonction de la selection
         this.parts = this.ruleService.getPartUniqueValues();
         this.labels = this.ruleService.getLabelUniqueValues();
         this.positions = this.ruleService.getPositionUniqueValues();
+        console.log(this.rules)
       }
-    })
-
+    })      
+    
 
   }
   editRule(r: Rule) {

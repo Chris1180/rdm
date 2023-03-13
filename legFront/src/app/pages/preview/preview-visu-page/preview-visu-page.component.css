@@ -31,7 +31,7 @@
     display: block;
     height: 150px;
     width: 150px;
-    background-image: url(../../../assets/img/ep-logo.png);
+    background-image: url(../../../../assets/img/ep-logo.png);
 	background-repeat: no-repeat;
     background-size:contain;
 }

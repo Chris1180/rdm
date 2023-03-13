@@ -1,23 +1,32 @@
-<link rel="icon" type="image/png" href="img/bg/ico-sef.png" />
-		
+<!--<link rel="icon" type="image/png" href="img/bg/ico-sef.png" />-->
+
 <div id="bg"></div>
 <div class="wrapper">
-    <div class="container">
+  <div class="container">
+    <header id="header">
+      <div id="logo">
+        <h1><a href="#">RDM Rules Manager</a></h1>
+      </div>
 
-        
-        <router-outlet></router-outlet>
-        
-        
-        <footer id="footer">
-            <div id="foot-bottom">
-              <p>Ⓒ2022 - This website is produced by CSIO -
-                <span style="color:#666;">v.1.0</span>
-                <ng-container>
-                  
-                  <span style="color:#666;"></span>
-                </ng-container>
-              </p>
-            </div>
-          </footer>
-    </div>
+      <div id="login">
+        <a class="ico-user"><span>login</span></a>
+
+      </div>
+    </header>
+
+    <router-outlet></router-outlet>
+
+
+    <footer id="footer">
+      <div id="foot-bottom">
+        <p>Ⓒ2022 - This website is produced by CSIO -
+          <span style="color:#666;">v.1.0</span>
+          <ng-container>
+
+            <span style="color:#666;"></span>
+          </ng-container>
+        </p>
+      </div>
+    </footer>
+  </div>
 </div>
