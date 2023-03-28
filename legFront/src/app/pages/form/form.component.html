@@ -35,6 +35,7 @@
                 </div>
             </div>-->
             <div class="col-sm">
+                <!--
                 <ng-template #Reset>
                     <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
                         Reset All Filters
@@ -50,7 +51,7 @@
                 </ng-template>
                 <button (click)="addNewRule()" alt="Add new rule" [ngbTooltip]='NewRule'> <i
                         class="bi bi-plus-lg me-1"></i></button>
-                &nbsp;
+                &nbsp;-->
                 <button (click)="preview()" alt="preview"> <i class="bi bi-eye">Preview</i></button>
 
             </div>
@@ -128,7 +129,20 @@
                     <th>Format</th>
                     <th>Example</th>
                     <th>Application</th>
-                    <th></th>
+                    <th>
+                        <ng-template #Reset>
+                            <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                                Reset All Filters
+                            </span>
+                        </ng-template>
+                        <i [ngClass]="filterActive? 'bi-funnel-fill': 'bi-funnel'" style="cursor:pointer; font-size: 1.5em" (click)="resetfilters()" [ngbTooltip]='Reset' class="bi me-1"></i>
+                        <ng-template #NewRule>
+                            <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                                Add a New Rule
+                            </span>
+                        </ng-template>
+                        <i style="cursor:pointer; font-size: 1.5em" (click)="addNewRule()" [ngbTooltip]='NewRule' class="bi bi-plus-circle me-1"></i>
+                    </th>
                 </tr>
                 <td *ngIf="totalPages==0"> <div class="text-danger">{{errorMessage}}</div></td>
                 <tr *ngFor="let r of rules">

@@ -25,6 +25,7 @@ export class FormComponent implements OnInit {
   pageSize: number = 10; // nombre d'éléments affiché par page
   totalPages: number = 0;
   totalResults: number = 0;
+  filterActive: boolean = false; // pour savoir si un filtre est actif ou pas
 
 
   constructor(private ruleService: RulesService, private router: Router) { }
@@ -91,6 +92,7 @@ export class FormComponent implements OnInit {
     this.filterFormGroup.get('position')?.setValue('allPosition');
     this.filterFormGroup.get('condition')?.setValue('');
     this.filterFormGroup.get('command')?.setValue('');
+    this.filterActive = false;
     this.onFilterChange(0);
   }
 
@@ -131,6 +133,15 @@ export class FormComponent implements OnInit {
         command: new FormControl("")
       });            
     }
+    if( this.filterFormGroup.get('part')?.value=="allPart" && 
+        this.filterFormGroup.get('label')?.value == "allLabel" && 
+        this.filterFormGroup.get('position')?.value == "allPosition" && 
+        this.filterFormGroup.get('condition')?.value == "" && 
+        this.filterFormGroup.get('command')?.value == ""){
+          this.filterActive = false
+        }else {
+          this.filterActive = true;
+        }
     this.ruleService.rulesFiltered(this.filterFormGroup.get('part')?.value, this.filterFormGroup.get('label')?.value, this.filterFormGroup.get('position')?.value, this.filterFormGroup.get('condition')?.value, this.filterFormGroup.get('command')?.value, page, this.pageSize).subscribe({
       next: (data) => {
         this.rules = data.rules;
