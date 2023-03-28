@@ -50,7 +50,8 @@ export class FormComponent implements OnInit {
         part: new FormControl("allPart"), //valeur par defaut
         label: new FormControl("allLabel"),
         position: new FormControl("allPosition"),
-        keyword: new FormControl("")
+        condition: new FormControl(""),
+        command: new FormControl("")
       });
     } else {
       // le composent est déjà init donc il faut récupérer la page et les filtres
@@ -88,8 +89,9 @@ export class FormComponent implements OnInit {
     this.filterFormGroup.get('part')?.setValue('allPart');
     this.filterFormGroup.get('label')?.setValue('allLabel');
     this.filterFormGroup.get('position')?.setValue('allPosition');
-    this.filterFormGroup.get('keyword')?.setValue('');
-    //this.onFilterChange(0);
+    this.filterFormGroup.get('condition')?.setValue('');
+    this.filterFormGroup.get('command')?.setValue('');
+    this.onFilterChange(0);
   }
 
   deleteRule(r: Rule) {
@@ -125,10 +127,11 @@ export class FormComponent implements OnInit {
         part: new FormControl("allPart"), //valeur par defaut
         label: new FormControl("allLabel"),
         position: new FormControl("allPosition"),
-        keyword: new FormControl("")
+        condition: new FormControl(""),
+        command: new FormControl("")
       });            
     }
-    this.ruleService.rulesFiltered(this.filterFormGroup.get('part')?.value, this.filterFormGroup.get('label')?.value, this.filterFormGroup.get('position')?.value, this.filterFormGroup.get('keyword')?.value, page, this.pageSize).subscribe({
+    this.ruleService.rulesFiltered(this.filterFormGroup.get('part')?.value, this.filterFormGroup.get('label')?.value, this.filterFormGroup.get('position')?.value, this.filterFormGroup.get('condition')?.value, this.filterFormGroup.get('command')?.value, page, this.pageSize).subscribe({
       next: (data) => {
         this.rules = data.rules;
         this.currentPage = page;
@@ -147,7 +150,7 @@ export class FormComponent implements OnInit {
         this.parts = this.ruleService.getPartUniqueValues();
         this.labels = this.ruleService.getLabelUniqueValues();
         this.positions = this.ruleService.getPositionUniqueValues();
-        console.log(this.rules)
+        //console.log(this.rules)
       }
     })      
     

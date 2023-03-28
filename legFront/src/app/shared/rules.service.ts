@@ -123,7 +123,7 @@ export class RulesService {
     
   }
 
-  public rulesFiltered(partFilter: string, labelFilter: string, positionFilter: string, keyword:string, page: number, size: number) : Observable<PageRule>{
+  public rulesFiltered(partFilter: string, labelFilter: string, positionFilter: string, condition:string, command:string, page: number, size: number) : Observable<PageRule>{
     let rulesFiltered: Array<Rule> = this.rules;
     if(partFilter!="allPart"){
       rulesFiltered = rulesFiltered.filter(r=>r.part.includes(partFilter));
@@ -134,9 +134,13 @@ export class RulesService {
     if(positionFilter!="allPosition"){
       rulesFiltered = rulesFiltered.filter(r=>r.position.includes(positionFilter));
     }
-    if(keyword!=""){
-      console.log(keyword)
-      rulesFiltered = rulesFiltered.filter(r=>r.condition.toLocaleUpperCase().includes(keyword.toLocaleUpperCase()));
+    if(condition!=""){
+      //console.log(condition)
+      rulesFiltered = rulesFiltered.filter(r=>r.condition.toLocaleUpperCase().includes(condition.toLocaleUpperCase()));
+    }
+    if(command!=""){
+      console.log(command)
+      rulesFiltered = rulesFiltered.filter(r=>r.command.toLocaleUpperCase().includes(command.toLocaleUpperCase()));
     }
     let totalPages = ~~(rulesFiltered.length / size); // ~~ garde la partie entière de la division
     if (rulesFiltered.length % size) {
