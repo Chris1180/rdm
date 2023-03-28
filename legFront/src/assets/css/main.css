@@ -220,7 +220,7 @@ a:hover {}
 
 
 /* ----- Main ----- */
-#main { position: relative; padding:50px; padding-bottom: 135px; background: #fff; background: rgba(255,255,255,.95);}
+#main { position: relative; padding:50px; padding-bottom: 90px;  padding-top: 20px; background: #fff; background: rgba(255,255,255,.95);}
 #main:after { display:table; clear: both; content: "";}
 
 

@@ -1,66 +1,7 @@
 <main id="main">
-    <form [formGroup]="filterFormGroup">
-        
-        <div class="row">
-            <!--
-            <div class="col-sm">
-                <select formControlName="part" (change)="onFilterChange(0)">
-                    <option value="" disabled="">Select Part</option>
-                    <option value="allPart" selected>All Parts...</option>
-                    <option *ngFor="let p of parts" [ngValue]="p">{{p}} </option>
-
-                </select>
-            </div>
-            <div class="col-sm">
-                <select formControlName="label" (change)="onFilterChange(0)">
-                    <option value="" disabled="">Select Label</option>
-                    <option value="allLabel">All Labels...</option>
-                    <option *ngFor="let l of labels" [ngValue]='l'>{{l}} </option>
-
-                </select>
-            </div>
-            <div class="col-sm">
-                <select formControlName="position" (change)="onFilterChange(0)">
-                    <option value="" disabled="">Select Position</option>
-                    <option value="allPosition">All Position...</option>
-                    <option *ngFor="let pos of positions" [ngValue]='pos'>{{pos}} </option>
-                </select>
-            </div>
-            <div class="col-sm">
-                <div class="input-group input-group-sm">
-                    <span class="input-group-prepend input-group-text">Condition :</span>
-                    <input class="form-control form-control-sm" type="text" formControlName="condition"
-                        (input)="onFilterChange(0)">
-                    <span class="input-group-append input-group-text"> <i class="bi bi-search"></i></span>
-                </div>
-            </div>-->
-            <div class="col-sm">
-                <!--
-                <ng-template #Reset>
-                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
-                        Reset All Filters
-                    </span>
-                </ng-template>
-                <button (click)="resetfilters()" alt="Reset Filters" [ngbTooltip]='Reset'> <i
-                        class="bi bi-bootstrap-reboot me-1"></i></button>
-                &nbsp;
-                <ng-template #NewRule>
-                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
-                        Add a New Rule
-                    </span>
-                </ng-template>
-                <button (click)="addNewRule()" alt="Add new rule" [ngbTooltip]='NewRule'> <i
-                        class="bi bi-plus-lg me-1"></i></button>
-                &nbsp;-->
-                <button (click)="preview()" alt="preview"> <i class="bi bi-eye">Preview</i></button>
-
-            </div>
-        </div>
-
-
-    </form>
-
+    <button (click)="preview()" alt="preview"> <i class="bi bi-eye">Preview</i></button>
     <nav *ngIf="totalPages>0">
+        
         <span>Pages ({{currentPage+1}} of {{totalPages}}) => rules number {{totalResults}}</span>
         <ul class="pager" style="display: flex; justify-content: center;">
             <li><a *ngIf="currentPage!=0" (click)="onFilterChange(currentPage-1)" title="Previous page">«</a></li>
