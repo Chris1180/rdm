@@ -9,172 +9,218 @@
         </div>
         <div class="row mb-3 form-group">
             <div class="col-sm-4">
-                <label class="col-form-label">Procedure Type</label>
-                <select class="form-select" formControlName="procedureType">
-                    <option *ngFor="let p of procedureType | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                    </option>
-                </select>
+                <div class="input-group">
+                    <label class="col-3 col-form-label col-form-label-sm">Procedure Type</label>
+                    <select class="form-select form-select-sm" formControlName="procedureType">
+                        <option *ngFor="let p of procedureType | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                        </option>
+                    </select>
+                </div> 
             </div>
             <div class="col-sm-4">
-                <label class="col-form-label">Document Type</label>
-                <select class="form-select" formControlName="documentType">
-                    <option *ngFor="let p of documentType | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                    </option>
-                </select>
+                <div class="input-group">
+                    <label class="col-3 col-form-label col-form-label-sm">Document Type</label>
+                    <select class="form-select form-select-sm" formControlName="documentType">
+                        <option *ngFor="let p of documentType | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                        </option>
+                     </select>
+                </div>
             </div>
             <div class="col-sm-4">
-                <label class="col-form-label">Document Status</label>
-                <select class="form-select" formControlName="documentStatus">
-                    <option *ngFor="let p of documentStatus | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                    </option>
-                </select>
+                <div class="input-group">
+                    <label class="col-3 col-form-label col-form-label-sm">Document Status</label>
+                    <select class="form-select form-select-sm" formControlName="documentStatus">
+                        <option *ngFor="let p of documentStatus | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                        </option>
+                    </select>
+                </div>
             </div>
         </div>
         <!-- 2nd line Input Parameters-->
         <div class="row mb-3 form-group">
             <div class="col-sm-3">
-                <label class="col-form-label">Doc With Joint?</label>
-                <select class="form-select" formControlName="docWithJoint">
-                    <option *ngFor="let p of docWithJoint | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                    </option>
-                </select>
+                <div class="input-group">
+                    <label class="col-4 col-form-label col-form-label-sm">Doc With Joint?</label>
+                    <select class="form-select form-select-sm" formControlName="docWithJoint">
+                        <option *ngFor="let p of docWithJoint | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                        </option>
+                    </select>
+                </div>
             </div>
             <div class="col-sm-3">
-                <label class="col-form-label">Doc With Assoc?</label>
-                <select class="form-select" formControlName="docWithAssoc">
-                    <option *ngFor="let p of docWithAssoc | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                    </option>
-                </select>
+                <div class="input-group">
+                    <label class="col-4 col-form-label col-form-label-sm">Doc With Assoc?</label>
+                    <select class="form-select form-select-sm" formControlName="docWithAssoc">
+                        <option *ngFor="let p of docWithAssoc | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                        </option>
+                    </select>
+                </div>
             </div>
             <div class="col-sm-3">
-                <label class="col-form-label">Reading</label>
-                <select class="form-select" formControlName="reading">
-                    <option *ngFor="let p of reading | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}} </option>
-                </select>
-                <label class="col-form-label form-text ico-info">
-                    This is a tooltip
-                </label>
+                <div class="input-group">
+                    <label class="col-4 col-form-label col-form-label-sm">Reading</label>
+                    <select class="form-select form-select-sm" formControlName="reading">
+                        <option *ngFor="let p of reading | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}} </option>
+                    </select>
+                </div>
             </div>
             <div class="col-sm-3">
-                <label class="col-form-label">Form</label>
-                <select class="form-select" formControlName="form">
-                    <option *ngFor="let p of form | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}} </option>
-                </select>
-                <label class="col-form-label form-text ico-info">
-                    This is a tooltip
-                </label>
+                <div class="input-group">
+                    <label class="col-4 col-form-label col-form-label-sm">Form</label>
+                    <select class="form-select form-select-sm" formControlName="form">
+                        <option *ngFor="let p of form | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}} </option>
+                    </select>
+                </div>
             </div>
         </div>
-
-        <hr>
         <!-- Output Commands-->
-        <div class="alert alert-primary">
+        <div class="alert alert-primary mb-2">
             OUTPUT COMMANDS
         </div>
         <div class="row mb-3 form-group">
             <div class="col-sm-3">
-                <label class="col-form-label">[Procedure Number]</label>
-                <input class="form-control" type="text" formControlName="procedureNumber">
-                <label class="col-form-label form-text ico-info">
-                    The Procedure Number can be unknow in certain cases
-                </label>
+                <ng-template #TooltipPN>
+                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                        The Procedure Number can be unknow in certain cases
+                    </span>
+                </ng-template>
+                <div class="input-group"  [ngbTooltip]='TooltipPN'>
+                    <label class="col-5 col-form-label col-form-label-sm">[Procedure Number]</label>
+                    <input class="form-control form-control-sm" type="text" formControlName="procedureNumber">
+                </div>
             </div>
             <div class="col-sm-3">
-                <label class="col-form-label">[Generating Date]</label>
-                <div class="input-group">
-                    <input class="form-control" ngbDatepicker #d="ngbDatepicker"
+                <ng-template #TooltipGD>
+                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                        Date the document is created
+                    </span>
+                </ng-template>
+                <div class="input-group"  [ngbTooltip]='TooltipGD'>
+                    <label class="col-5 col-form-label col-form-label-sm">[Generating Date]</label>
+                    <input class="form-control form-control-sm" ngbDatepicker #d="ngbDatepicker"
                         formControlName="generatingDate" /><button class="btn btn-outline-secondary bi bi-calendar3"
                         (click)="d.toggle()" type="button"></button>
                 </div>
-                <label class="col-form-label form-text ico-info">
-                    Date the document is created
-                </label>
             </div>
             <div class="col-sm-3">
-                <label class="col-form-label">[Send To Top Date]</label>
-                <div class="input-group">
-                    <input class="form-control" ngbDatepicker #sendtotop="ngbDatepicker"
+                <ng-template #TooltipTD>
+                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                        Date the document is sent to top for verification
+                    </span>
+                </ng-template>
+                <div class="input-group"  [ngbTooltip]='TooltipTD'>
+                    <label class="col-5 col-form-label col-form-label-sm">[Send To Top Date]</label>
+                    <input class="form-control form-control-sm" ngbDatepicker #sendtotop="ngbDatepicker"
                         formControlName="sendToTopDate" /><button class="btn btn-outline-secondary bi bi-calendar3"
                         (click)="sendtotop.toggle()" type="button"></button>
                 </div>
-                <label class="col-form-label form-text ico-info">
-                    Date the document is sent to top for verification
-                </label>
+                
             </div>
             <div class="col-sm-3">
-                <label class="col-form-label">[Send To TRAD Date]</label>
-                <div class="input-group">
-                    <input class="form-control" ngbDatepicker #sendtotrad="ngbDatepicker"
+                <ng-template #TooltipTR>
+                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                        Date the document is bookout for Translation
+                    </span>
+                </ng-template>
+                <div class="input-group"  [ngbTooltip]='TooltipTR'>
+                    <label class="col-5 col-form-label col-form-label-sm">[Send To TRAD Date]</label>
+                    <input class="form-control form-control-sm" ngbDatepicker #sendtotrad="ngbDatepicker"
                         formControlName="sendToTradDate" /><button class="btn btn-outline-secondary bi bi-calendar3"
                         (click)="sendtotrad.toggle()" type="button"></button>
                 </div>
-                <label class="col-form-label form-text ico-info">
-                    Date the document is bookout for Translation
-                </label>
+                
             </div>
         </div>
         <div class="row mb-3 form-group">
             <div class="col-sm-4">
-                <label class="col-form-label">[PE Number]</label>
-                <input class="form-control" type="text" formControlName="peNumber">
-                <label class="col-form-label form-text ico-info">
-                    The Number can be unknow in certain cases
-                </label>
+                <ng-template #TooltipPE>
+                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                        The Number can be unknow in certain cases
+                    </span>
+                </ng-template>
+                <div class="input-group" [ngbTooltip]='TooltipPE'>
+                    <label class="col-4 col-form-label col-form-label-sm">[PE Number]</label>
+                    <input class="form-control form-control-sm" type="text" formControlName="peNumber">   
+                </div>
             </div>
             <div class="col-sm-4">
-                <label class="col-form-label">[EPADES Ref]</label>
-                <input class="form-control" type="text" formControlName="epadesRef">
-                <label class="col-form-label form-text ico-info">
-                    XML or DOCX
-                </label>
+                <ng-template #TooltipEPADES>
+                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                        XML or DOCX
+                    </span>
+                </ng-template>
+                <div class="input-group" [ngbTooltip]='TooltipEPADES'>
+                    <label class="col-4 col-form-label col-form-label-sm">[EPADES Ref]</label>
+                    <input class="form-control form-control-sm" type="text" formControlName="epadesRef">
+                </div>
+                
             </div>
             <div class="col-sm-4">
-                <label class="col-form-label">[Doc Language]</label>
-                <input class="form-control" type="text" formControlName="docLanguage">
-                <label class="col-form-label form-text ico-info">
-                    Can be XM
-                </label>
+                <ng-template #TooltipLG>
+                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                        Can be XM
+                    </span>
+                </ng-template>
+                <div class="input-group" [ngbTooltip]='TooltipLG'>
+                    <label class="col-4 col-form-label col-form-label-sm">[Doc Language]</label>
+                    <input class="form-control form-control-sm" type="text" formControlName="docLanguage">
+                </div>
             </div>
         </div>
         <div class="row mb-3 form-group">
             <div class="col-sm-6">
-                <label class="col-form-label">[Prefix Title]</label>
-                <input class="form-control" type="text" formControlName="prefixTitle">
-                <label class="col-form-label form-text ico-info">
-                    Title is always defined in ITER (reference)
-                </label>
+                <ng-template #TooltipPT>
+                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                        Title is always defined in ITER (reference)
+                    </span>
+                </ng-template>
+                <div class="input-group" [ngbTooltip]='TooltipPT'>
+                    <label class="col-2 col-form-label col-form-label-sm">[Prefix Title]</label>
+                    <input class="form-control form-control-sm" type="text" formControlName="prefixTitle">
+                </div> 
+                
             </div>
             <div class="col-sm-6">
-                <label class="col-form-label">[ITER Title]</label>
-                <input class="form-control" type="text" formControlName="iterTitle">
-                <label class="col-form-label form-text ico-info">
-                    Please be careful with the first letter (upper or lower case)
-                </label>
+                <ng-template #TooltipIT>
+                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                        Please be careful with the first letter (upper or lower case)
+                    </span>
+                </ng-template>
+                <div class="input-group" [ngbTooltip]='TooltipIT'>
+                    <label class="col-2 col-form-label col-form-label-sm">[ITER Title]</label>
+                    <input class="form-control form-control-sm" type="text" formControlName="iterTitle">
+                </div>
             </div>
         </div>
-        <div class="row mb-3 form-group">
+        <div class="row mb-1 form-group">
             <div class="col-sm-6">
-                <label class="col-form-label">[Authoring Committee]</label>
-                <select class="form-select" formControlName="authoringCommittee">
-                    <option *ngFor="let p of authoringCommittee | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                    </option>
-                </select>
-                <label class="col-form-label form-text ico-info">
-                    For OPCD and OPCF not Joint Committee
-                </label>
+                <ng-template #TooltipAU>
+                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                        For OPCD and OPCF not Joint Committee
+                    </span>
+                </ng-template>
+                <div class="input-group" [ngbTooltip]='TooltipAU'>
+                    <label class="col-3 col-form-label col-form-label-sm">[Authoring Committee]</label>
+                    <select class="form-select form-select-sm" formControlName="authoringCommittee">
+                        <option *ngFor="let p of authoringCommittee | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                        </option>
+                    </select>
+                </div>
             </div>
             <div class="col-sm-6">
-                <label class="col-form-label">[Lead Committee]</label>
-                <select class="form-select" formControlName="leadCommittee">
-                    <option *ngFor="let p of leadCommittee | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                    </option>
-                </select>
+                <div class="input-group">
+                    <label class="col-3 col-form-label col-form-label-sm">[Lead Committee]</label>
+                    <select class="form-select form-select-sm" formControlName="leadCommittee">
+                        <option *ngFor="let p of leadCommittee | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                        </option>
+                    </select>
+                </div>
             </div>
         </div>
-        <div class="row mb-3 form-group">
+        <div class="row mb-1 form-group">
             <div class="col-sm-4">
-                <label class="col-form-label">[List Of Rapporteurs]</label>
-                <select class="form-select" multiple formControlName="listOfRapporteurs">
+                <label class="col-form-label col-form-label-sm">[List Of Rapporteurs]</label>
+                <select class="form-select form-select-sm" multiple formControlName="listOfRapporteurs">
                     <option *ngFor="let p of listOfRapporteurs | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
                     </option>
                 </select>
@@ -183,8 +229,8 @@
                 </label>
             </div>
             <div class="col-sm-4">
-                <label class="col-form-label">[Author Of Proposal]</label>
-                <select class="form-select" multiple formControlName="authorOfProposal">
+                <label class="col-form-label col-form-label-sm">[Author Of Proposal]</label>
+                <select class="form-select form-select-sm" multiple formControlName="authorOfProposal">
                     <option *ngFor="let p of listOfRapporteurs | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
                     </option>
                 </select>
@@ -193,8 +239,8 @@
                 </label>
             </div>
             <div class="col-sm-4">
-                <label class="col-form-label">[List Of Assoc / Rapporteurs]</label>
-                <select class="form-select" multiple formControlName="listOfAssoc">
+                <label class="col-form-label col-form-label-sm">[List Of Assoc / Rapporteurs]</label>
+                <select class="form-select form-select-sm" multiple formControlName="listOfAssoc">
                     <option *ngFor="let p of listOfAssoc | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
                     </option>
                 </select>
