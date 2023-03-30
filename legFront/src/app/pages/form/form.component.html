@@ -1,5 +1,6 @@
 <main id="main">
     <button (click)="preview()" alt="preview"> <i class="bi bi-eye">Preview</i></button>
+    
     <nav *ngIf="totalPages>0">
         
         <span>Pages ({{currentPage+1}} of {{totalPages}}) => rules number {{totalResults}}</span>

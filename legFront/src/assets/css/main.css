@@ -515,10 +515,10 @@ nav > span { display: block; text-align:center; margin: 0 0 15px 0;}
     border-radius: 6px;
 	color: #333;
 }
-.pager li > a:hover { background-color: rgba(0,0,0,.2);}
-.pager li.active > a { background: #333; color: #fff; font-weight: 800;}
+.pager li > a:hover { background-color: rgba(0,0,0,.2); cursor: pointer;}
+.pager li.active > a { background: #333; color: #fff; font-weight: 800; cursor: text;}
 
-
+.pager li.active > a:hover { background: #4b4b4b; color: #fff; font-weight: 800;}
 
 
 
