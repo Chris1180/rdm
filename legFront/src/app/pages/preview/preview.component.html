@@ -249,13 +249,30 @@
                 </label>
             </div>
         </div>
-        <button class="btn btn-small ico-valide-cerc btn-green" type="submit"
+        <button class="btn btn-small ico-valide-cerc btn-green" type="submit" data-bs-toggle="modal" data-bs-target="#previewModal"
             [disabled]="!previewForm.valid">Submit</button>
     </form>
 
     <br>
+       
+      
     <!--Visu part-->
-    <app-preview-visu-page [rules]="rules"></app-preview-visu-page>
+    <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Preview of the cover page only</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <app-preview-visu-page [rules]="rules"></app-preview-visu-page>
+                </div>
+                
+            </div>
+            </div>
+        
+    </div>
+    
     
     <br>
     <!--tab of rules part-->
