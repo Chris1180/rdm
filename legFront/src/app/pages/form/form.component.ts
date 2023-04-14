@@ -12,7 +12,7 @@ import { RulesService } from 'src/app/shared/rules.service';
 })
 export class FormComponent implements OnInit {
 
-  rules!: Array<Rule>;
+  rules!: Array<Rule>; // copie locale des règles pour l'affichage (par 10 si pageSize inchangé)
   //rulesDisplayed! : Array<Rule>;
   parts!: Array<string>;
   labels!: Array<string>;
@@ -55,6 +55,7 @@ export class FormComponent implements OnInit {
         command: new FormControl("")
       });
     } else {
+      console.log('Component already initialized')
       // le composent est déjà init donc il faut récupérer la page et les filtres
       this.currentPage = this.ruleService.pageToDisplay;
       this.filterFormGroup = this.ruleService.filters;
@@ -175,7 +176,7 @@ export class FormComponent implements OnInit {
   }
 
   addNewRule() {
-    this.ruleService.setRuleToBeEdited({id: 0, part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '', outputValue: '', example: '',
+    this.ruleService.setRuleToBeEdited({id: 0, order: 20, part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '', outputValue: '', example: '',
     position: '', format: '', comment: '', application: ''})
     this.router.navigate(['/Edition']);
   }

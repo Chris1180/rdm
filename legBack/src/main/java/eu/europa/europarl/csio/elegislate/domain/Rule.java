@@ -18,6 +18,8 @@ public class Rule {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;
+	@Column (name="priority_order")
+	Integer order;
 	String part;
 	String label;
 	@Column (name="conditionrule")

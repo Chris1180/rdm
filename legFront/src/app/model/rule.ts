@@ -1,5 +1,6 @@
 export interface Rule {
     id : number;
+    order : number;
     part : string;
     label : string;
     condition : string;

@@ -25,7 +25,7 @@ public class Controller {
 	
 	@GetMapping ("/rules")
 	public List<Rule> getRules() {
-		return ruleRepository.findAll();
+		return ruleRepository.findAllByOrderByOrderAsc();
 		
 	}
 	
@@ -34,7 +34,7 @@ public class Controller {
 		System.out.println(rule);
 		if (rule.getId()==0) {
 			// ajout d'une nouvelle règle
-			rule = ruleRepository.save(new Rule(null, rule.getPart(), rule.getLabel(), rule.getCondition(), rule.getCommand(), rule.getMandatory(), 
+			rule = ruleRepository.save(new Rule(null, rule.getOrder(), rule.getPart(), rule.getLabel(), rule.getCondition(), rule.getCommand(), rule.getMandatory(), 
 					rule.getInitialValue(), rule.getExample(), rule.getPosition(), rule.getFormat(), rule.getComment(), rule.getApplication()));
 			//System.out.println(rule);
 		}else { // modif d'une règle existante

@@ -26,6 +26,8 @@ export class EditionComponent implements OnInit {
   ngOnInit(): void {
     this.rule = this.ruleService.getRuleToBeEdited();
     this.ruleForm = new FormGroup({
+      id : new FormControl(this.rule.id),
+      order : new FormControl(this.rule.order),
       part : new FormControl(this.rule.part),
       label : new FormControl(this.rule.label),
       condition : new FormControl(this.rule.condition),
@@ -49,7 +51,7 @@ export class EditionComponent implements OnInit {
   }
 
   onSubmit() {
-  
+    this.rule.order = this.ruleForm.get('order')?.value;
     this.rule.part = this.ruleForm.get('part')?.value;
     this.rule.label = this.ruleForm.get('label')?.value;
     this.rule.condition = this.ruleForm.get('condition')?.value;
@@ -63,11 +65,27 @@ export class EditionComponent implements OnInit {
     this.rule.example = this.ruleForm.get('example')?.value;
     this.ruleService.modifyRule(this.rule).subscribe({
       next : ()=>{
-        this.router.navigate(['/CSIOForm']);
+        //this.router.navigate(['/CSIOForm']);
       },
       error : (err) => {
         this.errorMessage = err;
         console.log("Une erreur est remontée"+this.errorMessage);
+      },
+      complete: ()=>{
+        this.ruleService.initCompo().subscribe({
+          next: (data) => {
+            //initialise le service avec les info du Back-End
+            this.ruleService.setRules(data);
+          },
+          error: (err) => {
+            this.errorMessage = err;
+            console.log("Une erreur est remontée" + this.errorMessage);
+          },
+          complete: () => {
+            this.router.navigate(['/CSIOForm']);
+          }
+        });
+        
       }
     });
   }

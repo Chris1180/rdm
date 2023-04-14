@@ -30,7 +30,7 @@ export class RulesService {
       this.apiUrl = `http://${window.location.hostname}:8080/`
     }
     
-    this.setRuleToBeEdited({id: 0, part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '',outputValue: '', example: '',
+    this.setRuleToBeEdited({id: 0, order: 20,part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '',outputValue: '', example: '',
              position: '', format: '', comment: '', application: ''})
   }
 
@@ -86,7 +86,8 @@ export class RulesService {
 
   public modifyRule(rule : Rule) : Observable<boolean>{
     let index = this.rules.indexOf(rule);
-    if (index !== -1) {  
+    // on teste si c'est une modification ou une nouvelle règle
+    if (index !== -1) {
       // mise à jour en back-end d'une règle existante
       this.http.post(this.apiUrl+'update', rule).subscribe(
         {
@@ -124,6 +125,12 @@ export class RulesService {
   }
 
   public rulesFiltered(partFilter: string, labelFilter: string, positionFilter: string, condition:string, command:string, page: number, size: number) : Observable<PageRule>{
+    //console.log(this.rules)
+    // classement de l'ordre des règles en fonction du champ order:
+    //this.rules.sort((a,b) => a.order - b.order);
+    //console.log(this.rules)
+    
+    
     let rulesFiltered: Array<Rule> = this.rules;
     if(partFilter!="allPart"){
       rulesFiltered = rulesFiltered.filter(r=>r.part.includes(partFilter));
