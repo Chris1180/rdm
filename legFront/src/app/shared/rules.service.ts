@@ -84,22 +84,25 @@ export class RulesService {
     return of(true);
   }
 
-  public modifyRule(rule : Rule) : Observable<boolean>{
+  public modifyRule(rule : Rule) : Observable<string>{
     let index = this.rules.indexOf(rule);
     // on teste si c'est une modification ou une nouvelle règle
     if (index !== -1) {
       // mise à jour en back-end d'une règle existante
       this.http.post(this.apiUrl+'update', rule).subscribe(
         {
-          next : ()=>{},
-          error: (err) => {
-            console.error("Une erreur est remontée lors d'une mise à jour");
-            return of(false);
-          },
-          complete: ()=>{
+          next : ()=>{
             // mise à jour du tableau des rules
             this.rules[index] = rule;
             console.log('Modif règle existante effectuée id='+rule.id);
+            return of("ok")
+          },
+          error: (err) => {
+            console.error("Une erreur est remontée lors d'une mise à jour");
+            return of(err);
+          },
+          complete: ()=>{
+            
           }
           
         })
@@ -120,7 +123,7 @@ export class RulesService {
           }
         })
     }
-    return of(true);
+    return of('loading');
     
   }
 

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Rule } from 'src/app/model/rule';
 import { RulesService } from 'src/app/shared/rules.service';
 
+declare var window: any;
 
 @Component({
   selector: 'app-form',
@@ -13,7 +14,6 @@ import { RulesService } from 'src/app/shared/rules.service';
 export class FormComponent implements OnInit {
 
   rules!: Array<Rule>; // copie locale des règles pour l'affichage (par 10 si pageSize inchangé)
-  //rulesDisplayed! : Array<Rule>;
   parts!: Array<string>;
   labels!: Array<string>;
   positions!: Array<string>;
@@ -27,10 +27,16 @@ export class FormComponent implements OnInit {
   totalResults: number = 0;
   filterActive: boolean = false; // pour savoir si un filtre est actif ou pas
 
+  // Variables pour le message de confirmation lors d'une modification 
+  userFeedBackToast: any;
+  userFeedBackMessage!: string;
+  userFeedBackStyle!: string;
 
   constructor(private ruleService: RulesService, private router: Router) { }
 
   ngOnInit(): void {
+    console.clear();
+    this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
     // vérifie si le service est déjà initialisé avec les infos du Back-End
     if (!this.ruleService.getRules()) {
       console.log('init component for the first time')
@@ -185,4 +191,36 @@ export class FormComponent implements OnInit {
     this.router.navigate(['/Preview'])
   }
 
+  editRuleOnline(r: any, newValue: string, field: any){
+    //console.log(field)
+    if(r[field]!=newValue){
+      r[field] = newValue;
+      this.ruleService.modifyRule(r).subscribe({
+        next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
+          this.openFeedBackUser("Change saved Succesfully", "bg-success");
+          //console.log(data)
+        },
+        error: (err) => {
+          this.openFeedBackUser("Error during saving process in Back-End", "bg-danger")
+          console.error("Une erreur est remontée lors de la mise à jour d'une règle");
+        },
+        complete: ()=>{
+        }
+      })
+    }else{
+      console.log("pas de changement détecté")
+    }
+    
+  }
+  
+  
+
+  openFeedBackUser(message: string, style: string) {
+    this.userFeedBackMessage = message;
+    this.userFeedBackStyle = style;
+    this.userFeedBackToast.show() ;
+  }
+  closeFeedBackUser(){
+    this.userFeedBackToast.hide();
+  }
 }
