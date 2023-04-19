@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Rule } from 'src/app/model/rule';
+import { Observable, catchError, map, of, startWith } from 'rxjs';
+import { PageRule, Rule } from 'src/app/model/rule';
+import { EventRuleService } from 'src/app/shared/event.rule.service';
 import { RulesService } from 'src/app/shared/rules.service';
+import { ActionEvent, AppDataState, RuleActionTypes, RuleStateEnum } from 'src/app/shared/rules.state';
 
 declare var window: any;
 
@@ -14,6 +17,8 @@ declare var window: any;
 export class FormComponent implements OnInit {
 
   rules!: Array<Rule>; // copie locale des règles pour l'affichage (par 10 si pageSize inchangé)
+  rules$!: Observable<AppDataState<Rule[]>>;
+  readonly RuleStateEnum=RuleStateEnum;
   parts!: Array<string>;
   labels!: Array<string>;
   positions!: Array<string>;
@@ -32,27 +37,28 @@ export class FormComponent implements OnInit {
   userFeedBackMessage!: string;
   userFeedBackStyle!: string;
 
-  constructor(private ruleService: RulesService, private router: Router) { }
+  constructor(private ruleService: RulesService, private router: Router, private eventRuleService: EventRuleService) { }
 
   ngOnInit(): void {
-    console.clear();
+    //console.clear();
+
     this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
-    // vérifie si le service est déjà initialisé avec les infos du Back-End
-    if (!this.ruleService.getRules()) {
-      console.log('init component for the first time')
-      this.ruleService.initCompo().subscribe({
-        next: (data) => {
-          //initialise le service avec les info du Back-End
-          this.ruleService.setRules(data);
-        },
-        error: (err) => {
-          this.errorMessage = err;
-          console.log("Une erreur est remontée" + this.errorMessage);
-        },
-        complete: () => {
-          this.displayRules();
-        }
-      });
+    
+    // exp
+    this.eventRuleService.sourceEventSubjectObservable.subscribe((actionEvent: ActionEvent)=>{
+      switch (actionEvent.type) {
+        case RuleActionTypes.EDIT_RULE: 
+          this.ruleService.modifyRule(actionEvent.payload);
+          break;
+      }
+    })
+
+    if (this.ruleService.filters) {
+      this.currentPage = this.ruleService.pageToDisplay;
+      this.filterFormGroup = this.ruleService.filters;
+      this.filterActive = true;
+      //this.onFilterChange(this.currentPage);
+    }else{
       this.filterFormGroup = new FormGroup({
         part: new FormControl("allPart"), //valeur par defaut
         label: new FormControl("allLabel"),
@@ -60,15 +66,34 @@ export class FormComponent implements OnInit {
         condition: new FormControl(""),
         command: new FormControl("")
       });
-    } else {
-      console.log('Component already initialized')
-      // le composent est déjà init donc il faut récupérer la page et les filtres
-      this.currentPage = this.ruleService.pageToDisplay;
-      this.filterFormGroup = this.ruleService.filters;
-      this.onFilterChange(this.currentPage);
-      //this.displayRules();
     }
+    
+    /*
+      this.filterFormGroup = new FormGroup({
+      part: new FormControl("allPart"), //valeur par defaut
+      label: new FormControl("allLabel"),
+      position: new FormControl("allPosition"),
+      condition: new FormControl(""),
+      command: new FormControl("")
+      });
+    */
+    this.rules$ = this.ruleService.getRulesFromDB().pipe(
+      map(data=>{
+        this.ruleService.setRules(data);
+        if (this.filterActive) {
+          this.onFilterChange(this.currentPage);
+        }else{
+          this.displayRules();
+        }
+        return ({dataState:RuleStateEnum.LOADED,data:data}) // lorsque des données sont reçues on retourne les data et le state
+      }),
+      startWith({dataState:RuleStateEnum.LOADING}),  // startWith est retourné dès que le pipe est executé
+      catchError(err=>of({dataState:RuleStateEnum.ERROR, errorMessage:err.message}))
+    )
 
+
+
+    // fin exp
     
   }
 
@@ -182,7 +207,7 @@ export class FormComponent implements OnInit {
   }
 
   addNewRule() {
-    this.ruleService.setRuleToBeEdited({id: 0, order: 20, part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '', outputValue: '', example: '',
+    this.ruleService.setRuleToBeEdited({id: 0, order: 1, part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '', outputValue: '', example: '',
     position: '', format: '', comment: '', application: ''})
     this.router.navigate(['/Edition']);
   }

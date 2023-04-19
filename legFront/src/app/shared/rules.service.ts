@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { PageRule, Rule } from '../model/rule';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { EventRuleService } from './event.rule.service';
+import { RuleActionTypes } from './rules.state';
 
 @Injectable({
   providedIn: 'root'
@@ -23,19 +25,23 @@ export class RulesService {
   public pageToDisplay!: number;
   
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private eventRuleService: EventRuleService) {
   
     // permet d'adapter l'adresse en fonction de l'environnement
     if (window.location.port == '4200'){
       this.apiUrl = `http://${window.location.hostname}:8080/`
     }
     
-    this.setRuleToBeEdited({id: 0, order: 20,part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '',outputValue: '', example: '',
+    this.setRuleToBeEdited({id: 0, order: 1,part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '',outputValue: '', example: '',
              position: '', format: '', comment: '', application: ''})
   }
 
   public initCompo() : Observable<Rule[]>{
     return this.http.get<any>(this.apiUrl+'rules');
+  }
+
+  public getRulesFromDB() : Observable<Rule[]>{
+    return this.http.get<Rule[]>(this.apiUrl+'rules');;
   }
  
   public getAllRules() : Array<Rule>{
@@ -107,9 +113,11 @@ export class RulesService {
           
         })
     } else {
+      // création d'une nouvelle règle
       this.http.post<Rule>(this.apiUrl+'update', rule).subscribe(
         {
           next : (data)=>{
+            // lors de la création d'une nouvelle règle il faut récupérer l'id de la BDD
             rule = data;
           },
           error: (err) => {
@@ -125,6 +133,14 @@ export class RulesService {
     }
     return of('loading');
     
+  }
+
+  public editRule(rule: Rule):Observable<Rule>{
+    return this.http.post<Rule>(this.apiUrl+'update', rule);
+  }
+  public addRuleToService(rule: Rule){
+    const index = this.rules.map(r => r.id).indexOf(rule.id);
+    this.rules[index] = rule;
   }
 
   public rulesFiltered(partFilter: string, labelFilter: string, positionFilter: string, condition:string, command:string, page: number, size: number) : Observable<PageRule>{

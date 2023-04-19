@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Rule } from 'src/app/model/rule';
+import { EventRuleService } from 'src/app/shared/event.rule.service';
 import { RulesService } from 'src/app/shared/rules.service';
+import { RuleActionTypes } from 'src/app/shared/rules.state';
 
 @Component({
   selector: 'app-edition',
@@ -21,7 +23,7 @@ export class EditionComponent implements OnInit {
   rule! :Rule;
   errorMessage! : string;
 
-  constructor(private ruleService : RulesService, private router: Router) { }
+  constructor(private ruleService : RulesService, private router: Router, private eventRuleService: EventRuleService) { }
 
   ngOnInit(): void {
     this.rule = this.ruleService.getRuleToBeEdited();
@@ -51,7 +53,10 @@ export class EditionComponent implements OnInit {
   }
 
   onSubmit() {
-    this.rule.order = this.ruleForm.get('order')?.value;
+    this.rule = this.ruleForm.value;
+    this.eventRuleService.publishEvent({type: RuleActionTypes.EDIT_RULE, payload: this.ruleForm.value})
+    this.router.navigate(['/CSIOForm']);
+    /*this.rule.order = this.ruleForm.get('order')?.value;
     this.rule.part = this.ruleForm.get('part')?.value;
     this.rule.label = this.ruleForm.get('label')?.value;
     this.rule.condition = this.ruleForm.get('condition')?.value;
@@ -62,7 +67,11 @@ export class EditionComponent implements OnInit {
     this.rule.format = this.ruleForm.get('format')?.value;
     this.rule.comment = this.ruleForm.get('comment')?.value;
     this.rule.application = this.ruleForm.get('application')?.value;
-    this.rule.example = this.ruleForm.get('example')?.value;
+    this.rule.example = this.ruleForm.get('example')?.value;*/
+    
+    
+    /*
+
     this.ruleService.modifyRule(this.rule).subscribe({
       next : ()=>{
         //this.router.navigate(['/CSIOForm']);
@@ -87,7 +96,7 @@ export class EditionComponent implements OnInit {
         });
         
       }
-    });
+    });*/
   }
 
   onCancel() {
