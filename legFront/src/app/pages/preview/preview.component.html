@@ -69,7 +69,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <div class="input-group">
                             <label class="col-4 col-form-label col-form-label-sm">Reading</label>
                             <select class="form-select form-select-sm" formControlName="reading">
@@ -77,11 +77,19 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <div class="input-group">
                             <label class="col-4 col-form-label col-form-label-sm">Form</label>
                             <select class="form-select form-select-sm" formControlName="form">
                                 <option *ngFor="let p of form | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}} </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <label class="col-4 col-form-label col-form-label-sm">Language</label>
+                            <select class="form-select form-select-sm" formControlName="language">
+                                <option *ngFor="let p of language | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}} </option>
                             </select>
                         </div>
                     </div>

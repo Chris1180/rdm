@@ -7,6 +7,7 @@ import { DocumentType } from 'src/app/model/inputParameters/documentType';
 import { DocWithAssoc } from 'src/app/model/inputParameters/docWithAssoc';
 import { DocWithJoint } from 'src/app/model/inputParameters/docWithJoint';
 import { Form } from 'src/app/model/inputParameters/form';
+import { Language } from 'src/app/model/inputParameters/language';
 import { ProcedureType } from 'src/app/model/inputParameters/procedureType';
 import { Reading } from 'src/app/model/inputParameters/reading';
 import { AuthoringCommittee } from 'src/app/model/outputParameters/authoringCommittee';
@@ -37,6 +38,7 @@ export class PreviewComponent implements OnInit {
   docWithAssoc = DocWithAssoc;
   reading = Reading;
   form = Form;
+  language = Language;
   authoringCommittee = AuthoringCommittee;
   leadCommittee = LeadCommittee;
   listOfRapporteurs = ListOfRapporteurs;
@@ -71,6 +73,7 @@ export class PreviewComponent implements OnInit {
       docWithAssoc : new FormControl('NOASSOCCOMM'),
       reading : new FormControl('FIRST_READING'),
       form : new FormControl('STANDARD'),
+      language : new FormControl('EN'),
       procedureNumber : new FormControl('2023/0011(INI)'),
       generatingDate : new FormControl({
         year: this.d.getFullYear(),

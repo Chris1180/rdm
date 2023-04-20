@@ -57,7 +57,31 @@ export class CheckRulesService {
     let STANDARD : boolean = (this.form.form == "STANDARD");
     let POSITION : boolean = (this.form.form == "POSITION");
     let LETTER : boolean = (this.form.form == "LETTER")
-    
+    // Language
+    let BG : boolean = (this.form.language == "BG");
+    let ES : boolean = (this.form.language == "ES");
+    let CS : boolean = (this.form.language == "CS");
+    let DA : boolean = (this.form.language == "DA");
+    let DE : boolean = (this.form.language == "DE");
+    let ET : boolean = (this.form.language == "ET");
+    let EL : boolean = (this.form.language == "EL");
+    let EN : boolean = (this.form.language == "EN");
+    let FR : boolean = (this.form.language == "FR");
+    let GA : boolean = (this.form.language == "GA");
+    let HR : boolean = (this.form.language == "HR");
+    let IT : boolean = (this.form.language == "IT");
+    let LV : boolean = (this.form.language == "LV");
+    let LT : boolean = (this.form.language == "LT");
+    let HU : boolean = (this.form.language == "HU");
+    let MT : boolean = (this.form.language == "MT");
+    let NL : boolean = (this.form.language == "NL");
+    let PL : boolean = (this.form.language == "PL");
+    let PT : boolean = (this.form.language == "PT");
+    let RO : boolean = (this.form.language == "RO");
+    let SK : boolean = (this.form.language == "SK");
+    let SL : boolean = (this.form.language == "SL");
+    let FI : boolean = (this.form.language == "FI");
+    let SV : boolean = (this.form.language == "SV");
     
     // check des règles les unes après les autres
     this.rules.forEach(r => {
@@ -107,6 +131,18 @@ export class CheckRulesService {
           }
           // teste les valeurs de form
           if (element.toLocaleUpperCase().includes("STANDARD") || element.toLocaleUpperCase().includes("POSITION") || element.toLocaleUpperCase().includes("LETTER")) {
+            finalCondition += element.toLocaleUpperCase()+ " ";
+          }
+          // teste les valeurs de language
+          if ( element.toLocaleUpperCase().includes("BG") || element.toLocaleUpperCase().includes("ES") || element.toLocaleUpperCase().includes("CS")
+            || element.toLocaleUpperCase().includes("DA") || element.toLocaleUpperCase().includes("DE") || element.toLocaleUpperCase().includes("ET")
+            || element.toLocaleUpperCase().includes("EL") || element.toLocaleUpperCase().includes("EN") || element.toLocaleUpperCase().includes("FR")
+            || element.toLocaleUpperCase().includes("GA") || element.toLocaleUpperCase().includes("HR") || element.toLocaleUpperCase().includes("IT")
+            || element.toLocaleUpperCase().includes("LV") || element.toLocaleUpperCase().includes("LT") || element.toLocaleUpperCase().includes("HU")
+            || element.toLocaleUpperCase().includes("MT") || element.toLocaleUpperCase().includes("NL") || element.toLocaleUpperCase().includes("PL")
+            || element.toLocaleUpperCase().includes("PT") || element.toLocaleUpperCase().includes("RO") || element.toLocaleUpperCase().includes("SK")
+            || element.toLocaleUpperCase().includes("SL") || element.toLocaleUpperCase().includes("FI") || element.toLocaleUpperCase().includes("SV")          
+            ) {
             finalCondition += element.toLocaleUpperCase()+ " ";
           }
           // teste les valeurs de condition
@@ -222,7 +258,7 @@ export class CheckRulesService {
       case "[Sent-to-TOP date]":
         outputValue = this.form.sendToTopDate.day+"."+this.form.sendToTopDate.month+"."+this.form.sendToTopDate.year;  
       break;
-      case "[Tabling Date]":
+      case "[Tabling date]":
         outputValue = this.form.tablingDate.day+"."+this.form.tablingDate.month+"."+this.form.tablingDate.year;  
       break;
       case "[Author(s) of the proposal]":

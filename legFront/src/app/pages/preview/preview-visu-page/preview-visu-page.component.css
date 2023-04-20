@@ -89,7 +89,7 @@
 .docname{
     position: absolute;
     top: 310px;
-    left: 250px;
+    left:  125px;
     font-size: 22px;
     font-weight: bold;
 }
@@ -107,59 +107,59 @@
 .leadcommittee{
     position: absolute;
     top: 390px;
-    left: 250px;
+    left:  125px;
 }
 .reporttitle{
     position: absolute;
     top: 420px;
-    left: 250px; 
+    left:  125px; 
 }
 .authoringcommittee{
     position: absolute;
     top: 350px;
-    left: 250px;
+    left:  125px;
 }
 .authoringcommitteebelowtitle{
     position: absolute;
     top: 450px;
-    left: 250px;
+    left:  125px;
     white-space: pre-line
 }
 .authoringcommitteerule{
     position: absolute;
     top: 540px;
-    left: 250px;
+    left:  125px;
 }
 .rapporteurs{
     position: absolute;
     top: 500px;
-    left: 250px;
+    left:  125px;
 }
 .justificationrule{
     position: absolute;
     top: 520px;
-    left: 250px;
+    left:  125px;
 }
 .authoroftheproposal{
     position: absolute;
     top: 550px;
-    left: 250px;
+    left:  125px;
 }
 .assoccommiteerule{
     position: absolute;
     top: 580px;
-    left: 250px;
+    left:  125px;
 }
 .listofassoc{
     position: absolute;
     top: 620px;
-    left: 250px;
+    left:  125px;
     white-space: pre-line
 }
 .decoration{
     position: absolute;
     top: 280px;
-    left: 250px;
+    left:  125px;
     font-size: 22px;
     font-weight: bold;
 }
