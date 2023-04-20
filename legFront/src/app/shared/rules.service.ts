@@ -3,7 +3,6 @@ import { Observable, of, throwError } from 'rxjs';
 import { PageRule, Rule } from '../model/rule';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EventRuleService } from './event.rule.service';
-import { RuleActionTypes } from './rules.state';
 
 @Injectable({
   providedIn: 'root'
@@ -35,10 +34,10 @@ export class RulesService {
     this.setRuleToBeEdited({id: 0, order: 1,part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '',outputValue: '', example: '',
              position: '', format: '', comment: '', application: ''})
   }
-
+  /*
   public initCompo() : Observable<Rule[]>{
     return this.http.get<any>(this.apiUrl+'rules');
-  }
+  }*/
 
   public getRulesFromDB() : Observable<Rule[]>{
     return this.http.get<Rule[]>(this.apiUrl+'rules');;

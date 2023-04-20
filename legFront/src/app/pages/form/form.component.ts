@@ -17,7 +17,7 @@ declare var window: any;
 export class FormComponent implements OnInit {
 
   rules!: Array<Rule>; // copie locale des règles pour l'affichage (par 10 si pageSize inchangé)
-  rules$!: Observable<AppDataState<Rule[]>>;
+  rulesDataState$!: Observable<AppDataState<Rule[]>>;
   readonly RuleStateEnum=RuleStateEnum;
   parts!: Array<string>;
   labels!: Array<string>;
@@ -77,7 +77,7 @@ export class FormComponent implements OnInit {
       command: new FormControl("")
       });
     */
-    this.rules$ = this.ruleService.getRulesFromDB().pipe(
+    this.rulesDataState$ = this.ruleService.getRulesFromDB().pipe(
       map(data=>{
         this.ruleService.setRules(data);
         if (this.filterActive) {

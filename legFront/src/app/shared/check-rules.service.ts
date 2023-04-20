@@ -15,35 +15,12 @@ export class CheckRulesService {
 
   constructor(private ruleService: RulesService) { }
 
-  check(form : any) {
+  check(form : any, allRules : Rule[]) {
     this.form=form;
-    // vérifie si le service est déjà initialisé avec les infos du Back-End
-    if (!this.ruleService.getRules()) {
-      console.log('init component for the first time')
-      this.ruleService.initCompo().subscribe({
-        next: (data) => {
-          //initialise le service avec les info du Back-End
-          this.ruleService.setRules(data);
-        },
-        error: (err) => {
-          this.errorMessage = err;
-          console.log("Une erreur est remontée" + this.errorMessage);
-        },
-        complete: ()=>{
-          this.rules = this.ruleService.getAllRules();
-          //console.log(this.rules);
-          this.CheckRules();
-        }
-      });
-    }else{
-      console.log("component already initialized");
-      this.rules = this.ruleService.getAllRules();
-      //console.log(this.rules);
-      this.CheckRules();
-    }
-
-    
-  }// end of check
+    this.rules = allRules;  
+    this.CheckRules();
+    return this.rulesApplied;
+  }
 
   CheckRules(){
     // reinitialise la liste des règles
@@ -190,9 +167,10 @@ export class CheckRulesService {
     });  
   }
 
+  /*
   getRulesApplied(){
     return this.rulesApplied;
-  }
+  }*/
 
 
   getInputValue (command : string, initialValue : string){
@@ -244,8 +222,8 @@ export class CheckRulesService {
       case "[Sent-to-TOP date]":
         outputValue = this.form.sendToTopDate.day+"."+this.form.sendToTopDate.month+"."+this.form.sendToTopDate.year;  
       break;
-      case "[Sent-to-TRAD date]":
-        outputValue = this.form.sendToTradDate.day+"."+this.form.sendToTradDate.month+"."+this.form.sendToTradDate.year;  
+      case "[Tabling Date]":
+        outputValue = this.form.tablingDate.day+"."+this.form.tablingDate.month+"."+this.form.tablingDate.year;  
       break;
       case "[Author(s) of the proposal]":
         outputValue = "Author(s) of the proposal: "+this.form.authorOfProposal;  

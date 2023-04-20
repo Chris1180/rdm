@@ -9,6 +9,7 @@ import { Rule } from 'src/app/model/rule';
 export class RulesAppliedListComponent implements OnInit {
 
   @Input() rules: Rule[] | null=null;
+  
   constructor() { }
 
   ngOnInit(): void {

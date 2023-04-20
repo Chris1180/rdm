@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { NgbDate, NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
+import { catchError, map, Observable, of, startWith } from 'rxjs';
 import { DocumentStatus } from 'src/app/model/inputParameters/documentStatus';
 import { DocumentType } from 'src/app/model/inputParameters/documentType';
 import { DocWithAssoc } from 'src/app/model/inputParameters/docWithAssoc';
@@ -16,6 +16,7 @@ import { ListOfRapporteurs } from 'src/app/model/outputParameters/listOfRapporte
 import { Rule } from 'src/app/model/rule';
 import { CheckRulesService } from 'src/app/shared/check-rules.service';
 import { RulesService } from 'src/app/shared/rules.service';
+import { AppDataState, RuleStateEnum } from 'src/app/shared/rules.state';
 
 
 
@@ -26,6 +27,8 @@ import { RulesService } from 'src/app/shared/rules.service';
 })
 export class PreviewComponent implements OnInit {
 
+  rulesDataState$!: Observable<AppDataState<Rule[]>>;
+  readonly RuleStateEnum=RuleStateEnum;
   previewForm! : FormGroup;
   procedureType = ProcedureType;
   documentType = DocumentType;
@@ -40,27 +43,26 @@ export class PreviewComponent implements OnInit {
   listOfAssoc = ListOfAssoc;
   // utilisé pur mettre la valeur du jour par defaut dans le datePicker
   d = new Date();
-
-  rules! : Rule[];
+  allRules! : Rule[];
+  rulesApplied! : Rule[];
   errorMessage?: string;
   
   constructor(private checkRules: CheckRulesService, private ruleService: RulesService) { }
 
   ngOnInit(): void {
-    // vérifie si le service est déjà initialisé avec les infos du Back-End
-    if (!this.ruleService.getRules()) {
-      console.log('init component for the first time')
-      this.ruleService.initCompo().subscribe({
-        next: (data) => {
-          //initialise le service avec les info du Back-End
-          this.ruleService.setRules(data);
-        },
-        error: (err) => {
-          this.errorMessage = err;
-          console.log("Une erreur est remontée" + this.errorMessage);
-        }
-      });
-    }
+    
+    this.rulesDataState$ = this.ruleService.getRulesFromDB().pipe(
+      map(data=>{
+        this.ruleService.setRules(data);
+        this.allRules = data;
+        return ({dataState:RuleStateEnum.LOADED,data:data}) // lorsque des données sont reçues on retourne les data et le state
+      }),
+      startWith({dataState:RuleStateEnum.LOADING}),  // startWith est retourné dès que le pipe est executé
+      catchError(err=>of({dataState:RuleStateEnum.ERROR, errorMessage:err.message}))
+    )
+    
+    this.rulesDataState$.subscribe()
+    
     this.previewForm = new FormGroup({
       procedureType : new FormControl('INI'),
       documentType : new FormControl('OPCD'),
@@ -80,7 +82,7 @@ export class PreviewComponent implements OnInit {
         month: this.d.getMonth()+1,
         day: this.d.getDate(),
       }),
-      sendToTradDate : new FormControl({
+      tablingDate : new FormControl({
         year: this.d.getFullYear(),
         month: this.d.getMonth()+1,
         day: this.d.getDate(),
@@ -100,10 +102,8 @@ export class PreviewComponent implements OnInit {
     });
   }
   onSubmit(): void {
-    //console.log(this.previewForm.value);
-    this.checkRules.check(this.previewForm.value);
-    this.rules = this.checkRules.getRulesApplied();
     
+    this.rulesApplied = this.checkRules.check(this.previewForm.value, this.allRules);
 
   }
   // Utiliser pour afficher les valeurs des enum dans l'ordre de saisie
