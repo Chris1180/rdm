@@ -1,3 +1,5 @@
+import { Lang } from "./lang";
+
 export interface Rule {
     id : number;
     order : number;
@@ -13,6 +15,7 @@ export interface Rule {
     format : string;
     comment : string;
     application : string;
+    languages : Lang[]
 }
 
 export interface PageRule{

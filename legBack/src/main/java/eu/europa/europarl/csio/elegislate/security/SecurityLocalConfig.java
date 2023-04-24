@@ -43,7 +43,7 @@ public class SecurityLocalConfig extends WebSecurityConfigurerAdapter {
 		http.cors().configurationSource(corsConfigurationSource());
 		
 		http.authorizeRequests()
-			.antMatchers("/rules","/update","/delete","/getQuestionnaire","/export","/test","/listServices","/getActivities","/getUserServices").permitAll()
+			.antMatchers("/rules","/update","/delete","/language","/export","/test","/listServices","/getActivities","/getUserServices").permitAll()
 			.anyRequest().authenticated();
 
 		//http

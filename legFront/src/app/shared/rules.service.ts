@@ -3,6 +3,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { PageRule, Rule } from '../model/rule';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EventRuleService } from './event.rule.service';
+import { Lang } from '../model/lang';
 
 @Injectable({
   providedIn: 'root'
@@ -30,14 +31,10 @@ export class RulesService {
     if (window.location.port == '4200'){
       this.apiUrl = `http://${window.location.hostname}:8080/`
     }
+    this.setRuleToBeEdited({id: -1, order: 1,part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '',outputValue: '', example: '',
+             position: '', format: '', comment: '', application: '', languages: []});
     
-    this.setRuleToBeEdited({id: 0, order: 1,part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '',outputValue: '', example: '',
-             position: '', format: '', comment: '', application: ''})
   }
-  /*
-  public initCompo() : Observable<Rule[]>{
-    return this.http.get<any>(this.apiUrl+'rules');
-  }*/
 
   public getRulesFromDB() : Observable<Rule[]>{
     return this.http.get<Rule[]>(this.apiUrl+'rules');;
@@ -134,9 +131,15 @@ export class RulesService {
     
   }
 
-  public editRule(rule: Rule):Observable<Rule>{
+  
+  public saveRule(rule: Rule):Observable<Rule>{
     return this.http.post<Rule>(this.apiUrl+'update', rule);
   }
+
+  public saveLinguisticVersion(lang: any):Observable<any>{
+    return this.http.post(this.apiUrl+'updateLang', lang);
+  }
+
   public addRuleToService(rule: Rule){
     const index = this.rules.map(r => r.id).indexOf(rule.id);
     this.rules[index] = rule;

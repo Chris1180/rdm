@@ -3,12 +3,12 @@
     <form [formGroup]="ruleForm" (ngSubmit)="onSubmit()">
         
         <!-- Order-->
-        <div class="row align-items-center mb-3">
-            <label class="col-sm-2 col-form-label">Id</label>
-            <div class="col-sm-6">
-                <input class="form-control" type="text" formControlName="id" readonly>
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-3 col-form-label">Id</label>
+            <div class="col-sm-5">
+                <input class="form-control form-control-sm" type="text" formControlName="id" readonly>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <span class="form-text ico-info">
                    This value cannot be changed
                 </span>
@@ -16,161 +16,173 @@
         </div>
 
         <!-- Order-->
-        <div class="row align-items-center mb-3">
-            <label class="col-sm-2 col-form-label">Order</label>
-            <div class="col-sm-6">
-                <input class="form-control" type="number" formControlName="order">
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-3 col-form-label">Order</label>
+            <div class="col-sm-5">
+                <input class="form-control form-control-sm" type="number" formControlName="order">
+            </div>
+            <div class="col-sm-3">
+                <span class="form-text ico-info">
+                   Order in which rules are applyed
+                </span>
             </div>
         </div>
 
 
         <!-- Part-->
-        <div class="row align-items-center mb-3">
-            <label class="col-sm-2 col-form-label">Part</label>
-            <div class="col-sm-6">
-                <input class="form-control" type="text" formControlName="part">
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-3 col-form-label">Part</label>
+            <div class="col-sm-5">
+                <input class="form-control form-control-sm" type="text" formControlName="part">
                 <!--<select class="form-select" formControlName="part">
                     <option *ngFor="let p of parts" [ngValue]="p">{{p}} </option>
                 </select>-->
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <span class="form-text ico-info">
-                    This is a tooltip
+                    Part of the document on which the rule apply
                 </span>
             </div>
         </div>
         
         <!-- Label-->
-        <div class="row align-items-center mb-3">
-            <label class="col-sm-2 col-form-label">Label</label>
-            <div class="col-sm-6">
-                <input class="form-control" type="text" formControlName="label">
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-3 col-form-label">Label</label>
+            <div class="col-sm-5">
+                <input class="form-control form-control-sm" type="text" formControlName="label">
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <span class="form-text ico-info">
-                    This is a tooltip
+                    Label
                 </span>
             </div>
         </div>
         
         <!-- Condition -->
-        <div class="row align-items-center mb-3">
-            <label class="col-sm-2 col-form-label">Condition</label>
-            <div class="col-sm-6">
-                <textarea class="form-control" rows="2" formControlName="condition"></textarea>
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-3 col-form-label">Condition</label>
+            <div class="col-sm-5">
+                <textarea class="form-control form-control-sm" rows="2" formControlName="condition"></textarea>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <span class="form-text ico-info">
-                    This is a tooltip
+                    Condition for rule to be applied
                 </span>
             </div>
         </div>
         <!-- Command -->
-        <div class="row align-items-center mb-3">
-            <label class="col-sm-2 col-form-label">Command</label>
-            <div class="col-sm-6">
-                <textarea class="form-control" rows="3" formControlName="command"></textarea>
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-3 col-form-label">Command</label>
+            <div class="col-sm-5">
+                <textarea class="form-control form-control-sm" rows="3" formControlName="command"></textarea>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <span class="form-text ico-info">
-                    This is a tooltip
+                   Used to display input values
                 </span>
             </div>
         </div>
         <!-- Mandatory -->
-        <div class="row align-items-center mb-3">
-            <label class="col-sm-2 col-form-label">Mandatory</label>
-            <div class="col-sm-6">
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-3 col-form-label">Mandatory</label>
+            <div class="col-sm-5">
                 <input class="form-check-input" type="checkbox" formControlName="mandatory">
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <span class="form-text ico-info">
-                    This is a tooltip
+                    Mandatory rule
                 </span>
             </div>
         </div>
         <!-- Initial Value -->
-        <div class="row align-items-center mb-3">
-            <label class="col-sm-2 col-form-label">Initial Value</label>
-            <div class="col-sm-6">
-                <input class="form-control" type="text" formControlName="initialValue">
+        
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-1 col-form-label">Initial Value</label>
+            <div class="col-sm-2">
+                <select class="form-select form-select-sm" formControlName="languages" (change)="onLangChange($event)">
+                    <option *ngFor="let lang of language | keyvalue: originalOrder" [ngValue]='lang.key'>{{lang.value}}</option>
+                </select>                
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-5">
+                <input class="form-control form-control-sm" type="text" formControlName="initialValue" (change)="onInitValueChange($event)">
+            </div>
+            <div class="col-sm-3">
                 <span class="form-text ico-info">
-                    This is a tooltip
+                    Value by default is in EN
                 </span>
             </div>
         </div>
+        
         <!-- Position -->
-        <div class="row align-items-center mb-3">
-            <label class="col-sm-2 col-form-label">Position</label>
-            <div class="col-sm-6">
-                <input class="form-control" type="text" formControlName="position">
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-3 col-form-label">Position</label>
+            <div class="col-sm-5">
+                <input class="form-control form-control-sm" type="text" formControlName="position">
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <span class="form-text ico-info">
-                    This is a tooltip
+                    Position in the page
                 </span>
             </div>
         </div>
         <!-- Format -->
-        <div class="row align-items-center mb-3">
-            <label class="col-sm-2 col-form-label">Format</label>
-            <div class="col-sm-6">
-                <input class="form-control" type="text" formControlName="format">
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-3 col-form-label">Format</label>
+            <div class="col-sm-5">
+                <input class="form-control form-control-sm" type="text" formControlName="format">
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <span class="form-text ico-info">
-                    This is a tooltip
+                    CSS name
                 </span>
             </div>
         </div>
         <!-- Comment -->
-        <div class="row align-items-center mb-3">
-            <label class="col-sm-2 col-form-label">Comment</label>
-            <div class="col-sm-6">
-                <input class="form-control" type="text" formControlName="comment">
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-3 col-form-label">Comment</label>
+            <div class="col-sm-5">
+                <input class="form-control form-control-sm" type="text" formControlName="comment">
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <span class="form-text ico-info">
-                    This is a tooltip
+                    Comment
                 </span>
             </div>
         </div>
         <!-- Application -->
-        <div class="row align-items-center mb-3">
-            <label class="col-sm-2 col-form-label">Application</label>
-            <div class="col-sm-6">
-                <input class="form-control" type="text" formControlName="application">
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-3 col-form-label">Application</label>
+            <div class="col-sm-5">
+                <input class="form-control form-control-sm" type="text" formControlName="application">
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <span class="form-text ico-info">
-                    This is a tooltip
+                    Application
                 </span>
             </div>
         </div>
         <!-- Example -->
-        <div class="row align-items-center mb-3">
-            <label class="col-sm-2 col-form-label">Example</label>
-            <div class="col-sm-6">
-                <input class="form-control" type="text" formControlName="example">
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-3 col-form-label">Example</label>
+            <div class="col-sm-5">
+                <input class="form-control form-control-sm" type="text" formControlName="example">
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <span class="form-text ico-info">
-                    This is a tooltip
+                    Exemple
                 </span>
             </div>
         </div>
 
-        <div class="row align-items-center mb-3">
-            <div class="col-sm-4">
+        <div class="row align-items-center mb-2">
+            <div class="col-sm-3">
                 
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <button class="btn btn-small ico-valide-cerc btn-green">Submit</button>
                 <button class="btn btn-small ico-delete" (click)="onCancel()" type="button">Cancel</button>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 
             </div>
         </div>

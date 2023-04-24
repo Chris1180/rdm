@@ -1,3 +1,6 @@
+import { Lang } from "../model/lang"
+import { Rule } from "../model/rule"
+
 export enum RuleActionTypes{
     GET_ALL_RULES= "[Rule] Get All Rules",
     SEARCH_RULES= "[Rule] Search Rules",
@@ -15,7 +18,7 @@ export interface AppDataState<T> {
 
 export interface ActionEvent {
     type: RuleActionTypes,
-    payload?: any,
+    rule?: Rule,
     error?: any  //? Non obligatoire
 }
 

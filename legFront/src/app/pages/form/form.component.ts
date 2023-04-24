@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
-import { PageRule, Rule } from 'src/app/model/rule';
+
+import { Rule } from 'src/app/model/rule';
 import { EventRuleService } from 'src/app/shared/event.rule.service';
 import { RulesService } from 'src/app/shared/rules.service';
 import { ActionEvent, AppDataState, RuleActionTypes, RuleStateEnum } from 'src/app/shared/rules.state';
@@ -41,17 +42,65 @@ export class FormComponent implements OnInit {
 
   ngOnInit(): void {
     //console.clear();
+    
+    let ruleToBeEdited : Rule = this.ruleService.getRuleToBeEdited();
+
+    // si l'index n'est pas -1 alors il s'agit d'une modif
+    if (ruleToBeEdited.id!=-1){
+      // la valeur contenu dans init value est par defaut l'EN
+      let languages = ruleToBeEdited.languages;
+      //ruleToBeEdited.languages = []
+      
+      this.ruleService.saveRule(ruleToBeEdited).subscribe({
+        next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
+          this.openFeedBackUser("Rule changes saved Succesfully", "bg-success");
+          ruleToBeEdited.id = data.id; // on récupère l'id au cas où il s'agit d'un nouvel enregistrement
+        },
+        error: (err) => {
+          this.openFeedBackUser("Error during saving process in Back-End", "bg-danger")
+          console.error("Une erreur est remontée lors de la mise à jour d'une règle");
+        },
+        complete: ()=>{
+          this.getAllRules();
+        }
+      })
+
+    }else { // pas de modif de règle
+      this.getAllRules();
+    }
 
     this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
-    
-    // exp
+    /*
+    // Ecoute les évènements 
     this.eventRuleService.sourceEventSubjectObservable.subscribe((actionEvent: ActionEvent)=>{
+      console.log(actionEvent.type);
       switch (actionEvent.type) {
         case RuleActionTypes.EDIT_RULE: 
-          this.ruleService.modifyRule(actionEvent.payload);
+          console.log(actionEvent.rule)
+          let rule = actionEvent.rule
+          let lang: any = actionEvent.rule?.languages;
+          console.log(lang)
+          // l'ajour en BDD se fait via un ou deux post en fonction de la langue 
+          if (rule != undefined) {
+            // sauvegarde de la règle en BDD
+            rule.languages = []
+            this.ruleService.modifyRule(rule).subscribe({
+              next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
+                this.openFeedBackUser("Change saved Succesfully", "bg-success");
+                //console.log(data)
+              },
+              error: (err) => {
+                this.openFeedBackUser("Error during saving process in Back-End", "bg-danger")
+                console.error("Une erreur est remontée lors de la mise à jour d'une règle");
+              },
+              complete: ()=>{
+                this.eventRuleService.publishEvent({type: RuleActionTypes.RULE_EDITION_SUCCESS})
+              }
+            })
           break;
       }
-    })
+    })*/
+    
 
     if (this.ruleService.filters) {
       this.currentPage = this.ruleService.pageToDisplay;
@@ -66,36 +115,8 @@ export class FormComponent implements OnInit {
         condition: new FormControl(""),
         command: new FormControl("")
       });
-    }
-    
-    /*
-      this.filterFormGroup = new FormGroup({
-      part: new FormControl("allPart"), //valeur par defaut
-      label: new FormControl("allLabel"),
-      position: new FormControl("allPosition"),
-      condition: new FormControl(""),
-      command: new FormControl("")
-      });
-    */
-    this.rulesDataState$ = this.ruleService.getRulesFromDB().pipe(
-      map(data=>{
-        this.ruleService.setRules(data);
-        if (this.filterActive) {
-          this.onFilterChange(this.currentPage);
-        }else{
-          this.displayRules();
-        }
-        return ({dataState:RuleStateEnum.LOADED,data:data}) // lorsque des données sont reçues on retourne les data et le state
-      }),
-      startWith({dataState:RuleStateEnum.LOADING}),  // startWith est retourné dès que le pipe est executé
-      catchError(err=>of({dataState:RuleStateEnum.ERROR, errorMessage:err.message}))
-    )
-
-
-
-    // fin exp
-    
-  }
+    } 
+  }// fin du ng-oninit
 
   displayRules() {
     this.getPageRules();
@@ -208,7 +229,7 @@ export class FormComponent implements OnInit {
 
   addNewRule() {
     this.ruleService.setRuleToBeEdited({id: 0, order: 1, part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '', outputValue: '', example: '',
-    position: '', format: '', comment: '', application: ''})
+    position: '', format: '', comment: '', application: '', languages: []})
     this.router.navigate(['/Edition']);
   }
 
@@ -219,6 +240,7 @@ export class FormComponent implements OnInit {
   editRuleOnline(r: any, newValue: string, field: any){
     //console.log(field)
     if(r[field]!=newValue){
+      console.log("Changement détecté")
       r[field] = newValue;
       this.ruleService.modifyRule(r).subscribe({
         next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
@@ -238,7 +260,21 @@ export class FormComponent implements OnInit {
     
   }
   
-  
+  getAllRules(){
+    this.rulesDataState$ = this.ruleService.getRulesFromDB().pipe(
+      map(data=>{
+        this.ruleService.setRules(data);
+        if (this.filterActive) {
+          this.onFilterChange(this.currentPage);
+        }else{
+          this.displayRules();
+        }
+        return ({dataState:RuleStateEnum.LOADED,data:data}) // lorsque des données sont reçues on retourne les data et le state
+      }),
+      startWith({dataState:RuleStateEnum.LOADING}),  // startWith est retourné dès que le pipe est executé
+      catchError(err=>of({dataState:RuleStateEnum.ERROR, errorMessage:err.message}))
+    )
+  }
 
   openFeedBackUser(message: string, style: string) {
     this.userFeedBackMessage = message;

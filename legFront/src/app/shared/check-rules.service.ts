@@ -85,6 +85,7 @@ export class CheckRulesService {
     
     // check des règles les unes après les autres
     this.rules.forEach(r => {
+      let finalCondition = "";
       if (r.condition.trim() == "VRAI" || r.condition.trim() == "TRUE" || r.condition.trim() == ""){
         if (r.command.startsWith('[')){
           r.outputValue = this.getInputValue(r.command, r.initialValue);
@@ -97,9 +98,10 @@ export class CheckRulesService {
         // analyse de la condition
         // on commence par récupérer tous les mots-clés séparer par un espace
         let elements = r.condition.split(" ");
-        let finalCondition = "";
+        
         for (let index = 0; index < elements.length; index++) {
           let element = elements[index];
+          
           // remplace la chaine NOT_ par !
           if (element.toLocaleUpperCase().startsWith("NOT_")) {
             element = element.replace("NOT_","!");
@@ -108,53 +110,64 @@ export class CheckRulesService {
           // teste les valeurs du Procedure Type
           if (element.toLocaleUpperCase().includes("INI") || element.toLocaleUpperCase().includes("COD") || element.toLocaleUpperCase().includes("INL") || element.toLocaleUpperCase().includes("DEC") || element.toLocaleUpperCase().includes("REG")) {
             finalCondition += element.toLocaleUpperCase()+ " ";
+            continue;
           } 
           // teste les valeurs du document type
           if (element.toLocaleUpperCase().includes("RPCD") || element.toLocaleUpperCase().includes("RPCF") || element.toLocaleUpperCase().includes("OPCD") || element.toLocaleUpperCase().includes("OPCF")) {
             finalCondition += element.toLocaleUpperCase()+ " ";
+            continue;
           } 
           // teste les valeurs de document status
           if (element.toLocaleUpperCase().includes("ONGOING_DRAFT") || element.toLocaleUpperCase().includes("FINALISED_DRAFT") || element.toLocaleUpperCase().includes("SENT_TO_TOP") || element.toLocaleUpperCase().includes("TABLED") ) {
             finalCondition += element.toLocaleUpperCase()+ " ";
+            continue;
           }
           // teste les valeurs de Doc with Joint
           if (element.toLocaleUpperCase().includes("JOINTCOMM") || element.toLocaleUpperCase().includes("NOJOINTCOM")) {
             finalCondition += element.toLocaleUpperCase()+ " ";
+            continue;
           }
           // teste les valeurs de Doc With Assoc
           if (element.toLocaleUpperCase().includes("ASSOCCOMM") || element.toLocaleUpperCase().includes("NOASSOCCOMM")) {
             finalCondition += element.toLocaleUpperCase()+ " ";
+            continue;
           }
           // teste les valeurs de reading
           if (element.toLocaleUpperCase().includes("_READING") || element.toLocaleUpperCase().includes("RECAST")) {
             finalCondition += element.toLocaleUpperCase()+ " ";
+            continue;
           }
           // teste les valeurs de form
           if (element.toLocaleUpperCase().includes("STANDARD") || element.toLocaleUpperCase().includes("POSITION") || element.toLocaleUpperCase().includes("LETTER")) {
             finalCondition += element.toLocaleUpperCase()+ " ";
+            continue;
           }
+          
           // teste les valeurs de language
-          if ( element.toLocaleUpperCase().includes("BG") || element.toLocaleUpperCase().includes("ES") || element.toLocaleUpperCase().includes("CS")
-            || element.toLocaleUpperCase().includes("DA") || element.toLocaleUpperCase().includes("DE") || element.toLocaleUpperCase().includes("ET")
-            || element.toLocaleUpperCase().includes("EL") || element.toLocaleUpperCase().includes("EN") || element.toLocaleUpperCase().includes("FR")
-            || element.toLocaleUpperCase().includes("GA") || element.toLocaleUpperCase().includes("HR") || element.toLocaleUpperCase().includes("IT")
-            || element.toLocaleUpperCase().includes("LV") || element.toLocaleUpperCase().includes("LT") || element.toLocaleUpperCase().includes("HU")
-            || element.toLocaleUpperCase().includes("MT") || element.toLocaleUpperCase().includes("NL") || element.toLocaleUpperCase().includes("PL")
-            || element.toLocaleUpperCase().includes("PT") || element.toLocaleUpperCase().includes("RO") || element.toLocaleUpperCase().includes("SK")
-            || element.toLocaleUpperCase().includes("SL") || element.toLocaleUpperCase().includes("FI") || element.toLocaleUpperCase().includes("SV")          
+          
+          if ( element.toLocaleUpperCase().match("BG") || element.toLocaleUpperCase().match("ES") || element.toLocaleUpperCase().match("CS")
+            || element.toLocaleUpperCase().match("DA") || element.toLocaleUpperCase().match("DE") || element.toLocaleUpperCase().match("ET")
+            || element.toLocaleUpperCase().match("EL") || element.toLocaleUpperCase().match("EN") || element.toLocaleUpperCase().match("FR")
+            || element.toLocaleUpperCase().match("GA") || element.toLocaleUpperCase().match("HR") || element.toLocaleUpperCase().match("IT")
+            || element.toLocaleUpperCase().match("LV") || element.toLocaleUpperCase().match("LT") || element.toLocaleUpperCase().match("HU")
+            || element.toLocaleUpperCase().match("MT") || element.toLocaleUpperCase().match("NL") || element.toLocaleUpperCase().match("PL")
+            || element.toLocaleUpperCase().match("PT") || element.toLocaleUpperCase().match("RO") || element.toLocaleUpperCase().match("SK")
+            || element.toLocaleUpperCase().match("SL") || element.toLocaleUpperCase().match("FI") || element.toLocaleUpperCase().match("SV")          
             ) {
             finalCondition += element.toLocaleUpperCase()+ " ";
+            continue;
           }
           // teste les valeurs de condition
           if (element.toLocaleLowerCase() == "or") {
             finalCondition += "|| ";
+            continue;
           }
           if (element.toLocaleLowerCase() == "and") {
             finalCondition += "&& ";
+            continue;
           }
-          
         } // fin du for
-
+        // console.log(finalCondition)
         //console.log(this.form.procedureType);
         //ajout ou non de la règle à la liste rulesApplied
         try {
@@ -168,6 +181,7 @@ export class CheckRulesService {
                 r.outputValue = this.getInputValue(r.command, r.initialValue);
               }  
             }else {
+              // à modifier en fonction de la langue
               r.outputValue = r.initialValue;
             }
 
@@ -180,9 +194,13 @@ export class CheckRulesService {
               this.form.suffixListOfRapporteurs = r.command;
             }
 
+            // attention 
             if(r.label == "Justification Rule"){
               r.outputValue = r.command;
             }
+            // 
+
+            
             this.rulesApplied.push(r);
           }else {
             console.log("eval false "+ finalCondition + " => "+ r.id);
