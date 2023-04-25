@@ -13,7 +13,7 @@ export class CheckRulesService {
   rulesApplied: Rule[] = [];
   form! : any;
 
-  constructor(private ruleService: RulesService) { }
+  constructor() { }
 
   check(form : any, allRules : Rule[]) {
     this.form=form;
@@ -88,7 +88,7 @@ export class CheckRulesService {
       let finalCondition = "";
       if (r.condition.trim() == "VRAI" || r.condition.trim() == "TRUE" || r.condition.trim() == ""){
         if (r.command.startsWith('[')){
-          r.outputValue = this.getInputValue(r.command, r.initialValue);
+          r.outputValue = this.getInputValue(r.command, r.initialValue, r.id);
         }else{
           r.outputValue = r.initialValue;
         }
@@ -176,9 +176,9 @@ export class CheckRulesService {
             
             if (r.command.includes('[')){
               if(r.label.includes("of the")){
-                r.outputValue = "of the ".concat(this.getInputValue(r.command, r.initialValue));
+                r.outputValue = "of the ".concat(this.getInputValue(r.command, r.initialValue, r.id));
               }else{
-                r.outputValue = this.getInputValue(r.command, r.initialValue);
+                r.outputValue = this.getInputValue(r.command, r.initialValue, r.id);
               }  
             }else {
               // à modifier en fonction de la langue
@@ -227,7 +227,7 @@ export class CheckRulesService {
   }*/
 
 
-  getInputValue (command : string, initialValue : string){
+  getInputValue (command : string, initialValue : string, idRule : number){
      // on met la valeur collecté dans initialvalue
      let outputValue : string =""; 
      
@@ -287,6 +287,18 @@ export class CheckRulesService {
           outputValue += this.form.listOfAssoc[index]+"\n";
         }
         //console.info(initialValue)  
+      break;
+      case "[Doc Language]":
+        // selon la valeur de [Doc Language] l'output value change
+        console.log( '---------------------------------------------------------------------------')
+        console.log(this.form.docLanguage)
+        console.log(this.rules.find(r=>r.id==idRule)?.languages.find(lang=>lang.lang==this.form.docLanguage)?.value)
+        if (this.form.docLanguage=='EN'){
+          outputValue = this.rules.find(r=>r.id==idRule)?.initialValue!;
+        }else{
+          outputValue = this.rules.find(r=>r.id==idRule)?.languages.find(lang=>lang.lang==this.form.docLanguage)?.value!;
+        }
+        // outputValue = this.form.authorOfProposal;  
       break;
       default:
         outputValue = "not defined";

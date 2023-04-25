@@ -14,6 +14,7 @@ import { AuthoringCommittee } from 'src/app/model/outputParameters/authoringComm
 import { LeadCommittee } from 'src/app/model/outputParameters/leadCommittee';
 import { ListOfAssoc } from 'src/app/model/outputParameters/listOfAssoc';
 import { ListOfRapporteurs } from 'src/app/model/outputParameters/listOfRapporteurs';
+import { OutputLanguage } from 'src/app/model/outputParameters/outputLanguage';
 import { Rule } from 'src/app/model/rule';
 import { CheckRulesService } from 'src/app/shared/check-rules.service';
 import { RulesService } from 'src/app/shared/rules.service';
@@ -39,6 +40,7 @@ export class PreviewComponent implements OnInit {
   reading = Reading;
   form = Form;
   language = Language;
+  outputLanguage = OutputLanguage; 
   authoringCommittee = AuthoringCommittee;
   leadCommittee = LeadCommittee;
   listOfRapporteurs = ListOfRapporteurs;
