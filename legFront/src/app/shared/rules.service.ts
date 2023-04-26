@@ -37,7 +37,7 @@ export class RulesService {
   }
 
   public getRulesFromDB() : Observable<Rule[]>{
-    return this.http.get<Rule[]>(this.apiUrl+'rules');;
+    return this.http.get<Rule[]>(this.apiUrl+'rules');
   }
  
   public getAllRules() : Array<Rule>{
@@ -68,22 +68,8 @@ export class RulesService {
     return of(pageRules)
   }
 
-  public deleteRule(idRule : number) : Observable<boolean>{
-    this.http.post(this.apiUrl+'delete', idRule).subscribe(
-      {
-        next : ()=>{},
-        error: (err) => {
-          console.error("Une erreur est remontée lors d'une suppression");
-          return of(false);
-        },
-        complete: ()=>{ 
-          console.log('Suppression d\'une règle existante effectuée id='+idRule);
-        }
-        
-      })
-    // filter parcours le tableau et pour chaque r (rule) on garde que les rules qui sont différentes de id
-    this.rules = this.rules.filter(r=>r.id!=idRule); 
-    return of(true);
+  public deleteRule(idRule : number) : Observable<any>{
+   return this.http.post(this.apiUrl+'delete', idRule);
   }
 
   public modifyRule(rule : Rule) : Observable<string>{

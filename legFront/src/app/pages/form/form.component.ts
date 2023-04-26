@@ -152,17 +152,25 @@ export class FormComponent implements OnInit {
   deleteRule(r: Rule) {
     let conf = confirm("Are you sure?");
     if (conf == false) return;
-    
+
     this.ruleService.deleteRule(r.id).subscribe({
-      next: () => {},
+      next: () => {
+        // Si tout s'est bien passé en Back End alors on met à jour la liste des règles dans le service
+        let allRules :Rule[] = this.ruleService.getAllRules();
+        // filter parcours le tableau et pour chaque rule on garde que les rules qui sont différentes de id
+        allRules = this.ruleService.getAllRules().filter(rule=>rule.id!=r.id);
+        this.ruleService.setRules(allRules);
+        this.openFeedBackUser("Rule number: "+r.id+" deleted succesfully", "bg-success");
+        console.log('Rule numéro : '+r.id+' supprimée');
+      },
       error: (err) => {
-        this.errorMessage = err;
+        this.openFeedBackUser("Error during deletion process in Back-End", "bg-danger")
       },
       complete: () => {
+        // ici on rafraichi la liste de la copie locale des rules 
         let index = this.rules.indexOf(r);
         this.rules.splice(index, 1); // ici on supprime l'element dans la copie locale pour le composant
-        let ind = this.rules.indexOf(r);
-        this.rules.splice(ind, 1);
+    
         // on remet en forme la pagination
         this.getPageRules(); 
         if (this.totalPages==this.currentPage){
@@ -172,8 +180,8 @@ export class FormComponent implements OnInit {
         if (this.totalPages == 0){
           this.errorMessage = "No result to display"
         }
-      }
-    });
+      } 
+    })
   }
 
   onFilterChange(page: number = 0) { 
