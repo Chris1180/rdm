@@ -107,7 +107,7 @@ export class PreviewComponent implements OnInit {
     });
   }
   onSubmit(): void {
-    
+    //console.log(this.previewForm.get('listOfRapporteurs')?.value);
     this.rulesApplied = this.checkRules.check(this.previewForm.value, this.allRules);
 
   }
