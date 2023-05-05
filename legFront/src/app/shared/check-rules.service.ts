@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Rule } from '../model/rule';
+import { OutputParametersList } from '../model/outputParameters/outputParametersList';
 
 @Injectable({
   providedIn: 'root'
@@ -92,42 +93,42 @@ export class CheckRulesService {
       //dans les rulesApplied le champ OutputValue est ce qui sera affiché en preview
       try {
         if (eval(finalCondition)) {
+          
           console.log("Rule :" + r.id + " True => " + finalCondition);
-
-          if (r.command.includes('[')) {
-            if (r.label.includes("of the")) {
-              r.outputValue = "of the ".concat(this.getInputValue(r.command, r.initialValue, r.id));
-            } else {
-              r.outputValue = this.getInputValue(r.command, r.initialValue, r.id);
-            }
-          } else {
-            // à modifier en fonction de la langue
-            r.outputValue = r.initialValue;
-          }
-
-          if (r.label == "List Authoring Rapporteurs - Prefix" && !r.command.includes('[')) {
-            this.form.prefixListOfRapporteurs = r.command;
-            //console.info(this.form.prefixListOfRapporteurs)
-          }
-
-          if (r.label == "List Authoring Rapporteurs - Suffix" && !r.command.includes('[')) {
-            this.form.suffixListOfRapporteurs = r.command;
-          }
-
-          // attention 
-          if (r.label == "Justification Rule") {
-            r.outputValue = r.command;
-          }
-          // 
-
-
           this.rulesApplied.push(r);
+
+          let commandOutputParam : string ="";
+          let outputCommand : boolean = false;
+          r.outputValue = "";
+          // parcour de la chaine de caratère command pour en extraire les infos
+          for (let index = 0; index < r.command.length; index++) {
+            const char = r.command[index];
+            if (char=='['){
+              // debut d'un paramètre => on enregistre la commande dans commandOutputParam
+              commandOutputParam = char;
+              outputCommand = true;
+              continue;
+            }
+            if (char==']'){
+              // fin d'un paramètre
+              commandOutputParam += char;
+              outputCommand = false;
+              r.outputValue += this.getOutputParameter(commandOutputParam, r.id, r.initialValue);
+              continue;
+            }
+            if (outputCommand) {
+              commandOutputParam += char;
+            }else{
+              // le char est directement repris dans le outputValue
+              //console.log(char)
+              r.outputValue! += char;
+            }
+          } // fin du for
         } else {
           console.warn("Rule :" + r.id + " False => " + finalCondition);
         } // Try evaluating the code
       } catch (e) {
-
-        console.error('A SyntaxError has been caught on rule number : ' + r.id + "\nrule code is : " + finalCondition) // It is a SyntaxError
+        console.error('SyntaxError on rule number : ' + r.id + "\nrule code is : " + finalCondition) // It is a SyntaxError
       }
 
     }); // fin du foreach  
@@ -214,9 +215,69 @@ export class CheckRulesService {
     return finalCondition
   }
 
+  getOutputParameter(outputParam: string, idRule: number, initialValue: string){
+    
+    switch (outputParam.toLocaleUpperCase()){
+      case OutputParametersList['[AUTHOR OF PROPOSAL]']:
+        return this.form.authorOfProposal.join(", ");
+      case OutputParametersList['[AUTHORING COMMITTEE]']:
+        return this.form.authoringCommittee;
+      case OutputParametersList['[DOC LANGUAGE]']:
+        return this.form.docLanguage;
+      case OutputParametersList['[EPADES REF]']:
+        return this.form.epadesRef;
+      case OutputParametersList['[GENERATING DATE]']:
+        return  this.form.generatingDate.day + "." + this.form.generatingDate.month + "." + this.form.generatingDate.year;
+      case OutputParametersList['[ITER TITLE]']:
+        return this.form.iterTitle.trim()==""? initialValue : this.form.iterTitle ;
+      case OutputParametersList['[LEAD COMMITTEE]']:
+        // le "for the" est ajouté dans l'enum pour les comités simples
+        return this.form.leadCommittee;
+      case OutputParametersList['[LIST OF ASSOC / RAPPORTEURS]']:
+        let outputValue: string = '';
+        for (let index = 0; index < this.form.listOfAssoc.length; index++) {
+          outputValue += this.form.listOfAssoc[index] + "\n";
+        }
+        return outputValue;
+      case OutputParametersList['[LIST OF RAPPORTEURS]']:
+        return this.form.listOfRapporteurs.join(", ");
+      case OutputParametersList['[PE NUMBER]']:
+        return this.form.peNumber;
+      case OutputParametersList['[PREFIX TITLE]']:
+        return this.form.prefixTitle;
+      case OutputParametersList['[PROCEDURE/AXX NUMBER]'] || "[PROCEDURE NUMBER]":
+        return this.form.procedureNumber.trim()==""? initialValue : this.form.procedureNumber;
+      case OutputParametersList['[SEND TO TOP DATE]']:
+        return this.form.sendToTopDate.day + "." + this.form.sendToTopDate.month + "." + this.form.sendToTopDate.year;
+      case OutputParametersList['[TABLING DATE]']:
+        return this.form.tablingDate.day + "." + this.form.tablingDate.month + "." + this.form.tablingDate.year;
+      case OutputParametersList['[DOC MULTI LANG]']:
+        if (this.form.docLanguage == 'EN') {
+          return this.rules.find(r => r.id == idRule)?.initialValue!;
+        } else {
+          return this.rules.find(r => r.id == idRule)?.languages.find(lang => lang.lang == this.form.docLanguage)?.value!;
+        }
+      case OutputParametersList['[PREFIX LIST OF RAPPORTEURS]']:
+        if (initialValue=='') return this.form.prefixListOfRapporteurs;
+        else {
+          this.form.prefixListOfRapporteurs = initialValue;
+          return '';
+        }
+      case OutputParametersList['[SUFFIX LIST OF RAPPORTEURS]']:
+        if (initialValue=='') return this.form.suffixListOfRapporteurs;
+        else {
+          this.form.suffixListOfRapporteurs = initialValue;
+          return '';
+        }
+    }
+    
+    
+    return ('value for '+outputParam+" not found")
+  }
 
+  /*
   getInputValue(command: string, initialValue: string, idRule: number) {
-    // on met la valeur collecté dans initialvalue
+    // on met la valeur collecté dans outputvalue
     let outputValue: string = "";
 
     switch (command.trim()) {
@@ -267,9 +328,11 @@ export class CheckRulesService {
       case "[Tabling date]":
         outputValue = this.form.tablingDate.day + "." + this.form.tablingDate.month + "." + this.form.tablingDate.year;
         break;
+        
       case "[Author(s) of the proposal]":
         outputValue = "Author(s) of the proposal: " + this.form.authorOfProposal;
         break;
+      ///////////////////////////////
       case "[List of Rapporteurs/Associated Committee]":
         for (let index = 0; index < this.form.listOfAssoc.length; index++) {
           outputValue += this.form.listOfAssoc[index] + "\n";
@@ -294,7 +357,7 @@ export class CheckRulesService {
     }
     return outputValue;
   }
-
+  */
 
 }
 

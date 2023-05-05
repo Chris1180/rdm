@@ -1,0 +1,35 @@
+export enum OutputParametersList {
+    "[PROCEDURE/AXX NUMBER]" = "[PROCEDURE/AXX NUMBER]",
+    "[GENERATING DATE]" = "[GENERATING DATE]",
+    "[SEND TO TOP DATE]" = "[SEND TO TOP DATE]",
+    "[TABLING DATE]" = "[TABLING DATE]",
+    "[PE NUMBER]" = "[PE NUMBER]",
+    "[EPADES REF]" = "[EPADES REF]",
+    "[DOC LANGUAGE]" = "[DOC LANGUAGE]",
+    "[PREFIX TITLE]" = "[PREFIX TITLE]",
+    "[ITER TITLE]" = "[ITER TITLE]",
+    "[AUTHORING COMMITTEE]" = "[AUTHORING COMMITTEE]",
+    "[LEAD COMMITTEE]" = "[LEAD COMMITTEE]",
+    "[LIST OF RAPPORTEURS]" = "[LIST OF RAPPORTEURS]",
+    "[AUTHOR OF PROPOSAL]" = "[AUTHOR OF PROPOSAL]",
+    "[LIST OF ASSOC / RAPPORTEURS]" = "[LIST OF ASSOC / RAPPORTEURS]",
+    "[DOC MULTI LANG]" = "[DOC MULTI LANG]",
+    "[PREFIX LIST OF RAPPORTEURS]" = "[PREFIX LIST OF RAPPORTEURS]",
+    "[SUFFIX LIST OF RAPPORTEURS]" = "[SUFFIX LIST OF RAPPORTEURS]"
+
+    /*
+    "[Procedure/Axx Number]" = "[Procedure/Axx Number]",
+    "[Generating Date]" = "[Generating Date]",
+    "[Send To Top Date]" = "[Send To Top Date]",
+    "[Tabling Date]" = "[Tabling Date]",
+    "[PE Number]" = "[PE Number]",
+    "[EPADES Ref]" = "[EPADES Ref]",
+    "[Doc Language]" = "[Doc Language]",
+    "[Prefix Title]" = "[Prefix Title]",
+    "[ITER Title]" = "[ITER Title]",
+    "[Authoring Committee]" = "[Authoring Committee]",
+    "[Lead Committee]" = "[Lead Committee]",
+    "[List Of Rapporteurs]" = "[List Of Rapporteurs]",
+    "[Author Of Proposal]" = "[Author Of Proposal]",
+    "[List Of Assoc / Rapporteurs]" = "[List Of Assoc / Rapporteurs]"*/
+}
