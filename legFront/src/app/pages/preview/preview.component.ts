@@ -108,7 +108,7 @@ export class PreviewComponent implements OnInit {
   }
   onSubmit(): void {
     //console.log(this.previewForm.get('listOfRapporteurs')?.value);
-    this.rulesApplied = this.checkRules.check(this.previewForm.value, this.allRules);
+    this.rulesApplied = this.checkRules.check(this.previewForm.value, this.ruleService.getAllRules());
 
   }
   // Utiliser pour afficher les valeurs des enum dans l'ordre de saisie

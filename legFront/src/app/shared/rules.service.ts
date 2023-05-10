@@ -117,7 +117,6 @@ export class RulesService {
     
   }
 
-  
   public saveRule(rule: Rule):Observable<Rule>{
     return this.http.post<Rule>(this.apiUrl+'update', rule);
   }
