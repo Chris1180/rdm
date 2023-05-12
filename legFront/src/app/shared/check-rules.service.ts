@@ -146,6 +146,11 @@ export class CheckRulesService {
         finalCondition += "true ";
         continue;
       }
+      // cas du FALSE / FAUX ...
+      if (element.toLocaleUpperCase().match("FALSE") || element.toLocaleUpperCase().match("FAUX")) {
+        finalCondition += "false ";
+        continue;
+      }
       // remplace la chaine NOT_ par !
       if (element.toLocaleUpperCase().startsWith("NOT_")) {
         element = element.replace("NOT_", "!");
