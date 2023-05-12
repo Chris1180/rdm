@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Directive, HostBinding, HostListener, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
@@ -37,6 +37,22 @@ export class FormComponent implements OnInit {
   userFeedBackToast: any;
   userFeedBackMessage!: string;
   userFeedBackStyle!: string;
+
+  // oldValue pour l'édition en ligne en cas d'appui sur la touche echap
+  oldValue : string = '';
+
+  @HostListener('focusin', ['$event'])
+  @HostListener('keydown.escape', ['$event'])
+  fn($event: any) {
+    if ($event.type =='focusin') {
+      // lorsque le focus est mis sur un champ on sauveagarde l'ancienne valeur du champ pour permettre un retour en arrière avec escape
+      this.oldValue = $event.target.innerText
+    }
+    if ($event.type =='keydown') {
+      // lorsque on presse escape alors c'est l'ancienne valeur qui est mise
+      $event.target.innerText = this.oldValue 
+    }
+  }  
 
   constructor(private ruleService: RulesService, private router: Router, private eventRuleService: EventRuleService) { }
 

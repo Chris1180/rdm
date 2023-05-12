@@ -24,16 +24,18 @@ export class RulesAppliedListComponent implements OnInit {
   // oldValue pour l'édition en ligne en cas d'appui sur la touche echap
   oldValue : string = '';
 
-  @HostListener('keydown.escape', ['$event.target'])
-  fn(target: any) {
-    console.log(target.innerText);
-    target.innerText = this.oldValue;
-  }  
-  @HostListener('click', ['$event.target'])
-  onClick(event: any) {
-    console.log(event.innerText);
-    this.oldValue=event.innerText;
-  }     
+  @HostListener('focusin', ['$event'])
+  @HostListener('keydown.escape', ['$event'])
+  fn($event: any) {
+    if ($event.type =='focusin') {
+      // lorsque le focus est mis sur un champ on sauveagarde l'ancienne valeur du champ pour permettre un retour en arrière avec escape
+      this.oldValue = $event.target.innerText
+    }
+    if ($event.type =='keydown') {
+      // lorsque on presse escape alors c'est l'ancienne valeur qui est mise
+      $event.target.innerText = this.oldValue 
+    }
+  }      
 
   constructor(private rulesService : RulesService, private router: Router) { }
 
