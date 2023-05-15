@@ -4,6 +4,7 @@ export enum OutputParametersList {
     "[SEND TO TOP DATE]" = "[SEND TO TOP DATE]",
     "[TABLING DATE]" = "[TABLING DATE]",
     "[PE NUMBER]" = "[PE NUMBER]",
+    "[DOC REF]" = "[DOC REF]",
     "[EPADES REF]" = "[EPADES REF]",
     "[DOC LANGUAGE]" = "[DOC LANGUAGE]",
     "[PREFIX TITLE]" = "[PREFIX TITLE]",

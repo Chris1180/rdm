@@ -229,6 +229,8 @@ export class CheckRulesService {
         return this.form.authoringCommittee;
       case OutputParametersList['[DOC LANGUAGE]']:
         return this.form.docLanguage;
+      case OutputParametersList['[DOC REF]']:
+        return this.form.docRef;
       case OutputParametersList['[EPADES REF]']:
         return this.form.epadesRef;
       case OutputParametersList['[GENERATING DATE]']:

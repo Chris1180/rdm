@@ -93,6 +93,7 @@ export class PreviewComponent implements OnInit {
         day: this.d.getDate(),
       }),
       peNumber : new FormControl('PE234.334v01.00'),
+      docRef : new FormControl('2022/057(INI)'),
       epadesRef : new FormControl('PR\\1269845EN.docx'),
       docLanguage : new FormControl('EN'),
       prefixTitle : new FormControl('on'),
