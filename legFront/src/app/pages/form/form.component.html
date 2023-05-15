@@ -87,9 +87,9 @@
                                     formControlName="command" (input)="onFilterChange(0)">
                             </form>
                         </th>
-                        <th>Mandatory</th>
+                        <!--<th>Mandatory</th>-->
                         <th>Initial Value</th>
-                        <th>
+                        <!--<th>
                             Position
                             <form [formGroup]="filterFormGroup">
                                 <select class="form-control-sm" formControlName="position" style="width: 100px;"
@@ -99,11 +99,11 @@
                                     <option *ngFor="let pos of positions" [ngValue]='pos'>{{pos}} </option>
                                 </select>
                             </form>
-                        </th>
+                        </th>-->
                         <th>Format</th>
                         <th>Example</th>
                         <th>Application</th>
-                        <th>
+                        <th style="width: 150px;">
                             <ng-template #Reset>
                                 <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
                                     Reset All Filters
@@ -111,15 +111,17 @@
                             </ng-template>
                             <i [ngClass]="filterActive? 'bi-funnel-fill': 'bi-funnel'"
                                 style="cursor:pointer; font-size: 1.5em" (click)="resetfilters()" [ngbTooltip]='Reset'
-                                class="bi me-1"></i>
+                                class="bi me-3"></i>
                             <ng-template #NewRule>
                                 <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
                                     Add a New Rule
                                 </span>
                             </ng-template>
                             <i style="cursor:pointer; font-size: 1.5em" (click)="addNewRule()" [ngbTooltip]='NewRule'
-                                class="bi bi-plus-circle me-1"></i>
+                                class="bi bi-plus-circle me-2"></i>
+                            
                         </th>
+                        
                     </tr>
                     <td *ngIf="totalPages==0">
                         <div class="text-danger">{{errorMessage}}</div>
@@ -133,11 +135,11 @@
                             {{r.condition}}</td>
                         <td #command contentEditable (blur)="editRuleOnline(r, command.innerText, 'command')">
                             {{r.command}}</td>
-                        <td>{{r.mandatory}}</td>
+                        <!--<td>{{r.mandatory}}</td>-->
                         <td #initialValue contentEditable
                             (blur)="editRuleOnline(r, initialValue.innerText, 'initialValue')">{{r.initialValue}}</td>
-                        <td #position contentEditable (blur)="editRuleOnline(r, position.innerText, 'position')">
-                            {{r.position}}</td>
+                        <!--<td #position contentEditable (blur)="editRuleOnline(r, position.innerText, 'position')">
+                            {{r.position}}</td>-->
                         <td #format contentEditable (blur)="editRuleOnline(r, format.innerText, 'format')">{{r.format}}
                         </td>
                         <td #example contentEditable (blur)="editRuleOnline(r, example.innerText, 'example')">
@@ -150,11 +152,10 @@
                                     {{r.comment}}
                                 </span>
                             </ng-template>
-                            <a style="cursor:pointer" (click)="deleteRule(r)"> <i class="bi bi-trash p-2"></i></a>
-
-                            <a style="cursor:pointer" (click)="editRule(r)"><i class="bi bi-pencil p-2"></i></a>
-                            <a *ngIf="r.comment!=''" [ngbTooltip]="htmlContent"><i
-                                    class="bi bi-info-circle p-2"></i></a>
+                            <i class="bi bi-trash p-2" style="cursor:pointer" (click)="deleteRule(r)" ngbTooltip="Delete this Rule" placement="right"></i>
+                            <i class="bi bi-pencil p-2" style="cursor:pointer" (click)="editRule(r)" ngbTooltip="Edit this Rule" placement="right"></i>
+                            <i class="bi bi-files p-2" style="cursor:pointer" (click)="duplicateRule(r)" ngbTooltip="Duplicate this Rule" placement="right"></i>
+                            <i *ngIf="r.comment!=''" [ngbTooltip]="htmlContent" class="bi bi-info-circle p-2"></i>
                         </td>
                     </tr>
                 </tbody>
