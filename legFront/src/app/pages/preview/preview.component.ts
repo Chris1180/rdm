@@ -20,7 +20,7 @@ import { CheckRulesService } from 'src/app/shared/check-rules.service';
 import { RulesService } from 'src/app/shared/rules.service';
 import { AppDataState, RuleStateEnum } from 'src/app/shared/rules.state';
 
-
+declare var window: any;
 
 @Component({
   selector: 'app-preview',
@@ -50,7 +50,12 @@ export class PreviewComponent implements OnInit {
   allRules! : Rule[];
   rulesApplied! : Rule[];
   errorMessage?: string;
-  
+  // modal pour demander des valeurs suplémentaires
+  previewModal: any;
+  inputModal: any;
+  outputModal: any;
+  outputMissingParam = new Map<string, string>();
+
   constructor(private checkRules: CheckRulesService, private ruleService: RulesService) { }
 
   ngOnInit(): void {
@@ -66,7 +71,9 @@ export class PreviewComponent implements OnInit {
     )
     
     this.rulesDataState$.subscribe()
-    
+    this.previewModal = new window.bootstrap.Modal(document.getElementById('previewModal'));
+    this.outputModal = new window.bootstrap.Modal(document.getElementById('outputModal'));
+
     this.previewForm = new FormGroup({
       procedureType : new FormControl('INI'),
       documentType : new FormControl('OPCD'),
@@ -106,15 +113,58 @@ export class PreviewComponent implements OnInit {
       authorOfProposal : new FormControl(['Sara Matthieu']),
       listOfAssoc : new FormControl(["Colm Markey, Committee on Transport and Tourism"]),
     });
-  }
-  onSubmit(): void {
-    //console.log(this.previewForm.get('listOfRapporteurs')?.value);
-    this.rulesApplied = this.checkRules.check(this.previewForm.value, this.ruleService.getAllRules());
+  }// fin du ngOnInit
 
+
+  onSubmit(){
+    //console.log(this.previewForm.get('listOfRapporteurs')?.value);
+    let checkResult : {rulesApplied :Rule[], unknownOutput: string[], unknownInput: Rule[]};
+    checkResult = this.checkRules.check(this.previewForm.value, this.ruleService.getAllRules());
+    this.rulesApplied = checkResult.rulesApplied;
+    console.log (checkResult.unknownInput)
+    //console.log (checkResult.unknownOutput)
+    if(checkResult.unknownOutput.length==0){
+      // pas de valeur Output inconnue
+      this.previewModal.show();
+    }else{
+      // des valeurs de Output Param sont manquantes
+      // on réinitialise 
+      this.outputMissingParam.clear();
+      checkResult.unknownOutput.forEach(unknownOutput => {
+        this.outputMissingParam.set(unknownOutput,"")
+      });
+      
+      this.outputModal.show();
+      
+    }
+    
+    //this.previewModal.show();
   }
   // Utiliser pour afficher les valeurs des enum dans l'ordre de saisie
   originalOrder = (a: KeyValue<string,string>, b: KeyValue<string,string>): number => {
   return 0;
+  }
+
+  // méthode utilisée pour les Output Parameters manquants
+  changeValue(key: string, value: any){
+    this.outputMissingParam.set(key, value.value)
+  }
+
+  onSubmitOutputParam(){
+    //console.log(this.outputMissingParam);
+    // il faut maintenant passer en revue les commandes du tableau rulesApplied pour modifier les outputvalues
+    for (let map of this.outputMissingParam.entries()){
+      this.rulesApplied.forEach(ruleApplied => {
+        if (ruleApplied.outputValue.includes(map[0])){
+          ruleApplied.outputValue = ruleApplied.outputValue.replace(map[0], map[1] )
+          //console.log(map[0] + "--->" + map[1] )
+          //console.log(ruleApplied)
+        }
+      })
+    }
+    this.outputModal.hide();
+    this.previewModal.show();
+    
   }
 
 }

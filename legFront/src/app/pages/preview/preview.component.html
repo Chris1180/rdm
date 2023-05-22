@@ -278,7 +278,7 @@
                         </label>
                     </div>
                 </div>
-                <button class="btn btn-small ico-valide-cerc btn-green" type="submit" data-bs-toggle="modal" data-bs-target="#previewModal"
+                <button class="btn btn-small ico-valide-cerc btn-green" type="submit" 
                     [disabled]="!previewForm.valid">Submit</button>
             </form>
         </ng-container>
@@ -289,12 +289,12 @@
     <br>
        
       
-    <!--Visu part-->
+    <!--Preview Visu part-->
     <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Preview of the cover page only</h5>
+                <h5 class="modal-title" id="previewModalLabel">Preview of the cover page only</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -302,10 +302,30 @@
                 </div>
                 
             </div>
-            </div>
-        
+            </div>     
     </div>
-    
+    <!--Output modal for missing Output Param-->
+    <div class="modal fade" id="outputModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Preview of the cover page only</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                    <div class="modal-body" >
+                        <div class="pb-3">Some Output Parameters are missing:</div>
+                        <div class="input-group pb-3" *ngFor="let p of outputMissingParam | keyvalue">
+                            <label class="col-form-label col-form-label-sm pe-2">{{p.key}}</label>
+                        <input class="form-control form-control-sm" type="text" [(ngModel)]="p.value" (change)="changeValue(p.key, $event.target)" />
+                        </div>
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-small ico-delete">Ignore</button>
+                    <button type="button" class="btn btn-small ico-valide-cerc btn-green me-2" (click)="onSubmitOutputParam()">Submit Values</button>
+                  </div>
+            </div>
+            </div>     
+    </div>
     
     <br>
     <!--tab of rules part-->

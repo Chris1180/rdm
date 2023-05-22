@@ -11,6 +11,8 @@ export class CheckRulesService {
   errorMessage!: string;
   rulesApplied: Rule[] = [];
   form!: any;
+  unknownInput: Rule[] = [];
+  unknownOutput: string[] = [];
 
   constructor() { }
 
@@ -18,12 +20,14 @@ export class CheckRulesService {
     this.form = form;
     this.rules = allRules;
     this.CheckRules();
-    return this.rulesApplied;
+    return {rulesApplied: this.rulesApplied, unknownOutput: this.unknownOutput, unknownInput: this.unknownInput};
   }
 
   private CheckRules() {
     // reinitialise la liste des règles
     this.rulesApplied = [];
+    this.unknownInput = [];
+    this.unknownOutput = [];
     // mise à jour des variables d'entrée (INPUT PARAMETERS)
     // Procedure Type
     let INI: boolean = (this.form.procedureType == "INI");
@@ -129,6 +133,9 @@ export class CheckRulesService {
         } // Try evaluating the code
       } catch (e) {
         console.error('SyntaxError on rule number : ' + r.id + "\nrule code is : " + finalCondition) // It is a SyntaxError
+        /*if (r.part.match("Cover Page")){
+          this.unknownInput.push(r);
+        }*/
       }
 
     }); // fin du foreach  
@@ -277,9 +284,11 @@ export class CheckRulesService {
           return '';
         }
     }
-    
-    
-    return ('value for '+outputParam+" not found")
+    // ajout du paramètre manquant si pas déjà dans la liste
+    if (this.unknownOutput.indexOf(outputParam)==-1){
+      this.unknownOutput.push(outputParam)
+    }
+    return (outputParam)
   }
 
   /*
