@@ -15,7 +15,8 @@ export interface Rule {
     format : string;
     comment : string;
     application : string;
-    languages : Lang[]
+    languages : Lang[];
+    finalCondition : string
 }
 
 export interface PageRule{

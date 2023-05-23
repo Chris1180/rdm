@@ -314,17 +314,39 @@
                 </div>
                     <div class="modal-body" >
                         <div class="pb-3">Some Output Parameters are missing:</div>
-                        <div class="input-group pb-3" *ngFor="let p of outputMissingParam | keyvalue">
+                        <div class="input-group pb-3" *ngFor="let p of outputMissingParamMap | keyvalue">
                             <label class="col-form-label col-form-label-sm pe-2">{{p.key}}</label>
-                        <input class="form-control form-control-sm" type="text" [(ngModel)]="p.value" (change)="changeValue(p.key, $event.target)" />
+                        <input class="form-control form-control-sm" type="text" [(ngModel)]="p.value" (change)="changeValueOutput(p.key, $event.target)" />
                         </div>
                     </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-small ico-delete">Ignore</button>
+                    <button type="button" class="btn btn-small ico-delete" (click)="onIgnoreOutputParam()">Ignore</button>
                     <button type="button" class="btn btn-small ico-valide-cerc btn-green me-2" (click)="onSubmitOutputParam()">Submit Values</button>
                   </div>
             </div>
-            </div>     
+        </div>     
+    </div>
+    <!--Input modal for missing Input Param-->
+    <div class="modal fade" id="inputModal" tabindex="-1" aria-labelledby="InputModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title">Input for the cover page only</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                    <div class="modal-body" >
+                        <div class="pb-3">Some Input Parameters are missing, check boxes if they are true:</div>
+                        <div class="form-check form-check-inline" *ngFor="let p of inputMissingParamMap | keyvalue">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="p.value" (change)="changeValueInput(p.key, $event.target)" />
+                            <label class="form-check-label pe-2">{{p.key}}</label>
+                        </div>
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-small ico-delete" (click)="onIgnoreInputParam()">Ignore</button>
+                    <button type="button" class="btn btn-small ico-valide-cerc btn-green me-2" (click)="onSubmitInputParam()">Submit Values</button>
+                  </div>
+            </div>
+        </div>     
     </div>
     
     <br>

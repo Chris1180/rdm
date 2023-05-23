@@ -88,7 +88,7 @@ export class EditionComponent implements OnInit {
 
   onCancel() {
     this.ruleService.setRuleToBeEdited({id: -1, order: 1,part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '',outputValue: '', example: '',
-    position: '', format: '', comment: '', application: '', languages: []});
+    position: '', format: '', comment: '', application: '', languages: [], finalCondition: ''});
     this.router.navigate(['/CSIOForm']);
   }
 

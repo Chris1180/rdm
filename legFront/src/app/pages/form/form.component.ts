@@ -253,13 +253,13 @@ export class FormComponent implements OnInit {
 
   addNewRule() {
     this.ruleService.setRuleToBeEdited({id: 0, order: 1, part: '', label: '', condition: '', command: '', mandatory: true, initialValue: '', outputValue: '', example: '',
-    position: '', format: '', comment: '', application: '', languages: []})
+    position: '', format: '', comment: '', application: '', languages: [], finalCondition:''})
     this.router.navigate(['/Edition']);
   }
 
   duplicateRule(r: Rule){
     this.ruleService.setRuleToBeEdited({id: 0, order: r.order, part: r.part, label: r.label, condition: r.condition, command: r.command, mandatory: r.mandatory, initialValue: r.initialValue, outputValue: r.outputValue, example: r.example,
-    position: r.position, format: r.format, comment: r.comment, application: r.application, languages: r.languages})
+    position: r.position, format: r.format, comment: r.comment, application: r.application, languages: r.languages, finalCondition: r.finalCondition})
     this.router.navigate(['/Edition']);
   }
   preview() {
