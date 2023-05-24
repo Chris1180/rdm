@@ -131,36 +131,13 @@ export class PreviewComponent implements OnInit {
 
     // teste si des valeurs Input param sont manquantes
     if (checkCondition.unknownInput.length > 0){  // pour les tests <0 mais doit être >0
-      //il faut demander à l'utilisateur de les saisir via vrai/faux
+      // il faut demander à l'utilisateur de les saisir via vrai/faux
       this.inputModal.show();
       // et ensuite reévaluer les conditions pour mettre à jour le tableau des règles appliquées
     }else{
-      // pas de Input param manquant
-      // evaluation des conditions
-      // à factoriser
-      let resultEval : {unknownOutput : string[], rulesApllied : Rule[]}
-      resultEval = this.checkRules.evalRules(this.previewForm.value, this.inputMissingParamMap);
-      let outputMissingParam: string[] = resultEval.unknownOutput;
-      this.rulesApplied = resultEval.rulesApllied;
-      
-      if (this.outputMissingParamMap.size==0 && outputMissingParam.length > 0){
-        outputMissingParam.forEach(unknownOutput => {
-          this.outputMissingParamMap.set(unknownOutput,"")
-        });
-      }
-      if(outputMissingParam.length>0){
-        // des valeurs de Output Param sont manquantes
-        // on les demande dans le modal
-        this.outputModal.show();
-      }else{
-        // pas de valeur Output inconnue
-        // on affiche la visu dans le modal
-        this.previewModal.show();     
-      }
-      // fin factorisation
+      // pas de Input param manquant on peut directement évaluer les conditions
+      this.evalCondition();
     }
-    
-    
     
   }
   // Utiliser pour afficher les valeurs des enum dans l'ordre de saisie
@@ -177,7 +154,6 @@ export class PreviewComponent implements OnInit {
   }
 
   onSubmitOutputParam(){
-    //console.log(this.outputMissingParam);
     // il faut maintenant passer en revue les commandes du tableau rulesApplied pour modifier les outputvalues
     for (let map of this.outputMissingParamMap.entries()){
       this.rulesApplied.forEach(ruleApplied => {
@@ -199,30 +175,29 @@ export class PreviewComponent implements OnInit {
     this.inputModal.hide();
   }
   onSubmitInputParam(){
-    //
-    console.log(this.inputMissingParamMap);
+    //console.log(this.inputMissingParamMap);
     this.inputModal.hide();
-    // à factoriser
+    this.evalCondition();
+  }
+
+  evalCondition(){
     let resultEval : {unknownOutput : string[], rulesApllied : Rule[]}
     resultEval = this.checkRules.evalRules(this.previewForm.value, this.inputMissingParamMap);
     let outputMissingParam: string[] = resultEval.unknownOutput;
     this.rulesApplied = resultEval.rulesApllied;
     
+    // initialisation de la liste des paramètres output manquants si pas déjà fait (si déjà fait alors on garde les anciennes valeurs) 
     if (this.outputMissingParamMap.size==0 && outputMissingParam.length > 0){
       outputMissingParam.forEach(unknownOutput => {
         this.outputMissingParamMap.set(unknownOutput,"")
       });
     }
     if(outputMissingParam.length>0){
-      // des valeurs de Output Param sont manquantes
-      // on les demande dans le modal
+      // des valeurs de Output Param sont manquantes alors on les demande dans le modal
       this.outputModal.show();
     }else{
-      // pas de valeur Output inconnue
-      // on affiche la visu dans le modal
+      // pas de valeur Output inconnue alors on affiche la preview dans le modal
       this.previewModal.show();     
     }
-    // fin factorisation
-
   }
 }

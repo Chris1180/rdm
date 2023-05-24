@@ -8,7 +8,6 @@ import { OutputParametersList } from '../model/outputParameters/outputParameters
 export class CheckRulesService {
 
   rules!: Array<Rule>;
-  errorMessage!: string;
   rulesApplied: Rule[] = [];
   form!: any;
   unknownInput: string[] = [];
@@ -18,17 +17,11 @@ export class CheckRulesService {
 
   checkCondition(allRules: Rule[]) {
     this.rules = allRules;
-    this.FormatConditions();
-    return {unknownInput: this.unknownInput};
-  }
-
-  private FormatConditions() {
     // reinitialise la liste des règles
     this.rulesApplied = [];
     this.unknownInput = [];
     this.unknownOutput = [];
     
-
     // check des règles les unes après les autres pour formater la condition finale
     this.rules.forEach(r => {
       let finalCondition: string = "";
@@ -36,10 +29,8 @@ export class CheckRulesService {
       finalCondition = this.formatCondition(r.condition);
       r.finalCondition = finalCondition
     }); // fin du foreach 
-    // evaluation des règles
-    //console.log(this.unknownInput)
-    //this.evalRules(); 
-  }// fin de CheckRules()
+    return {unknownInput: this.unknownInput};
+  }
 
   formatCondition(condition: string) {
     let finalCondition: string = "";
@@ -357,7 +348,7 @@ export class CheckRulesService {
           console.warn("Rule :" + r.id + " False => " + r.finalCondition);
         } // Try evaluating the code
       } catch (e) {
-        console.error('SyntaxError on rule number : ' + r.id + "\nrule code is : " + r.finalCondition) // It is a SyntaxError
+        console.error('SyntaxError on rule number : ' + r.id + "\nrule code is : " + r.condition) // It is a SyntaxError
         
       }
   
