@@ -212,10 +212,10 @@ export class CheckRulesService {
       case OutputParametersList['[TABLING DATE]']:
         return this.form.tablingDate.day + "." + this.form.tablingDate.month + "." + this.form.tablingDate.year;
       case OutputParametersList['[DOC MULTI LANG]']:
-        if (this.form.docLanguage == 'EN') {
+        if (this.form.language == 'EN') {
           return this.rules.find(r => r.id == idRule)?.initialValue!;
         } else {
-          return this.rules.find(r => r.id == idRule)?.languages.find(lang => lang.lang == this.form.docLanguage)?.value!;
+          return this.rules.find(r => r.id == idRule)?.languages.find(lang => lang.lang == this.form.language)?.value!;
         }
       case OutputParametersList['[PREFIX LIST OF RAPPORTEURS]']:
         if (initialValue=='') return this.form.prefixListOfRapporteurs;
@@ -346,10 +346,9 @@ export class CheckRulesService {
           } // fin du for
         } else {
           console.warn("Rule :" + r.id + " False => " + r.finalCondition);
-        } // Try evaluating the code
+        } // fin du try
       } catch (e) {
         console.error('SyntaxError on rule number : ' + r.id + "\nrule code is : " + r.condition) // It is a SyntaxError
-        
       }
   
     }); // fin du foreach
