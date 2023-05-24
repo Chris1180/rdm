@@ -14,10 +14,7 @@
 <!--End of Modal feed back user about changes in back end -->
 
 <main id="main">
-    <button (click)="preview()" alt="preview"> <i class="bi bi-eye">Preview</i></button>
-
     <nav *ngIf="totalPages>0">
-
         <span>Pages ({{currentPage+1}} of {{totalPages}}) => rules number {{totalResults}}</span>
         <ul class="pager" style="display: flex; justify-content: center;">
             <li><a *ngIf="currentPage!=0" (click)="onFilterChange(currentPage-1)" title="Previous page">«</a></li>
@@ -30,7 +27,6 @@
         </ul>
     </nav>
     <br>
-
     <ng-container *ngIf="(rulesDataState$ | async) as result" [ngSwitch]="result.dataState">
         
         <ng-container *ngSwitchCase="RuleStateEnum.LOADING">

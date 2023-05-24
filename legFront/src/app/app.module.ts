@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbDateCustomParserFormatter } from './shared/ngbDateCustomParserFormatter';
 import { RulesAppliedListComponent } from './pages/preview/rules-applied-list/rules-applied-list.component';
 import { PreviewVisuPageComponent } from './pages/preview/preview-visu-page/preview-visu-page.component';
+import { StyleComponent } from './pages/style/style.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { PreviewVisuPageComponent } from './pages/preview/preview-visu-page/prev
     EditionComponent,
     PreviewComponent,
     RulesAppliedListComponent,
-    PreviewVisuPageComponent
+    PreviewVisuPageComponent,
+    StyleComponent
   ],
   imports: [
     BrowserModule,

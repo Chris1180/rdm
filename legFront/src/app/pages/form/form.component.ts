@@ -262,9 +262,12 @@ export class FormComponent implements OnInit {
     position: r.position, format: r.format, comment: r.comment, application: r.application, languages: r.languages, finalCondition: r.finalCondition})
     this.router.navigate(['/Edition']);
   }
+  
+  /*
   preview() {
     this.router.navigate(['/Preview'])
   }
+  */
 
   editRuleOnline(r: any, newValue: string, field: any){
     //console.log(field)
