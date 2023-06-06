@@ -22,4 +22,11 @@ export class StyleService {
         return this.http.get<Style[]>(this.apiUrl+'styles')
     }
 
+    public modifyStyle(style: Style) : Observable<Style>{
+        return this.http.post<Style>(this.apiUrl+'newstyle', style);
+    }
+
+    public deleteStyle(id: Number) : Observable<any>{
+        return this.http.post(this.apiUrl+'deletestyle/'+id, '');
+    }
 }

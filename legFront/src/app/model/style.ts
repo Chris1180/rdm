@@ -1,5 +1,6 @@
 
 export interface Style {
+    id : Number;
     name : string;
     margintop : number;
     marginleft : number;

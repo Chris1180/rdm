@@ -43,8 +43,9 @@ public class SecurityLocalConfig extends WebSecurityConfigurerAdapter {
 		http.cors().configurationSource(corsConfigurationSource());
 		
 		http.authorizeRequests()
-			.antMatchers("/rules","/update","/delete","/language","/styles","/export","/test","/listServices","/getActivities","/getUserServices").permitAll()
-			.anyRequest().authenticated();
+			.antMatchers("/**").permitAll();
+			//.antMatchers("/rules","/update","/delete","/language","/styles","/export","/test","/listServices","/getActivities","/getUserServices").permitAll()
+			//.anyRequest().authenticated();
 
 		//http
 			//.authorizeRequests()

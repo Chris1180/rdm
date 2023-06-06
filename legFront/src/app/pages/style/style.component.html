@@ -1,3 +1,18 @@
+<!-- Toast feed back user about changes in back end -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="userFeedBack" class="toast align-items-center text-white border-0" [ngClass]="userFeedBackStyle" role="alert"
+        aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{userFeedBackMessage}}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<!--End of Modal feed back user about changes in back end -->
+
 <main id="main" >
     <ng-container *ngIf="(styleDataState$ | async) as result" [ngSwitch]="result.dataState">
         
@@ -23,16 +38,21 @@
                         <th>Size</th>
                         <th>Bold</th>
                         <th>Italic</th>
+                        <th></th>
                     </tr>
-                    <tr *ngFor="let s of result.data">
-                        <td>{{s.name}}</td>
-                        <td>{{s.margintop}}</td>
-                        <td>{{s.marginleft}}</td>
-                        <td>{{s.relatif}}</td>
-                        <td>{{s.font}}</td>
-                        <td>{{s.size}}</td>
-                        <td>{{s.bold}}</td>
-                        <td>{{s.italic}}</td>
+                    <tr *ngFor="let s of styles">
+                        <td #name contentEditable (blur)="editStyleOnline(s, name.innerText, 'name')">{{s.name}}</td>
+                        <td #margintop contentEditable (blur)="editStyleOnline(s, margintop.innerText, 'margintop')">{{s.margintop}}</td>
+                        <td #marginleft contentEditable (blur)="editStyleOnline(s, marginleft.innerText, 'marginleft')">{{s.marginleft}}</td>
+                        <td><input class="form-check-input" type="checkbox" [checked]="s.relatif" #relatif (click)="editStyleOnline(s, relatif.checked, 'relatif')"></td>
+                        <td #font contentEditable (blur)="editStyleOnline(s, font.innerText, 'font')">{{s.font}}</td>
+                        <td #size contentEditable (blur)="editStyleOnline(s, size.innerText, 'size')">{{s.size}}</td>
+                        <td><input class="form-check-input" type="checkbox" [checked]="s.bold" #bold (click)="editStyleOnline(s, bold.checked, 'bold')"></td>
+                        <td><input class="form-check-input" type="checkbox" [checked]="s.italic" #italic (click)="editStyleOnline(s, italic.checked, 'italic')"></td>
+                        <td>
+                            <i class="bi bi-trash p-2" style="cursor:pointer" (click)="deleteStyle(s)" ngbTooltip="Delete this Style" placement="right"></i>
+                            <i class="bi bi-files p-2" style="cursor:pointer" (click)="duplicateStyle(s)" ngbTooltip="Duplicate this Style" placement="right"></i>
+                        </td>
                     </tr>
                 </tbody>
             </table>

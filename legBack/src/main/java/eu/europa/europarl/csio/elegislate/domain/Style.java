@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class Style {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Integer id;
 	String name;
 	Integer margintop;
 	Integer marginleft;
