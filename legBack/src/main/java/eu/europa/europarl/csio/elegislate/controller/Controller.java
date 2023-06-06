@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eu.europa.europarl.csio.elegislate.DAO.LanguageRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RuleRepository;
+import eu.europa.europarl.csio.elegislate.DAO.StyleRepository;
 import eu.europa.europarl.csio.elegislate.domain.Language;
 import eu.europa.europarl.csio.elegislate.domain.Rule;
+import eu.europa.europarl.csio.elegislate.domain.Style;
 
 
 @RestController
@@ -23,6 +25,8 @@ public class Controller {
 	private RuleRepository ruleRepository;
 	@Autowired
 	private LanguageRepository languageRepository;
+	@Autowired
+	private StyleRepository styleRepository;
 	
 	
 	@GetMapping ("/rules")
@@ -91,5 +95,15 @@ public class Controller {
 			
 		}
 		
+	}
+	@GetMapping ("/styles")
+	public List<Style> getStyles() {
+		return styleRepository.findAll();
+		
+	}
+	
+	@PostMapping("/newstyle")
+	public Style addNewStyle(@RequestBody Style style) {
+		return styleRepository.save(style);
 	}
 }
