@@ -1,6 +1,8 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
+import { Rule } from 'src/app/model/rule';
 import { Style } from 'src/app/model/style';
+import { RulesService } from 'src/app/shared/rules.service';
 import { RuleStateEnum } from 'src/app/shared/rules.state';
 import { AppDataState } from 'src/app/shared/rules.state';
 import { StyleService } from 'src/app/shared/style.service';
@@ -23,6 +25,7 @@ export class StyleComponent implements OnInit {
   userFeedBackMessage!: string;
   userFeedBackStyle!: string;
   styles : Style[] = [];
+  rules : Rule[] = []
 
   @HostListener('focusin', ['$event'])
   @HostListener('keydown.escape', ['$event'])
@@ -37,7 +40,7 @@ export class StyleComponent implements OnInit {
     }
   }  
 
-  constructor(private styleService: StyleService) { }
+  constructor(private styleService: StyleService, private ruleService: RulesService) { }
 
   ngOnInit(): void {
     this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
@@ -48,13 +51,19 @@ export class StyleComponent implements OnInit {
       }),
       startWith({dataState : RuleStateEnum.LOADING}),
       catchError(err=>of({dataState : RuleStateEnum.ERROR, errorMessage:err.message}))
-    ) 
+    )
+    
+    if (!this.ruleService.getAllRules()){
+      this.ruleService.getRulesFromDB().subscribe(
+        rules => this.rules = rules
+      )  
+    }else this.rules = this.ruleService.getAllRules();
+     
   }
 
   editStyleOnline(style: any, newValue: any, field: any){
     //console.log(newValue)
     //console.log(style[field])
-    
     if(style[field]!=newValue){
       //console.log("Changement détecté")
       style[field] = newValue;
@@ -88,17 +97,25 @@ export class StyleComponent implements OnInit {
   deleteStyle(style :Style){
     let conf = confirm("Are you sure?");
     if (conf == false) return;
-    this.styleService.deleteStyle(style.id).subscribe({
-      next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
-        this.openFeedBackUser("Deletion done Succesfully", "bg-success");
-        // ici on rafraichi la liste de la copie locale des styles 
-        let index = this.styles.indexOf(style);
-        this.styles.splice(index, 1); // ici on supprime l'element dans la copie locale pour le composant
-      },
-      error: (err) => {
-        this.openFeedBackUser("Error during deletion process in Back-End", "bg-danger")
-      }
-    })
+    
+    // avant de faire la suppression en backEnd il faut vérifier qu'aucune règle n'utilise ce style
+    const found = this.rules.find(rule => rule.style?.id === style.id);
+    if (found === undefined) { // return undefined if no match
+      this.styleService.deleteStyle(style.id).subscribe({
+        next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
+          this.openFeedBackUser("Deletion done Succesfully", "bg-success");
+          // ici on rafraichi la liste de la copie locale des styles 
+          let index = this.styles.indexOf(style);
+          this.styles.splice(index, 1); // ici on supprime l'element dans la copie locale pour le composant
+        },
+        error: (err) => {
+          this.openFeedBackUser("Error during deletion process in Back-End", "bg-danger")
+        }
+      })
+    } else {
+      this.openFeedBackUser("Style is used by rule: "+found.id+ "=> deletion not allowed", "bg-danger")
+    }
+    
   }
 
   duplicateStyle(style: Style){

@@ -53,12 +53,12 @@ public class Controller {
 			//System.out.println("ajout");
 			// ajout d'une nouvelle règle 
 			rule = ruleRepository.save(new Rule(null, rule.getOrder(), rule.getPart(), rule.getLabel(), rule.getCondition(), rule.getCommand(), rule.getMandatory(), 
-					rule.getInitialValue(), rule.getExample(), rule.getPosition(), rule.getFormat(), rule.getComment(), rule.getApplication(), null));
+					rule.getInitialValue(), rule.getExample(), rule.getPosition(), rule.getFormat(), rule.getComment(), rule.getApplication(), null, rule.getStyle()));
 		}else { 
 			//System.out.println("modif de la règle");
 			// modif d'une règle existante
 			ruleRepository.save(new Rule(rule.getId(), rule.getOrder(), rule.getPart(), rule.getLabel(), rule.getCondition(), rule.getCommand(), rule.getMandatory(), 
-					rule.getInitialValue(), rule.getExample(), rule.getPosition(), rule.getFormat(), rule.getComment(), rule.getApplication(), null));
+					rule.getInitialValue(), rule.getExample(), rule.getPosition(), rule.getFormat(), rule.getComment(), rule.getApplication(), null, rule.getStyle()));
 			}
 		
 		//System.out.println(rule);

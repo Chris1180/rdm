@@ -1,4 +1,5 @@
 import { Lang } from "./lang";
+import { Style } from "./style";
 
 export interface Rule {
     id : number;
@@ -17,6 +18,7 @@ export interface Rule {
     application : string;
     languages : Lang[];
     finalCondition : string
+    style?: Style
 }
 
 export interface PageRule{

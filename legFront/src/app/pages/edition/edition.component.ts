@@ -5,9 +5,11 @@ import { Router } from '@angular/router';
 import { Language } from 'src/app/model/inputParameters/language';
 import { Lang } from 'src/app/model/lang';
 import { Rule } from 'src/app/model/rule';
+import { Style } from 'src/app/model/style';
 import { EventRuleService } from 'src/app/shared/event.rule.service';
 import { RulesService } from 'src/app/shared/rules.service';
 import { RuleActionTypes } from 'src/app/shared/rules.state';
+import { StyleService } from 'src/app/shared/style.service';
 
 @Component({
   selector: 'app-edition',
@@ -20,23 +22,28 @@ export class EditionComponent implements OnInit {
   languages! : Lang[];
   errorMessage! : string;
 
+  styles : Style[] = [];
 
   language = Language;
 
+  /*
   // variable pour stocker les valeurs uniques par champ
   parts! : Array<string>;
   labels! : Array<string>;
   conditions! : Array<string>;
   commands! : Array<string>;
   positions! : Array<string>;
-  formats! : Array<string>;
+  formats! : Array<string>;*/
   
-  constructor(private ruleService : RulesService, private router: Router, private eventRuleService: EventRuleService) { }
+  constructor(private ruleService : RulesService, private router: Router, private styleService : StyleService, private eventRuleService: EventRuleService) { }
 
   ngOnInit(): void {
     // On met les info de la Rule à modifier dans des variables locales
     this.rule = this.ruleService.getRuleToBeEdited();
     this.languages = this.rule.languages; 
+    this.styleService.getStylesFromDB().subscribe(
+      data => this.styles = data
+    )
 
     this.ruleForm = new FormGroup({
       id : new FormControl(this.rule.id),
@@ -50,6 +57,7 @@ export class EditionComponent implements OnInit {
       initialValue : new FormControl(this.rule.initialValue),
       position : new FormControl(this.rule.position),
       format : new FormControl(this.rule.format),
+      style : new FormControl(this.rule.style?.id),
       comment : new FormControl(this.rule.comment),
       application : new FormControl(this.rule.application),
       example : new FormControl(this.rule.example)
@@ -74,14 +82,17 @@ export class EditionComponent implements OnInit {
     this.rule.mandatory  = this.ruleForm.get('mandatory')?.value;
     this.rule.position = this.ruleForm.get('position')?.value;
     this.rule.format  = this.ruleForm.get('format')?.value;
+
     this.rule.comment = this.ruleForm.get('comment')?.value;
     this.rule.application  = this.ruleForm.get('application')?.value;
     this.rule.example  = this.ruleForm.get('example')?.value;
-
+    this.rule.style = this.styles.find(style => style.id === this.ruleForm.get('style')?.value);
     this.rule.languages = this.languages
     //this.eventRuleService.publishEvent({type: RuleActionTypes.EDIT_RULE, rule: this.rule})  
     this.ruleService.setRuleToBeEdited(this.rule)
 
+    
+    //console.log (this.rule)
     this.router.navigate(['/CSIOForm']);
   
   }

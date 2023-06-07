@@ -13,6 +13,7 @@ import { NgbDateCustomParserFormatter } from './shared/ngbDateCustomParserFormat
 import { RulesAppliedListComponent } from './pages/preview/rules-applied-list/rules-applied-list.component';
 import { PreviewVisuPageComponent } from './pages/preview/preview-visu-page/preview-visu-page.component';
 import { StyleComponent } from './pages/style/style.component';
+import { PreviewDisplayPageComponent } from './pages/preview/preview-display-page/preview-display-page.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { StyleComponent } from './pages/style/style.component';
     PreviewComponent,
     RulesAppliedListComponent,
     PreviewVisuPageComponent,
-    StyleComponent
+    StyleComponent,
+    PreviewDisplayPageComponent
   ],
   imports: [
     BrowserModule,

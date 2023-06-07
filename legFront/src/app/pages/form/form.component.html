@@ -97,7 +97,8 @@
                             </form>
                         </th>-->
                         <th>Format</th>
-                        <th>Example</th>
+                        <th>Style</th>
+                        <!--<th>Example</th>-->
                         <th>Application</th>
                         <th style="width: 150px;">
                             <ng-template #Reset>
@@ -138,8 +139,9 @@
                             {{r.position}}</td>-->
                         <td #format contentEditable (blur)="editRuleOnline(r, format.innerText, 'format')">{{r.format}}
                         </td>
-                        <td #example contentEditable (blur)="editRuleOnline(r, example.innerText, 'example')">
-                            {{r.example}}</td>
+                        <td>{{r.style?.name}}</td>
+                        <!--<td #example contentEditable (blur)="editRuleOnline(r, example.innerText, 'example')">
+                            {{r.example}}</td>-->
                         <td #application contentEditable
                             (blur)="editRuleOnline(r, application.innerText, 'application')">{{r.application}}</td>
                         <td>

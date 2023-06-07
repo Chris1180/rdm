@@ -66,7 +66,7 @@ export class FormComponent implements OnInit {
       // la valeur contenu dans init value est par defaut l'EN
       let languages = ruleToBeEdited.languages;
       //ruleToBeEdited.languages = []
-      
+      console.log(ruleToBeEdited);
       this.ruleService.saveRule(ruleToBeEdited).subscribe({
         next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
           this.openFeedBackUser("Rule changes saved Succesfully", "bg-success");
@@ -258,8 +258,10 @@ export class FormComponent implements OnInit {
   }
 
   duplicateRule(r: Rule){
-    this.ruleService.setRuleToBeEdited({id: 0, order: r.order, part: r.part, label: r.label, condition: r.condition, command: r.command, mandatory: r.mandatory, initialValue: r.initialValue, outputValue: r.outputValue, example: r.example,
-    position: r.position, format: r.format, comment: r.comment, application: r.application, languages: r.languages, finalCondition: r.finalCondition})
+    this.ruleService.setRuleToBeEdited({id: 0, order: r.order, part: r.part, label: r.label, condition: r.condition, 
+    command: r.command, mandatory: r.mandatory, initialValue: r.initialValue, outputValue: r.outputValue,
+    example: r.example, position: r.position, format: r.format, comment: r.comment, application: r.application,
+    languages: r.languages, finalCondition: r.finalCondition, style: r.style})
     this.router.navigate(['/Edition']);
   }
   

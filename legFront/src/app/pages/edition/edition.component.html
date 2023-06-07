@@ -137,6 +137,20 @@
                 </span>
             </div>
         </div>
+        <!-- Style -->
+        <div class="row align-items-center mb-2">
+            <label class="col-sm-3 col-form-label">Style</label>
+            <div class="col-sm-5">
+                <select class="form-select" formControlName="style">
+                    <option *ngFor="let s of styles" [ngValue]="s.id">{{s.name}}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <span class="form-text ico-info">
+                    Style name
+                </span>
+            </div>
+        </div>
         <!-- Comment -->
         <div class="row align-items-center mb-2">
             <label class="col-sm-3 col-form-label">Comment</label>

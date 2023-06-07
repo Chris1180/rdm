@@ -1,0 +1,17 @@
+<div id="box" *ngIf="rules">
+    <div  class="epname">European Parliament</div>
+    <div *ngFor="let r of rules">
+        <!-- Tool Tip to show rule number-->
+        <ng-template #RuleNumber>
+            <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                Rule:&nbsp;{{r.id}}
+            </span>
+        </ng-template>
+        <!-- [ngStyle]="{'font-weight' : value}" -->
+        <div [ngStyle]=value *ngIf="r.part=='Cover Page'" [ngbTooltip]='RuleNumber'>{{r.outputValue}}
+        </div>
+        <!-- Cas particulier pour la langue affichée à deux endroits-->
+        <div class = "doclanguageright" *ngIf="r.label=='DocLanguage'" [ngbTooltip]='RuleNumber'>{{r.outputValue}}
+        </div>
+    </div>
+</div>
