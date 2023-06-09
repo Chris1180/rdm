@@ -96,9 +96,9 @@
                                 </select>
                             </form>
                         </th>-->
-                        <th>Format</th>
+                        <!--<th>Format</th>-->
                         <th>Style</th>
-                        <!--<th>Example</th>-->
+                        <th>Example</th>
                         <th>Application</th>
                         <th style="width: 150px;">
                             <ng-template #Reset>
@@ -137,11 +137,11 @@
                             (blur)="editRuleOnline(r, initialValue.innerText, 'initialValue')">{{r.initialValue}}</td>
                         <!--<td #position contentEditable (blur)="editRuleOnline(r, position.innerText, 'position')">
                             {{r.position}}</td>-->
-                        <td #format contentEditable (blur)="editRuleOnline(r, format.innerText, 'format')">{{r.format}}
-                        </td>
+                        <!--<td #format contentEditable (blur)="editRuleOnline(r, format.innerText, 'format')">{{r.format}}
+                        </td>-->
                         <td>{{r.style?.name}}</td>
-                        <!--<td #example contentEditable (blur)="editRuleOnline(r, example.innerText, 'example')">
-                            {{r.example}}</td>-->
+                        <td #example contentEditable (blur)="editRuleOnline(r, example.innerText, 'example')">
+                            {{r.example}}</td>
                         <td #application contentEditable
                             (blur)="editRuleOnline(r, application.innerText, 'application')">{{r.application}}</td>
                         <td>

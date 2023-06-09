@@ -1,5 +1,5 @@
 <div id="box" *ngIf="rules">
-    <div  class="epname">European Parliament</div>
+    <!--<div  class="epname">European Parliament</div>-->
     <div *ngFor="let r of rules">
         <!-- Tool Tip to show rule number-->
         <ng-template #RuleNumber>
@@ -7,11 +7,53 @@
                 Rule:&nbsp;{{r.id}}
             </span>
         </ng-template>
-        <!-- [ngStyle]="{'font-weight' : value}" -->
-        <div [ngStyle]=value *ngIf="r.part=='Cover Page'" [ngbTooltip]='RuleNumber'>{{r.outputValue}}
+        <!-- [ngStyle]="{'font-weight' : value}"  *ngIf="r.style?.name=='eplogo'" -->
+        <div *ngIf="r.style?.name=='eplogo'" class = "eplogo" [ngStyle]="{'top': r.style?.margintop+'%', 'left': r.style?.marginleft+'%'}" [ngbTooltip]='RuleNumber'></div>
+        <div *ngIf="r.style?.name=='headingtitle'" class = "headingtitle"
+            [ngStyle]="{'margin-top': r.style?.margintop+'%', 'left': r.style?.marginleft+'%', 
+            'position': r.style?.relatif? 'relative':'absolute', 'font-family': r.style?.font, 
+            'font-weight': r.style?.bold? 'bold':'', 'font-size': r.style?.size+'px', 
+            'font-style': r.style?.italic ? 'italic':''}"
+            [ngbTooltip]='RuleNumber'>{{r.outputValue}}
+        </div>
+        <div *ngIf="r.style?.name=='united'" class = "united"
+            [ngStyle]="{'top': r.style?.margintop+'%', 'left': r.style?.marginleft+'%', 
+            'position':'absolute', 'font-family': r.style?.font, 
+            'font-weight': r.style?.bold? 'bold':'', 'font-size': r.style?.size+'px', 
+            'font-style': r.style?.italic ? 'italic':''}" 
+            [ngbTooltip]='RuleNumber'>{{r.outputValue}}
+        </div>
+                    
+        <!-- position: relative -->
+        <div *ngIf="r.part=='Cover Page' && r.style?.name!='headingtitle' && r.style?.relatif"
+            [ngStyle]="{'margin-top': r.style?.margintop+'%', 'left': r.style?.marginleft+'%', 
+                    'position':'relative', 'font-family': r.style?.font, 
+                    'font-weight': r.style?.bold? 'bold':'', 'font-size': r.style?.size+'px', 
+                    'font-style': r.style?.italic ? 'italic':''}" 
+            [ngbTooltip]='RuleNumber'
+            placement="left">
+                {{r.outputValue}}
+        </div>
+        <!-- position: absolute -->
+        <div *ngIf="r.part=='Cover Page' && r.style?.name!='headingtitle'  && r.style?.name !='united' && !r.style?.relatif"
+            [ngStyle]="{'top': r.style?.margintop+'%', 'left': r.style?.marginleft+'%', 
+                    'position':'absolute', 'font-family': r.style?.font, 
+                    'font-weight': r.style?.bold? 'bold':'', 'font-size': r.style?.size+'px', 
+                    'font-style': r.style?.italic ? 'italic':''}" 
+            [ngbTooltip]='RuleNumber'>
+                {{r.outputValue}}
         </div>
         <!-- Cas particulier pour la langue affichée à deux endroits-->
-        <div class = "doclanguageright" *ngIf="r.label=='DocLanguage'" [ngbTooltip]='RuleNumber'>{{r.outputValue}}
+        <div *ngIf="r.style?.name=='doclanguage'" 
+            [ngStyle]="{'top': r.style?.margintop+'%', 'left': '92%', 
+            'position':'absolute', 'font-family': r.style?.font, 
+            'font-weight': r.style?.bold? 'bold':'', 'font-size': r.style?.size+'px', 
+            'font-style': r.style?.italic ? 'italic':''}" 
+            [ngbTooltip]='RuleNumber'>{{r.outputValue}}
         </div>
+
+        <!-- Cas particulier pour la langue affichée à deux endroits
+        <div class = "doclanguageright" *ngIf="r.label=='DocLanguage'" [ngbTooltip]='RuleNumber'>{{r.outputValue}}
+        </div>-->
     </div>
 </div>

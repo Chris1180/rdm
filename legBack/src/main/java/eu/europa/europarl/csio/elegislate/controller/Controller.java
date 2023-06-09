@@ -69,12 +69,12 @@ public class Controller {
 			if(lang.getId() == 0) {
 				// nouvelle version linguistique
 				// vérification que la valeur n'est pas un champ texte blanc
-				if (!lang.getValue().isBlank())
+				if (lang.getValue() != null || !"".equals(lang.getValue()))  //(!lang.getValue().isBlank())
 					languageRepository.save(new Language(null, lang.getLang(), lang.getValue(), lang.getRule()));
 			}else {
 				
 				// Si la valeur du champ value est pas vide on supprime l'entrée dans la BDD 
-				if(lang.getValue().isBlank()) {
+				if(lang.getValue() == null || "".equals(lang.getValue())) {
 					languageRepository.delete(lang);
 				}else {
 					languageRepository.save(lang);
@@ -107,6 +107,9 @@ public class Controller {
 	
 	@PostMapping("/newstyle")
 	public Style addNewStyle(@RequestBody Style style) {
+		if (style.getId()==0) {
+			style.setId(null);
+		}
 		return styleRepository.save(style);
 	}
 	

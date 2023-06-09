@@ -24,7 +24,8 @@
                 <th>Command</th>
                 <th>Default Value</th>
                 <th>OutputValue</th>
-                <th>Format (css name)</th>
+                <!--<th>Format (css name)</th>-->
+                <th>Style</th>
                 <th></th>
 
             </tr>
@@ -37,7 +38,8 @@
                 <td #command contentEditable (blur)="editRuleOnline(r, command.innerText, 'command')" style="cursor: pointer;">{{r.command}}</td>
                 <td #initialValue contentEditable (blur)="editRuleOnline(r, initialValue.innerText, 'initialValue')" style="cursor: pointer;">{{r.initialValue}}</td>
                 <td>{{r.outputValue}}</td>
-                <td #format contentEditable (blur)="editRuleOnline(r, format.innerText, 'format')" style="cursor: pointer;">{{r.format}}</td>
+                <!--<td #format contentEditable (blur)="editRuleOnline(r, format.innerText, 'format')" style="cursor: pointer;">{{r.format}}</td>-->
+                <td>{{r.style?.name}}</td>
                 <td>
                     <ng-template #htmlContent>
                         <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
