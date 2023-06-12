@@ -1,5 +1,4 @@
 <div id="box" *ngIf="rules">
-    <!--<div  class="epname">European Parliament</div>-->
     <div *ngFor="let r of rules">
         <!-- Tool Tip to show rule number-->
         <ng-template #RuleNumber>
@@ -52,8 +51,5 @@
             [ngbTooltip]='RuleNumber'>{{r.outputValue}}
         </div>
 
-        <!-- Cas particulier pour la langue affichée à deux endroits
-        <div class = "doclanguageright" *ngIf="r.label=='DocLanguage'" [ngbTooltip]='RuleNumber'>{{r.outputValue}}
-        </div>-->
     </div>
 </div>
