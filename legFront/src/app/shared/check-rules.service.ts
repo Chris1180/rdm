@@ -11,6 +11,7 @@ export class CheckRulesService {
   rulesApplied: Rule[] = [];
   form!: any;
   unknownInput: string[] = [];
+  rulesWithUnknownInput: number[] = [];
   unknownOutput: string[] = [];
 
   constructor() { }
@@ -20,19 +21,20 @@ export class CheckRulesService {
     // reinitialise la liste des règles
     this.rulesApplied = [];
     this.unknownInput = [];
+    this.rulesWithUnknownInput = [];
     this.unknownOutput = [];
     
     // check des règles les unes après les autres pour formater la condition finale
     this.rules.forEach(r => {
       let finalCondition: string = "";
       // D'abord on analyse le champ Condition et on le formate de manière à pouvoir l'évaluer 
-      finalCondition = this.formatCondition(r.condition);
+      finalCondition = this.formatCondition(r.condition, r.id);
       r.finalCondition = finalCondition
     }); // fin du foreach 
-    return {unknownInput: this.unknownInput};
+    return {unknownInput: this.unknownInput, rulesWithUnknownInput: this.rulesWithUnknownInput};
   }
 
-  formatCondition(condition: string) {
+  formatCondition(condition: string, id: number) {
     let finalCondition: string = "";
     // on commence par récupérer tous les mots-clés séparer par un espace
     let elements = condition.split(" ");
@@ -53,8 +55,10 @@ export class CheckRulesService {
       }
       // remplace la chaine NOT_ par !
       if (element.startsWith("NOT_")) {
+        //console.log("Dans le NOT_  element= "+element)
         finalCondition += "!";
         element = element.replace("NOT_", "");
+        //console.log("apres le NOT_  element= "+element)
       }
       if (element.startsWith("((")){
         finalCondition += "((";
@@ -166,6 +170,8 @@ export class CheckRulesService {
         finalCondition += " "
         if(this.unknownInput.indexOf(element) == -1)
           this.unknownInput.push(element);
+        if(this.rulesWithUnknownInput.indexOf(id) == -1)
+          this.rulesWithUnknownInput.push(id)
       }
         
     }// fin du for
@@ -237,7 +243,7 @@ export class CheckRulesService {
     return (outputParam)
   }
 
-  evalRules(form: any, inputMissingParamMap: Map<string, boolean>){
+  evalRules(form: any, inputMissingParamMap: Map<string, boolean>, rulesWithUnknownInput: number[]){
     this.form = form;
     // mise à jour des variables d'entrée (INPUT PARAMETERS)
     // Procedure Type
@@ -297,18 +303,25 @@ export class CheckRulesService {
     let FI: boolean = (this.form.language == "FI");
     let SV: boolean = (this.form.language == "SV");
 
-    //Eval de la règle et ajout ou non à la liste rulesApplied
-    //dans les rulesApplied le champ OutputValue est ce qui sera affiché en preview
 
     // on remplace la valeur des paramètres manquants par la valeur saisie par l'utilisateur
     if (inputMissingParamMap.size>0){
-      this.rules.forEach(r=> {
+      console.log(rulesWithUnknownInput)
+
+      this.rulesWithUnknownInput.forEach(rid=>{
+        // on récupère la règle dans la liste
+        let rule = this.rules.find( ({id}) => id === rid);
+        
+        // on vérifie pour chaque input manquant si dans la règle il faut changer le finalcondition
         for (let [key, value] of inputMissingParamMap) {
-          r.finalCondition = r.finalCondition.replace(" "+key+" ", " "+value.toString()+" ");
-          //console.log(r.finalCondition);
+          //rule!.finalCondition = rule!.finalCondition.replace(" "+key+" ", " "+value.toString()+" ");
+          rule!.finalCondition = rule!.finalCondition.replace(key,value.toString());            
         }
+        //console.log(rule)
       })
+
     }
+    //console.log(this.rules)
     // on évalue les conditions en remplissant rulesApllied et unknowoutput
     this.rules.forEach(r => {
       try {
@@ -348,7 +361,7 @@ export class CheckRulesService {
           console.warn("Rule :" + r.id + " False => " + r.finalCondition);
         } // fin du try
       } catch (e) {
-        console.error('SyntaxError on rule number : ' + r.id + "\nrule code is : " + r.condition) // It is a SyntaxError
+        console.error('SyntaxError on rule number : ' + r.id + "\nrule code is : " + r.condition + "\nfinal condition is : " + r.finalCondition) // It is a SyntaxError
       }
   
     }); // fin du foreach

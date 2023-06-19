@@ -55,6 +55,7 @@ export class PreviewComponent implements OnInit {
   inputModal: any;
   outputModal: any;
   outputMissingParamMap = new Map<string, string>();
+  rulesWithUnknownInput: number[] = [];
   inputMissingParamMap = new Map<string, boolean>();
 
   constructor(private checkRules: CheckRulesService, private ruleService: RulesService) { }
@@ -120,20 +121,17 @@ export class PreviewComponent implements OnInit {
 
   onSubmit(){
     // la méthode checkCondition formate la condition avant l'eval et fait une liste des Input manquants
-    let checkCondition : {unknownInput: string[]};
+    let checkCondition : {unknownInput: string[], rulesWithUnknownInput: number[]};
     checkCondition = this.checkRules.checkCondition(this.ruleService.getAllRules());
+    this.rulesWithUnknownInput = checkCondition.rulesWithUnknownInput;
     //récup des valeurs input manquantes dans un map
     if (this.inputMissingParamMap.size==0 && checkCondition.unknownInput.length > 0){
+      // initialise les valeur manquantes à faux
       checkCondition.unknownInput.forEach(unknownInput => {
         this.inputMissingParamMap.set(unknownInput, false)
       });
-    }
-
-    // teste si des valeurs Input param sont manquantes
-    if (checkCondition.unknownInput.length > 0){  // pour les tests <0 mais doit être >0
-      // il faut demander à l'utilisateur de les saisir via vrai/faux
+      //demande à l'utilisateur de les saisir via vrai/faux
       this.inputModal.show();
-      // et ensuite reévaluer les conditions pour mettre à jour le tableau des règles appliquées
     }else{
       // pas de Input param manquant on peut directement évaluer les conditions
       this.evalCondition();
@@ -182,7 +180,7 @@ export class PreviewComponent implements OnInit {
 
   evalCondition(){
     let resultEval : {unknownOutput : string[], rulesApllied : Rule[]}
-    resultEval = this.checkRules.evalRules(this.previewForm.value, this.inputMissingParamMap);
+    resultEval = this.checkRules.evalRules(this.previewForm.value, this.inputMissingParamMap, this.rulesWithUnknownInput);
     let outputMissingParam: string[] = resultEval.unknownOutput;
     this.rulesApplied = resultEval.rulesApllied;
     

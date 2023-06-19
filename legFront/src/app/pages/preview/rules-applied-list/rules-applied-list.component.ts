@@ -44,6 +44,8 @@ export class RulesAppliedListComponent implements OnInit {
   }
 
   editRuleOnline(r: any, newValue: string, field: string){
+    // supprime les espaces avant et après
+    newValue = newValue.trim();
     // pour l'affichage du message de confirmation 
     this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
     // sauvegarde de l'ancienne valeur fait par le listener
@@ -51,8 +53,8 @@ export class RulesAppliedListComponent implements OnInit {
 
     if(r[field]!=newValue){
       r[field] = newValue;
-      console.log("Changement détecté dans le champ "+ field + " avec la nouvelle valeur : "+ newValue);  
-      console.log("et l'ancienne valeur : "+ oldValue)
+      //console.log("Changement détecté dans le champ "+ field + " avec la nouvelle valeur : "+ newValue);  
+      //console.log("et l'ancienne valeur : "+ oldValue)
       /*
       const isNum = /^\d+$/.test(newValue);
       console.log(isNum)
@@ -90,7 +92,9 @@ export class RulesAppliedListComponent implements OnInit {
       */
       
     }else{
-      //console.log("pas de changement détecté") 
+      //r[field] = newValue.trim();
+      //console.log(newValue);
+      console.log("pas de changement détecté") 
     }
     
   }

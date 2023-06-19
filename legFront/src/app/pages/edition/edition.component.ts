@@ -75,17 +75,18 @@ export class EditionComponent implements OnInit {
 
   onSubmit() {
     this.rule.order = this.ruleForm.get('order')?.value;
-    this.rule.part  = this.ruleForm.get('part')?.value;
-    this.rule.label = this.ruleForm.get('label')?.value;
-    this.rule.condition  = this.ruleForm.get('condition')?.value;
-    this.rule.command = this.ruleForm.get('command')?.value;
+    this.rule.part  = this.ruleForm.get('part')?.value.trim();
+    this.rule.label = this.ruleForm.get('label')?.value.trim();
+    this.rule.condition  = this.ruleForm.get('condition')?.value.trim();
+    this.rule.command = this.ruleForm.get('command')?.value.trim();
     this.rule.mandatory  = this.ruleForm.get('mandatory')?.value;
+    // position and format not used
     this.rule.position = this.ruleForm.get('position')?.value;
     this.rule.format  = this.ruleForm.get('format')?.value;
 
-    this.rule.comment = this.ruleForm.get('comment')?.value;
-    this.rule.application  = this.ruleForm.get('application')?.value;
-    this.rule.example  = this.ruleForm.get('example')?.value;
+    this.rule.comment = this.ruleForm.get('comment')?.value.trim();
+    this.rule.application  = this.ruleForm.get('application')?.value.trim();
+    this.rule.example  = this.ruleForm.get('example')?.value.trim();
     this.rule.style = this.styles.find(style => style.id === this.ruleForm.get('style')?.value);
     this.rule.languages = this.languages
     //this.eventRuleService.publishEvent({type: RuleActionTypes.EDIT_RULE, rule: this.rule})  

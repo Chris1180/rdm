@@ -272,7 +272,8 @@ export class FormComponent implements OnInit {
   */
 
   editRuleOnline(r: any, newValue: string, field: any){
-    //console.log(field)
+    // supprime les espaces avant et après
+    newValue = newValue.trim();
     if(r[field]!=newValue){
       console.log("Changement détecté")
       r[field] = newValue;
