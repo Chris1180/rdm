@@ -38,11 +38,12 @@ export class CheckRulesService {
     let finalCondition: string = "";
     // on commence par récupérer tous les mots-clés séparer par un espace
     let elements = condition.split(" ");
-    
+    //console.log (elements)
     for (let index = 0; index < elements.length; index++) {
-      let element = elements[index].toLocaleUpperCase();
+      let element = elements[index].toLocaleUpperCase().trim();
       let closingBracket = false;
       let doubleclosingBracket = false;
+      
       // cas du TRUE / VRAI ...
       if (element === "TRUE" || element === "VRAI") {
         finalCondition += "true ";
@@ -306,7 +307,7 @@ export class CheckRulesService {
 
     // on remplace la valeur des paramètres manquants par la valeur saisie par l'utilisateur
     if (inputMissingParamMap.size>0){
-      console.log(rulesWithUnknownInput)
+      //console.log(rulesWithUnknownInput)
 
       this.rulesWithUnknownInput.forEach(rid=>{
         // on récupère la règle dans la liste

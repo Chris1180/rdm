@@ -1,4 +1,4 @@
-import { Component, Directive, HostBinding, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
@@ -6,7 +6,7 @@ import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { Rule } from 'src/app/model/rule';
 import { EventRuleService } from 'src/app/shared/event.rule.service';
 import { RulesService } from 'src/app/shared/rules.service';
-import { ActionEvent, AppDataState, RuleActionTypes, RuleStateEnum } from 'src/app/shared/rules.state';
+import { AppDataState, RuleStateEnum } from 'src/app/shared/rules.state';
 
 declare var window: any;
 
@@ -51,8 +51,33 @@ export class FormComponent implements OnInit {
     if ($event.type =='keydown') {
       // lorsque on presse escape alors c'est l'ancienne valeur qui est mise
       $event.target.innerText = this.oldValue 
+      $event.target.blur()
     }
   }  
+  @HostListener('keydown.enter', ['$event'])
+  onEnter($event: any) {
+    $event.target.blur();
+  }  
+
+  @HostListener("input", ["$event"])
+  onInput($event: any) {
+    // fait un contôle de saisie sur la condition
+    if($event.target.id="condition"){
+      console.log("condition detected");
+      let condition = $event.target.innerText;
+      let regex = /\d/;
+      let  found = condition.match(regex);
+      //pas chiffre 
+      if (found) {
+        $event.target.innerText = this.oldValue;
+        this.openFeedBackUser("No figure allowed in condition", "bg-danger")
+      }
+    }
+    
+
+  }
+
+
 
   constructor(private ruleService: RulesService, private router: Router, private eventRuleService: EventRuleService) { }
 

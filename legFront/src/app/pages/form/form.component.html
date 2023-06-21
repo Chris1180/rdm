@@ -128,9 +128,9 @@
                         <td #order contentEditable (blur)="editRuleOnline(r, order.innerText, 'order')">{{r.order}}</td>
                         <td #part contentEditable (blur)="editRuleOnline(r, part.innerText, 'part')">{{r.part}}</td>
                         <td #label contentEditable (blur)="editRuleOnline(r, label.innerText, 'label')">{{r.label}}</td>
-                        <td #condition contentEditable (blur)="editRuleOnline(r, condition.innerText, 'condition')">
+                        <td #condition id="condition" contentEditable (blur)="editRuleOnline(r, condition.innerText, 'condition')">
                             {{r.condition}}</td>
-                        <td #command contentEditable (blur)="editRuleOnline(r, command.innerText, 'command')">
+                        <td #command id="command" contentEditable (blur)="editRuleOnline(r, command.innerText, 'command')">
                             {{r.command}}</td>
                         <!--<td>{{r.mandatory}}</td>-->
                         <td #initialValue contentEditable
