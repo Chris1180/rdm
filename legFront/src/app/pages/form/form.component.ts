@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
 
@@ -25,7 +25,7 @@ export class FormComponent implements OnInit {
   positions!: Array<string>;
 
   errorMessage!: string;
-  filterFormGroup!: FormGroup;
+  filterFormGroup!: UntypedFormGroup;
   // pour la pagination
   currentPage: number = 0;
   pageSize: number = 10; // nombre d'éléments affiché par page
@@ -149,12 +149,12 @@ export class FormComponent implements OnInit {
       this.filterActive = true;
       //this.onFilterChange(this.currentPage);
     }else{
-      this.filterFormGroup = new FormGroup({
-        part: new FormControl("allPart"), //valeur par defaut
-        label: new FormControl("allLabel"),
-        position: new FormControl("allPosition"),
-        condition: new FormControl(""),
-        command: new FormControl("")
+      this.filterFormGroup = new UntypedFormGroup({
+        part: new UntypedFormControl("allPart"), //valeur par defaut
+        label: new UntypedFormControl("allLabel"),
+        position: new UntypedFormControl("allPosition"),
+        condition: new UntypedFormControl(""),
+        command: new UntypedFormControl("")
       });
     } 
   }// fin du ng-oninit
@@ -227,12 +227,12 @@ export class FormComponent implements OnInit {
 
   onFilterChange(page: number = 0) { 
     if (!this.filterFormGroup) {
-      this.filterFormGroup = new FormGroup({
-        part: new FormControl("allPart"), //valeur par defaut
-        label: new FormControl("allLabel"),
-        position: new FormControl("allPosition"),
-        condition: new FormControl(""),
-        command: new FormControl("")
+      this.filterFormGroup = new UntypedFormGroup({
+        part: new UntypedFormControl("allPart"), //valeur par defaut
+        label: new UntypedFormControl("allLabel"),
+        position: new UntypedFormControl("allPosition"),
+        condition: new UntypedFormControl(""),
+        command: new UntypedFormControl("")
       });            
     }
     if( this.filterFormGroup.get('part')?.value=="allPart" && 

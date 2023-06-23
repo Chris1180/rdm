@@ -1,6 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
 import { DocumentStatus } from 'src/app/model/inputParameters/documentStatus';
 import { DocumentType } from 'src/app/model/inputParameters/documentType';
@@ -31,7 +31,7 @@ export class PreviewComponent implements OnInit {
 
   rulesDataState$!: Observable<AppDataState<Rule[]>>;
   readonly RuleStateEnum=RuleStateEnum;
-  previewForm! : FormGroup;
+  previewForm! : UntypedFormGroup;
   procedureType = ProcedureType;
   documentType = DocumentType;
   documentStatus = DocumentStatus;
@@ -77,44 +77,44 @@ export class PreviewComponent implements OnInit {
     this.outputModal = new window.bootstrap.Modal(document.getElementById('outputModal'));
     this.inputModal = new window.bootstrap.Modal(document.getElementById('inputModal'));
 
-    this.previewForm = new FormGroup({
-      procedureType : new FormControl('INI'),
-      documentType : new FormControl('OPCD'),
-      documentStatus : new FormControl('ONGOING_DRAFT'),
-      docWithJoint : new FormControl('NOJOINTCOM'),
-      docWithAssoc : new FormControl('NOASSOCCOMM'),
-      reading : new FormControl('FIRST_READING'),
-      form : new FormControl('STANDARD'),
-      language : new FormControl('EN'),
-      procedureNumber : new FormControl('2023/0011(INI)'),
-      generatingDate : new FormControl({
+    this.previewForm = new UntypedFormGroup({
+      procedureType : new UntypedFormControl('INI'),
+      documentType : new UntypedFormControl('OPCD'),
+      documentStatus : new UntypedFormControl('ONGOING_DRAFT'),
+      docWithJoint : new UntypedFormControl('NOJOINTCOM'),
+      docWithAssoc : new UntypedFormControl('NOASSOCCOMM'),
+      reading : new UntypedFormControl('FIRST_READING'),
+      form : new UntypedFormControl('STANDARD'),
+      language : new UntypedFormControl('EN'),
+      procedureNumber : new UntypedFormControl('2023/0011(INI)'),
+      generatingDate : new UntypedFormControl({
         year: this.d.getFullYear(),
         month: this.d.getMonth()+1,
         day: this.d.getDate(),
       }),
-      sendToTopDate : new FormControl({
+      sendToTopDate : new UntypedFormControl({
         year: this.d.getFullYear(),
         month: this.d.getMonth()+1,
         day: this.d.getDate(),
       }),
-      tablingDate : new FormControl({
+      tablingDate : new UntypedFormControl({
         year: this.d.getFullYear(),
         month: this.d.getMonth()+1,
         day: this.d.getDate(),
       }),
-      peNumber : new FormControl('PE234.334v01.00'),
-      docRef : new FormControl('2022/057(INI)'),
-      epadesRef : new FormControl('PR\\1269845EN.docx'),
-      docLanguage : new FormControl('EN'),
-      prefixTitle : new FormControl('on'),
-      iterTitle : new FormControl('lessons learnt from the Pandora Papers and other revelations'),
-      authoringCommittee : new FormControl('Committee on Constitutional Affairs'),
-      leadCommittee : new FormControl('for the Committee on Constitutional Affairs'),
-      prefixListOfRapporteurs : new FormControl(''),
-      listOfRapporteurs : new FormControl(['Jan Mulder']),
-      suffixListOfRapporteurs : new FormControl(''),
-      authorOfProposal : new FormControl(['Sara Matthieu']),
-      listOfAssoc : new FormControl(["Colm Markey, Committee on Transport and Tourism"]),
+      peNumber : new UntypedFormControl('PE234.334v01.00'),
+      docRef : new UntypedFormControl('2022/057(INI)'),
+      epadesRef : new UntypedFormControl('PR\\1269845EN.docx'),
+      docLanguage : new UntypedFormControl('EN'),
+      prefixTitle : new UntypedFormControl('on'),
+      iterTitle : new UntypedFormControl('lessons learnt from the Pandora Papers and other revelations'),
+      authoringCommittee : new UntypedFormControl('Committee on Constitutional Affairs'),
+      leadCommittee : new UntypedFormControl('for the Committee on Constitutional Affairs'),
+      prefixListOfRapporteurs : new UntypedFormControl(''),
+      listOfRapporteurs : new UntypedFormControl(['Jan Mulder']),
+      suffixListOfRapporteurs : new UntypedFormControl(''),
+      authorOfProposal : new UntypedFormControl(['Sara Matthieu']),
+      listOfAssoc : new UntypedFormControl(["Colm Markey, Committee on Transport and Tourism"]),
     });
   }// fin du ngOnInit
 

@@ -1,6 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Language } from 'src/app/model/inputParameters/language';
 import { Lang } from 'src/app/model/lang';
@@ -17,7 +17,7 @@ import { StyleService } from 'src/app/shared/style.service';
   styleUrls: ['./edition.component.css']
 })
 export class EditionComponent implements OnInit {
-  ruleForm! : FormGroup;
+  ruleForm! : UntypedFormGroup;
   rule! :Rule;
   languages! : Lang[];
   errorMessage! : string;
@@ -45,22 +45,22 @@ export class EditionComponent implements OnInit {
       data => this.styles = data
     )
 
-    this.ruleForm = new FormGroup({
-      id : new FormControl(this.rule.id),
-      order : new FormControl(this.rule.order),
-      part : new FormControl(this.rule.part),
-      label : new FormControl(this.rule.label),
-      condition : new FormControl(this.rule.condition),
-      command : new FormControl(this.rule.command),
-      mandatory : new FormControl(this.rule.mandatory),
-      languages : new FormControl('EN'),
-      initialValue : new FormControl(this.rule.initialValue),
-      position : new FormControl(this.rule.position),
-      format : new FormControl(this.rule.format),
-      style : new FormControl(this.rule.style?.id),
-      comment : new FormControl(this.rule.comment),
-      application : new FormControl(this.rule.application),
-      example : new FormControl(this.rule.example)
+    this.ruleForm = new UntypedFormGroup({
+      id : new UntypedFormControl(this.rule.id),
+      order : new UntypedFormControl(this.rule.order),
+      part : new UntypedFormControl(this.rule.part),
+      label : new UntypedFormControl(this.rule.label),
+      condition : new UntypedFormControl(this.rule.condition),
+      command : new UntypedFormControl(this.rule.command),
+      mandatory : new UntypedFormControl(this.rule.mandatory),
+      languages : new UntypedFormControl('EN'),
+      initialValue : new UntypedFormControl(this.rule.initialValue),
+      position : new UntypedFormControl(this.rule.position),
+      format : new UntypedFormControl(this.rule.format),
+      style : new UntypedFormControl(this.rule.style?.id),
+      comment : new UntypedFormControl(this.rule.comment),
+      application : new UntypedFormControl(this.rule.application),
+      example : new UntypedFormControl(this.rule.example)
     });
     
     // Par défaut l'initial value de la règle correspond à la langue EN
