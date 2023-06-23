@@ -19,7 +19,7 @@
     "@angular/platform-browser": "^16.1.2",
     "@angular/platform-browser-dynamic": "^16.1.2",
     "@angular/router": "^16.1.2",
-    "@ng-bootstrap/ng-bootstrap": "^14.2.0",
+    "@ng-bootstrap/ng-bootstrap": "^15.0.1",
     "@popperjs/core": "^2.10.2",
     "angular2-uuid": "^1.1.1",
     "bootstrap": "^5.2.2",
