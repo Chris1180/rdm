@@ -9,6 +9,7 @@ import { Rule } from 'src/app/model/rule';
 export class PreviewDisplayPageComponent implements OnInit {
 
   @Input() rules:Rule[] | null=null;
+  @Input() partSelectedForPreview?:string;
   value = {position: 'absolute',  top: '10px', left: '10px', 'font-weight': 'bold', 'font-size': '10px'}
   constructor() { }
 

@@ -278,14 +278,13 @@
                         </label>
                     </div>
                 </div>
-                <div style="text-align: center;">
-                    <button class="btn btn-small ico-valide-cerc btn-green" type="submit" [disabled]="!previewForm.valid">Preview</button>
-                <!--<button class="btn btn-small ico-valide-cerc btn-green" type="submit" [disabled]="!previewForm.valid">Rules applied</button>
-                <button class="btn btn-small ico-valide-cerc btn-green" type="submit" [disabled]="!previewForm.valid">Cover Page</button>
-                <button class="btn btn-small ico-valide-cerc btn-green" type="submit" [disabled]="!previewForm.valid">Headings</button>
-                <button class="btn btn-small ico-valide-cerc btn-green" type="submit" [disabled]="!previewForm.valid">Citations</button>
-                <button class="btn btn-small ico-valide-cerc btn-green" type="submit" [disabled]="!previewForm.valid">Structured text</button>-->
+                <!-- Buttons for preview-->
+                <div class="text-center"> 
+                    <div *ngFor="let part of partUniqueValues" role="group" class="btn-group">
+                        <button class="btn btn-small ico-valide-cerc btn-green" type="submit" (click)="assignValue(part)" [disabled]="!previewForm.valid">{{part}}</button>
+                    </div>
                 </div>
+                
             </form>
         </ng-container>
     </ng-container>
@@ -300,11 +299,11 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content" style="margin: 0 ; padding: 0">
                 <div class="modal-header">
-                <h5 class="modal-title" id="previewModalLabel">Preview of the cover page only</h5>
+                <h5 class="modal-title" id="previewModalLabel">Preview of the {{partSelectedForPreview}}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <app-preview-display-page [rules]="rulesApplied"></app-preview-display-page>
+                    <app-preview-display-page [rules]="rulesApplied" [partSelectedForPreview]="partSelectedForPreview"></app-preview-display-page>
                 </div>
                 
             </div>
@@ -315,7 +314,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Preview of the cover page only</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Preview of the {{partSelectedForPreview}}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                     <div class="modal-body" >
@@ -337,7 +336,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title">Input for the cover page only</h5>
+                <h5 class="modal-title">Input for the {{partSelectedForPreview}}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                     <div class="modal-body" >
