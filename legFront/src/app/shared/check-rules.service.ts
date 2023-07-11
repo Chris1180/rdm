@@ -16,8 +16,8 @@ export class CheckRulesService {
 
   constructor() { }
 
-  checkCondition(allRules: Rule[]) {
-    this.rules = allRules;
+  checkCondition(allRulesFromSelectedPart: Rule[], selectedPart: string) {
+    this.rules = allRulesFromSelectedPart;
     // reinitialise la liste des règles
     this.rulesApplied = [];
     this.unknownInput = [];
@@ -26,10 +26,13 @@ export class CheckRulesService {
     
     // check des règles les unes après les autres pour formater la condition finale
     this.rules.forEach(r => {
-      let finalCondition: string = "";
+      if (r.part==selectedPart) {
+        let finalCondition: string = "";
       // D'abord on analyse le champ Condition et on le formate de manière à pouvoir l'évaluer 
       finalCondition = this.formatCondition(r.condition, r.id);
       r.finalCondition = finalCondition
+      }
+      
     }); // fin du foreach 
     return {unknownInput: this.unknownInput, rulesWithUnknownInput: this.rulesWithUnknownInput};
   }
@@ -244,7 +247,7 @@ export class CheckRulesService {
     return (outputParam)
   }
 
-  evalRules(form: any, inputMissingParamMap: Map<string, boolean>, rulesWithUnknownInput: number[]){
+  evalRules(form: any, inputMissingParamMap: Map<string, boolean>, rulesWithUnknownInput: number[], partSelectedForPreview: string){
     this.form = form;
     // mise à jour des variables d'entrée (INPUT PARAMETERS)
     // Procedure Type
@@ -325,45 +328,48 @@ export class CheckRulesService {
     //console.log(this.rules)
     // on évalue les conditions en remplissant rulesApllied et unknowoutput
     this.rules.forEach(r => {
-      try {
-        if (eval(r.finalCondition)) {
-          
-          console.log("Rule :" + r.id + " True => " + r.finalCondition);
-          this.rulesApplied.push(r);
-  
-          let commandOutputParam : string ="";
-          let outputCommand : boolean = false;
-          r.outputValue = "";
-          // parcour de la chaine de caratère command pour en extraire les infos
-          for (let index = 0; index < r.command.length; index++) {
-            const char = r.command[index];
-            if (char=='['){
-              // debut d'un paramètre => on enregistre la commande dans commandOutputParam
-              commandOutputParam = char;
-              outputCommand = true;
-              continue;
-            }
-            if (char==']'){
-              // fin d'un paramètre
-              commandOutputParam += char;
-              outputCommand = false;
-              r.outputValue += this.getOutputParameter(commandOutputParam, r.id, r.initialValue);
-              continue;
-            }
-            if (outputCommand) {
-              commandOutputParam += char;
-            }else{
-              // le char est directement repris dans le outputValue
-              //console.log(char)
-              r.outputValue! += char;
-            }
-          } // fin du for
-        } else {
-          console.warn("Rule :" + r.id + " False => " + r.finalCondition);
-        } // fin du try
-      } catch (e) {
-        console.error('SyntaxError on rule number : ' + r.id + "\nrule code is : " + r.condition + "\nfinal condition is : " + r.finalCondition) // It is a SyntaxError
+      if(partSelectedForPreview==r.part){
+        try {
+          if (eval(r.finalCondition)) {
+            
+            console.log("Rule :" + r.id + " True => " + r.finalCondition);
+            this.rulesApplied.push(r);
+    
+            let commandOutputParam : string ="";
+            let outputCommand : boolean = false;
+            r.outputValue = "";
+            // parcour de la chaine de caratère command pour en extraire les infos
+            for (let index = 0; index < r.command.length; index++) {
+              const char = r.command[index];
+              if (char=='['){
+                // debut d'un paramètre => on enregistre la commande dans commandOutputParam
+                commandOutputParam = char;
+                outputCommand = true;
+                continue;
+              }
+              if (char==']'){
+                // fin d'un paramètre
+                commandOutputParam += char;
+                outputCommand = false;
+                r.outputValue += this.getOutputParameter(commandOutputParam, r.id, r.initialValue);
+                continue;
+              }
+              if (outputCommand) {
+                commandOutputParam += char;
+              }else{
+                // le char est directement repris dans le outputValue
+                //console.log(char)
+                r.outputValue! += char;
+              }
+            } // fin du for
+          } else {
+            console.warn("Rule :" + r.id + " False => " + r.finalCondition);
+          } // fin du try
+        } catch (e) {
+          console.error('SyntaxError on rule number : ' + r.id + "\nrule code is : " + r.condition + "\nfinal condition is : " + r.finalCondition) // It is a SyntaxError
+        }
       }
+      
   
     }); // fin du foreach
 

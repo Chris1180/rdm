@@ -126,10 +126,10 @@ export class PreviewComponent implements OnInit {
     //console.log(this.partSelectedForPreview);
     // la méthode checkCondition formate la condition avant l'eval et fait une liste des Input manquants
     let checkCondition : {unknownInput: string[], rulesWithUnknownInput: number[]};
-    checkCondition = this.checkRules.checkCondition(this.ruleService.getAllRules());
+    checkCondition = this.checkRules.checkCondition(this.ruleService.getAllRules(), this.partSelectedForPreview);
     this.rulesWithUnknownInput = checkCondition.rulesWithUnknownInput;
     //récup des valeurs input manquantes dans un map
-    if (this.inputMissingParamMap.size==0 && checkCondition.unknownInput.length > 0){
+    if (checkCondition.unknownInput.length > 0){  // pour ne pas redemander à chaque fois les inputs manquants: this.inputMissingParamMap.size==0 && 
       // initialise les valeur manquantes à faux
       checkCondition.unknownInput.forEach(unknownInput => {
         this.inputMissingParamMap.set(unknownInput, false)
@@ -184,7 +184,7 @@ export class PreviewComponent implements OnInit {
 
   evalCondition(){
     let resultEval : {unknownOutput : string[], rulesApllied : Rule[]}
-    resultEval = this.checkRules.evalRules(this.previewForm.value, this.inputMissingParamMap, this.rulesWithUnknownInput);
+    resultEval = this.checkRules.evalRules(this.previewForm.value, this.inputMissingParamMap, this.rulesWithUnknownInput, this.partSelectedForPreview);
     let outputMissingParam: string[] = resultEval.unknownOutput;
     this.rulesApplied = resultEval.rulesApllied;
     
