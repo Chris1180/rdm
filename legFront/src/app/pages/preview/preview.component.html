@@ -51,6 +51,7 @@
                 </div>
                 <!-- 2nd line Input Parameters-->
                 <div class="row mb-3 form-group">
+                    <!--
                     <div class="col-sm-3">
                         <div class="input-group">
                             <label class="col-4 col-form-label col-form-label-sm">Doc With Joint?</label>
@@ -59,7 +60,7 @@
                                 </option>
                             </select>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="col-sm-3">
                         <div class="input-group">
                             <label class="col-4 col-form-label col-form-label-sm">Doc With Assoc?</label>
@@ -77,14 +78,14 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-sm-2">
+                    <!--<div class="col-sm-2">
                         <div class="input-group">
                             <label class="col-4 col-form-label col-form-label-sm">Form</label>
                             <select class="form-select form-select-sm" formControlName="form">
                                 <option *ngFor="let p of form | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}} </option>
                             </select>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="col-sm-2">
                         <div class="input-group">
                             <label class="col-4 col-form-label col-form-label-sm">Language</label>
@@ -221,6 +222,7 @@
                         </div>
                     </div>
                 </div>
+                <!--
                 <div class="row mb-1 form-group">
                     <div class="col-sm-6">
                         <ng-template #TooltipAU>
@@ -245,7 +247,7 @@
                             </select>
                         </div>
                     </div>
-                </div>
+                </div>-->
                 <div class="row mb-1 form-group">
                     <div class="col-sm-4">
                         <label class="col-form-label col-form-label-sm">[List Of Rapporteurs]</label>
@@ -267,6 +269,7 @@
                             Multiple selection allowed
                         </label>
                     </div>
+                    <!--
                     <div class="col-sm-4">
                         <label class="col-form-label col-form-label-sm">[List Of Assoc / Rapporteurs]</label>
                         <select class="form-select form-select-sm" multiple formControlName="listOfAssoc">
@@ -276,15 +279,37 @@
                         <label class="col-form-label form-text ico-info">
                             Multiple selection allowed
                         </label>
-                    </div>
+                    </div>-->
                 </div>
+                
+                <!-- test tableau case à cocher-->
+                <table class="table table-sm table-bordered">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th *ngFor="let header of headers">{{ header }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let committee of ListOfCommittee ; let c = index">
+                        <th>{{ committee }}</th>
+                        <td *ngFor="let header of headers; let i = index">
+                        <input *ngIf="i==0" type="radio" name="{{header}}" (change)="onChange(i, committee, $event)" [checked]="c===0">
+                        <input *ngIf="i==1" type="radio" name="{{header}}" (change)="onChange(i, committee, $event)" [checked]="c===1">
+                        <input *ngIf="i!=0 && i!=1" type="checkbox" (change)="onChange(i, committee, $event)" [checked]="c===0 && (i===5 || i===3)">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- fin test tableau case à cocher-->
+
                 <!-- Buttons for preview-->
                 <div class="text-center"> 
                     <div *ngFor="let part of partUniqueValues" role="group" class="btn-group">
                         <button class="btn btn-small ico-valide-cerc btn-green" type="submit" (click)="assignValue(part)" [disabled]="!previewForm.valid">{{part}}</button>
                     </div>
                 </div>
-                
+
             </form>
         </ng-container>
     </ng-container>
@@ -349,11 +374,13 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-small ico-delete" (click)="onIgnoreInputParam()">Ignore</button>
                     <button type="button" class="btn btn-small ico-valide-cerc btn-green me-2" (click)="onSubmitInputParam()">Submit Values</button>
-                  </div>
+                </div>
             </div>
         </div>     
     </div>
     
+    
+
     <br>
     <!--tab of rules part-->
     <app-rules-applied-list [rulesApplied]="rulesApplied"></app-rules-applied-list>

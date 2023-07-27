@@ -1,6 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormArray, FormControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
 import { DocumentStatus } from 'src/app/model/inputParameters/documentStatus';
 import { DocumentType } from 'src/app/model/inputParameters/documentType';
@@ -59,8 +59,40 @@ export class PreviewComponent implements OnInit {
   outputMissingParamMap = new Map<string, string>();
   rulesWithUnknownInput: number[] = [];
   inputMissingParamMap = new Map<string, boolean>();
+  // pour le tableau des inputs
+  ListOfCommittee: string[] = [
+    'Constitutional Affairs',
+    'Foreign Affairs',
+    'Agriculture and Rural Development',
+    'Budgetary Conciliation Committee',
+    'Budgets',
+    'Budgetary Control',
+    'Culture and Education',
+    'Development',
+    'Human Rights',
+    'Economic and Monetary Affairs',
+    'Employment and Social Affairs',
+    'Environment, Public Health and Food Safety',
+    'Women’s Rights and Gender Equality',
+    'Tax Matters',
+    'Civil Liberties, Justice and Home Affairs',
+    'Joint ITRE - TRAN',
+    'Joint IMCO - TRAN',
+    'Joint DEVE - FEMM',
+    'Joint JURI - LIBE - AFCO',
+    'Joint CONT - LIBE',
+  
+  ];
 
-  constructor(private checkRules: CheckRulesService, private ruleService: RulesService) { }
+  headers = ['Authoring Committee [JOINTCOM]', 'Lead Committee', 'Drafting Letter \n [LETTER(S)]', 'Drafting Opinion [OPINION(S)]', 'Drafting Position [POSITION(S)]', 'List Of Assoc / Rapporteurs [ASSOCCOMM]']
+  
+
+
+
+  constructor(private checkRules: CheckRulesService, private ruleService: RulesService) { 
+    const numRows = this.ListOfCommittee.length;
+    const numCols = this.headers.length;
+  }
 
   ngOnInit(): void {
     
@@ -84,10 +116,10 @@ export class PreviewComponent implements OnInit {
       procedureType : new FormControl<string>('INI'),
       documentType : new FormControl<string>('OPCD'),
       documentStatus : new FormControl<string>('ONGOING_DRAFT'),
-      docWithJoint : new FormControl<string>('NOJOINTCOM'),
-      docWithAssoc : new FormControl<string>('NOASSOCCOMM'),
+      docWithJoint : new FormControl<string>('NOJOINTCOM'), // to be removed
+      docWithAssoc : new FormControl<string>('NOASSOCCOMM'), // to be removed
       reading : new FormControl<string>('FIRST_READING'),
-      form : new FormControl<string>('STANDARD'),
+      form : new FormControl<string>('STANDARD'), // to be removed
       language : new FormControl<string>('EN'),
       procedureNumber : new FormControl<string>('2023/0011(INI)'),
       generatingDate : new UntypedFormControl({
@@ -115,9 +147,12 @@ export class PreviewComponent implements OnInit {
       leadCommittee : new FormControl<string>('for the Committee on Constitutional Affairs'),
       prefixListOfRapporteurs : new FormControl<string>(''),
       listOfRapporteurs : new FormControl<[string]>(['Jan Mulder']),
-      suffixListOfRapporteurs : new FormControl<string>(''),
+      suffixListOfRapporteurs : new FormControl<string>(''), // to be checked if used
       authorOfProposal : new FormControl<[string]>(['Sara Matthieu']),
-      listOfAssoc : new FormControl<[string]>(["Colm Markey, Committee on Transport and Tourism"]),
+      listOfAssoc : new FormControl<[string]>(["Constitutional Affairs"]),
+      letters : new FormControl<any>([]),
+      opinions : new FormControl<any>(["Constitutional Affairs"]),
+      positions : new FormControl<any>([]),
     });
   }// fin du ngOnInit
 
@@ -205,5 +240,72 @@ export class PreviewComponent implements OnInit {
 
   assignValue(part:string){
     this.partSelectedForPreview=part;
+  }
+
+  onChange(index:number, committee:string, event:any){
+    switch (index) {
+      case 0:
+        this.previewForm.get('authoringCommittee')?.setValue(committee)
+        break;
+      case 1:
+        this.previewForm.get('leadCommittee')?.setValue(committee)
+        break;
+      case 2:
+        let letters= this.previewForm.get('letters')?.value;
+        if (event.target.checked) {
+          letters.push(committee);
+        }else{
+          const indexASupprimer: number = letters.indexOf(committee);
+          if (indexASupprimer!=-1) {
+            letters.splice(indexASupprimer,1)
+          }
+        }
+        console.log(this.previewForm.get('letters')?.value);
+        this.previewForm.get('letters')?.setValue(letters);
+        break;
+      case 3:
+        let opinions= this.previewForm.get('opinions')?.value;
+        if (event.target.checked) {
+          opinions.push(committee);
+        }else{
+          const indexASupprimer: number = opinions.indexOf(committee);
+          if (indexASupprimer!=-1) {
+            opinions.splice(indexASupprimer,1)
+          }
+        }
+        console.log(this.previewForm.get('opinions')?.value);
+        this.previewForm.get('opinions')?.setValue(opinions);
+        break;
+      case 4:
+        let positions= this.previewForm.get('positions')?.value;
+        if (event.target.checked) {
+          positions.push(committee);
+        }else{
+          const indexASupprimer: number = positions.indexOf(committee);
+          if (indexASupprimer!=-1) {
+            positions.splice(indexASupprimer,1)
+          }
+        }
+        console.log(this.previewForm.get('positions')?.value);
+        this.previewForm.get('positions')?.setValue(positions);
+        break;
+      case 5:
+        let listOfAssoc= this.previewForm.get('listOfAssoc')?.value;
+        if (event.target.checked) {
+          listOfAssoc.push(committee);
+        }else{
+          const indexASupprimer: number = listOfAssoc.indexOf(committee);
+          if (indexASupprimer!=-1) {
+            listOfAssoc.splice(indexASupprimer,1)
+          }
+        }
+        this.previewForm.get('listOfAssoc')?.setValue(listOfAssoc);
+      break;
+      default:
+        break;
+    }
+      
+    
+    //console.log(index, committee)
   }
 }

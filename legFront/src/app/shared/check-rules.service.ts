@@ -129,8 +129,16 @@ export class CheckRulesService {
         finalCondition += " "
         continue;
       }
-      // teste les valeurs de form
-      if (element === "STANDARD" || element === "POSITION" || element === "LETTER") {
+      // teste les valeurs de form (à supprimer après modif)
+      /*if (element === "STANDARD") {
+        finalCondition += element 
+        if(closingBracket) finalCondition += ")"
+        if(doubleclosingBracket) finalCondition += "))"
+        finalCondition += " "
+        continue;
+      }*/
+      // teste les valeurs déduites du tableau
+      if (element === "LETTERS" || element === "LETTER" || element === "POSITION" || element === "POSITIONS" || element === "OPINION" || element === "OPINIONS") {
         finalCondition += element 
         if(closingBracket) finalCondition += ")"
         if(doubleclosingBracket) finalCondition += "))"
@@ -266,21 +274,23 @@ export class CheckRulesService {
     let FINALISED_DRAFT: boolean = (this.form.documentStatus == "FINALISED_DRAFT");
     let SENT_TO_TOP: boolean = (this.form.documentStatus == "SENT_TO_TOP");
     let TABLED: boolean = (this.form.documentStatus == "TABLED");
-    // Doc with Joint
-    let JOINTCOMM: boolean = (this.form.docWithJoint == "JOINTCOMM");
-    let NOJOINTCOM: boolean = (this.form.docWithJoint == "NOJOINTCOM")
-    // Doc with Assoc
-    let ASSOCCOMM: boolean = (this.form.docWithAssoc == "ASSOCCOMM");
-    let NOASSOCCOMM: boolean = (this.form.docWithAssoc == "NOASSOCCOMM");
+    // Doc with Joint (le champ docWithJoint du formulaire ne sera plus utilisé puisque déterminé par la valeur du tableau 'Authoring Committee')
+    let authoringCommittee = String(this.form.authoringCommittee);
+    let JOINTCOMM: boolean = (authoringCommittee.startsWith('Joint'));
+    let NOJOINTCOM: boolean = !JOINTCOMM; // to be checked if used
+    // Doc with Assoc (le champ docWithAssoc du formulaire ne sera plus utilisé puisque déterminé par la valeur du tableau 'List of Assoc')
+    let listOfAssoc = String(this.form.listOfAssoc).split(',')
+    let ASSOCCOMM: boolean = (listOfAssoc.length === 1 && listOfAssoc[0].length!=0)|| listOfAssoc.length>1;
+    let NOASSOCCOMM: boolean = !ASSOCCOMM; // not used
     // Reading
     let FIRST_READING: boolean = (this.form.reading == "FIRST_READING");
     let SECOND_READING: boolean = (this.form.reading == "SECOND_READING");
     let THIRD_READING: boolean = (this.form.reading == "THIRD_READING");
     let RECAST: boolean = (this.form.reading == "RECAST");
     // Form
-    let STANDARD: boolean = (this.form.form == "STANDARD");
-    let POSITION: boolean = (this.form.form == "POSITION");
-    let LETTER: boolean = (this.form.form == "LETTER")
+    //let STANDARD: boolean = (this.form.form == "STANDARD");
+    //let POSITION: boolean = (this.form.form == "POSITION");
+    //let LETTER: boolean = (this.form.form == "LETTER")
     // Language
     let BG: boolean = (this.form.language == "BG");
     let ES: boolean = (this.form.language == "ES");
@@ -306,7 +316,19 @@ export class CheckRulesService {
     let SL: boolean = (this.form.language == "SL");
     let FI: boolean = (this.form.language == "FI");
     let SV: boolean = (this.form.language == "SV");
-
+    
+    // Drafting Letter
+    let letters = String(this.form.letters).split(',')
+    let LETTER: boolean = (letters.length === 1 && letters[0].length!=0); 
+    let LETTERS: boolean = (letters.length > 1);
+    // Drafting Opinion
+    let opinions = String(this.form.opinions).split(',')
+    let OPINION: boolean = (opinions.length === 1 && opinions[0].length!=0);
+    let OPINIONS: boolean = (opinions.length > 1);
+    // Drafting Position
+    let positions = String(this.form.positions).split(',')
+    let POSITION: boolean = (positions.length === 1 && positions[0].length!=0); 
+    let POSITIONS: boolean = (positions.length > 1);
 
     // on remplace la valeur des paramètres manquants par la valeur saisie par l'utilisateur
     if (inputMissingParamMap.size>0){
