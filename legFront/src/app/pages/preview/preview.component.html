@@ -296,7 +296,7 @@
                         <td *ngFor="let header of headers; let i = index">
                         <input *ngIf="i==0" type="radio" name="{{header}}" (change)="onChange(i, committee, $event)" [checked]="c===0">
                         <input *ngIf="i==1" type="radio" name="{{header}}" (change)="onChange(i, committee, $event)" [checked]="c===1">
-                        <input *ngIf="i!=0 && i!=1" type="checkbox" (change)="onChange(i, committee, $event)" [checked]="c===0 && (i===5 || i===3)">
+                        <input *ngIf="i!=0 && i!=1" type="checkbox" class="cb{{i}}" (change)="onChange(i, committee, $event)" [checked]="c===0 && (i===5 || i===3)">
                         </td>
                     </tr>
                     </tbody>

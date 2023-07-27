@@ -1,6 +1,6 @@
 import { KeyValue } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
 import { DocumentStatus } from 'src/app/model/inputParameters/documentStatus';
 import { DocumentType } from 'src/app/model/inputParameters/documentType';
@@ -243,6 +243,7 @@ export class PreviewComponent implements OnInit {
   }
 
   onChange(index:number, committee:string, event:any){
+    
     switch (index) {
       case 0:
         this.previewForm.get('authoringCommittee')?.setValue(committee)
@@ -260,7 +261,8 @@ export class PreviewComponent implements OnInit {
             letters.splice(indexASupprimer,1)
           }
         }
-        console.log(this.previewForm.get('letters')?.value);
+        this.uncheckboxes(3);
+        this.uncheckboxes(4);
         this.previewForm.get('letters')?.setValue(letters);
         break;
       case 3:
@@ -273,7 +275,8 @@ export class PreviewComponent implements OnInit {
             opinions.splice(indexASupprimer,1)
           }
         }
-        console.log(this.previewForm.get('opinions')?.value);
+        this.uncheckboxes(2);
+        this.uncheckboxes(4);
         this.previewForm.get('opinions')?.setValue(opinions);
         break;
       case 4:
@@ -286,7 +289,8 @@ export class PreviewComponent implements OnInit {
             positions.splice(indexASupprimer,1)
           }
         }
-        console.log(this.previewForm.get('positions')?.value);
+        this.uncheckboxes(2);
+        this.uncheckboxes(3);
         this.previewForm.get('positions')?.setValue(positions);
         break;
       case 5:
@@ -304,8 +308,25 @@ export class PreviewComponent implements OnInit {
       default:
         break;
     }
-      
+  }
+
+  uncheckboxes(column: number){
+    var cbs = Array.from(document.getElementsByClassName("cb"+column)) as HTMLInputElement[];
     
-    //console.log(index, committee)
+    for (var i = 0; i < cbs.length; i++) {
+      //console.log(cbs[i].checked)  
+      cbs[i].checked = false;
+    }
+    switch (column) {
+      case 2:
+        this.previewForm.get('letters')?.setValue([]);
+        break;
+      case 3:
+        this.previewForm.get('opinions')?.setValue([]);
+        break;
+      case 4:
+      this.previewForm.get('positions')?.setValue([]);
+      break;
+    }
   }
 }
