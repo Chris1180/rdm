@@ -39,8 +39,62 @@ export class CheckRulesService {
 
   formatCondition(condition: string, id: number) {
     let finalCondition: string = "";
-    // on commence par récupérer tous les mots-clés séparer par un espace
+    let param: string = "";
+    let listOfKnownParam = [
+      "||", "&&", "true", "false" , "",
+      "INI", "COD", "INL", "DEC", "REG",
+      "RPCD", "RPCF", "OPCD", "OPCF",
+      "ONGOING_DRAFT", "FINALISED_DRAFT", "SENT_TO_TOP", "TABLED",
+      "JOINTCOMM", "NOJOINTCOM",
+      "ASSOCCOMM", "NOASSOCCOMM",
+      "FIRST_READING", "SECOND_READING", "THIRD_READING", "RECAST",
+      "LETTERS", "LETTER", "POSITION", "POSITIONS", "OPINION", "OPINIONS",
+      "BG", "ES", "CS", "DA", "DE", "ET", "EL", "EN", "FR", "GA", "HR", "IT", "LV", "LT", "HU", "MT", "NL", "PL", "PT", "RO", "SK", "SL", "FI", "SV"
+    ]
+    // on parcour la chaine caractère par caractère
+    console.log("condition initiale:")
+    console.log(condition)
+    for (let index = 0; index < condition.length; index++) {
+      const element = condition[index].toUpperCase();
+      console.log ("element: "+ element)
+      if (element === '(') {
+        finalCondition+=element;
+        continue;
+      };
+      if (element === ' ' || index==condition.length-1){
+        if (param.length==0) continue; // cas de plusieurs espaces
+        if (element != ' ') param+=element;
+        if (param == 'OR') param = '||';
+        if (param == 'AND') param = '&&';
+        if (param == 'TRUE') param = 'true';
+        if (param == 'FALSE') param = 'false';
+        if (param.startsWith('NOT_')) param = param.replace("NOT_", "!"); 
+        if (index==condition.length-1) finalCondition = finalCondition+param
+        else finalCondition = finalCondition+param+" ";
+        
+        // check si le paramètre est connu
+        //param.replace("!", "")
+        var re = /[!)\s]+/g; 
+        let paramTobeChecked = param.replace(re, "")
+        console.log ("param to be checked : "+paramTobeChecked)
+        if (listOfKnownParam.indexOf(paramTobeChecked) == -1) {
+          if(this.unknownInput.indexOf(paramTobeChecked) == -1)
+          this.unknownInput.push(paramTobeChecked);
+          if(this.rulesWithUnknownInput.indexOf(id) == -1)
+          this.rulesWithUnknownInput.push(id)
+        }
+        
+        // reinit de param pour la suite 
+        console.log("param : "+param)
+        param="";
+      }else {
+        param+=element;
+      }
+    }
+    /*
+    // on commence par récupérer tous les mots-clés séparés par un espace
     let elements = condition.split(" ");
+    //(OPCD or OPCF) and (INI or INL or DEC) and (OPINION or OPINIONS) and JOINTCOMM
     //console.log (elements)
     for (let index = 0; index < elements.length; index++) {
       let element = elements[index].toLocaleUpperCase().trim();
@@ -129,14 +183,7 @@ export class CheckRulesService {
         finalCondition += " "
         continue;
       }
-      // teste les valeurs de form (à supprimer après modif)
-      /*if (element === "STANDARD") {
-        finalCondition += element 
-        if(closingBracket) finalCondition += ")"
-        if(doubleclosingBracket) finalCondition += "))"
-        finalCondition += " "
-        continue;
-      }*/
+      
       // teste les valeurs déduites du tableau
       if (element === "LETTERS" || element === "LETTER" || element === "POSITION" || element === "POSITIONS" || element === "OPINION" || element === "OPINIONS") {
         finalCondition += element 
@@ -187,7 +234,9 @@ export class CheckRulesService {
       }
         
     }// fin du for
-
+    */
+   console.log("condition retournée")
+   console.log (finalCondition)
     return finalCondition
   }
 
