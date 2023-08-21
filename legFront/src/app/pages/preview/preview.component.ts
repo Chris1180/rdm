@@ -144,7 +144,7 @@ export class PreviewComponent implements OnInit {
       prefixTitle : new FormControl<string>('on'),
       iterTitle : new FormControl<string>('lessons learnt from the Pandora Papers and other revelations'),
       authoringCommittee : new FormControl<string>('Committee on Constitutional Affairs'),
-      leadCommittee : new FormControl<string>('for the Committee on Constitutional Affairs'),
+      leadCommittee : new FormControl<string>('Committee on Foreign Affairs'),
       prefixListOfRapporteurs : new FormControl<string>(''),
       listOfRapporteurs : new FormControl<[string]>(['Jan Mulder']),
       suffixListOfRapporteurs : new FormControl<string>(''), // to be checked if used

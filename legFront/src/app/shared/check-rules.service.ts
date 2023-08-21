@@ -296,7 +296,22 @@ export class CheckRulesService {
           this.form.suffixListOfRapporteurs = initialValue;
           return '';
         }
-    }
+      case OutputParametersList['[COMMITTEE HAVING OPINION]']:
+        return this.form.opinions;
+      case OutputParametersList['[LIST OF COMMITTEES HAVING OPINION]']:
+        return this.form.opinions.join(", ");
+      case OutputParametersList['[COMMITTEE HAVING POSITION]']:
+        return this.form.positions;
+      case OutputParametersList['[LIST OF COMMITTEES HAVING POSITION]']:
+        return this.form.positions.join(", ");
+      case OutputParametersList['[COMMITTEE HAVING LETTER]']:
+        return this.form.letters;
+      case OutputParametersList['[LIST OF COMMITTEES HAVING LETTER]']:
+        return this.form.letters.join(", ");
+      case OutputParametersList['[A9-0227/2019]']:
+        return "[A9-0227/2019]";
+        
+    }// fin du switch
     // ajout du paramètre manquant si pas déjà dans la liste
     if (this.unknownOutput.indexOf(outputParam)==-1){
       this.unknownOutput.push(outputParam)
