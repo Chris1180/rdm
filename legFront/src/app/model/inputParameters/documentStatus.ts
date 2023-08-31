@@ -2,5 +2,6 @@ export enum DocumentStatus {
     ONGOING_DRAFT = "ONGOING_DRAFT",
     FINALISED_DRAFT = "FINALISED_DRAFT",
     SENT_TO_TOP = "SENT_TO_TOP",
+    AFTER_VOTE = "AFTER_VOTE",
     TABLED = "TABLED"
 }

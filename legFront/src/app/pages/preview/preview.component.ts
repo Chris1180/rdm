@@ -2,6 +2,7 @@ import { KeyValue } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
+import { DocLegSpecialization } from 'src/app/model/inputParameters/docLegSpecialization';
 import { DocumentStatus } from 'src/app/model/inputParameters/documentStatus';
 import { DocumentType } from 'src/app/model/inputParameters/documentType';
 import { DocWithAssoc } from 'src/app/model/inputParameters/docWithAssoc';
@@ -38,6 +39,7 @@ export class PreviewComponent implements OnInit {
   docWithJoint = DocWithJoint;
   docWithAssoc = DocWithAssoc;
   reading = Reading;
+  docLegSpecialization = DocLegSpecialization;
   form = Form;
   language = Language;
   outputLanguage = OutputLanguage; 
@@ -119,6 +121,7 @@ export class PreviewComponent implements OnInit {
       docWithJoint : new FormControl<string>('NOJOINTCOM'), // to be removed
       docWithAssoc : new FormControl<string>('NOASSOCCOMM'), // to be removed
       reading : new FormControl<string>('FIRST_READING'),
+      docLegSpecialization : new FormControl<string>('NA'),
       form : new FormControl<string>('STANDARD'), // to be removed
       language : new FormControl<string>('EN'),
       procedureNumber : new FormControl<string>('2023/0011(INI)'),
@@ -138,11 +141,13 @@ export class PreviewComponent implements OnInit {
         day: this.d.getDate(),
       }),
       peNumber : new FormControl<string>('PE234.334v01.00'),
-      docRef : new FormControl<string>('2022/057(INI)'),
+      axxNumber : new FormControl<string>(''),
       epadesRef : new FormControl<string>('PR\\1269845EN.docx'),
       docLanguage : new FormControl<string>('EN'),
       prefixTitle : new FormControl<string>('on'),
       iterTitle : new FormControl<string>('lessons learnt from the Pandora Papers and other revelations'),
+      docComRef : new FormControl<string>('COM(2021)0664'),
+      docCouncilRef : new FormControl<string>('C9-0397/2021'),
       authoringCommittee : new FormControl<string>('Committee on Constitutional Affairs'),
       leadCommittee : new FormControl<string>('Committee on Foreign Affairs'),
       prefixListOfRapporteurs : new FormControl<string>(''),
@@ -242,7 +247,7 @@ export class PreviewComponent implements OnInit {
     this.partSelectedForPreview=part;
   }
 
-  onChange(index:number, committee:string, event:any){
+  onChange(index:number, committee:string, event:any, line: number){
     
     switch (index) {
       case 0:
@@ -255,42 +260,84 @@ export class PreviewComponent implements OnInit {
         let letters= this.previewForm.get('letters')?.value;
         if (event.target.checked) {
           letters.push(committee);
+          // suppression du commite dans les liste opinion et position
+          let opinions= this.previewForm.get('opinions')?.value;
+          var indexASupprimer: number =opinions.indexOf(committee)
+          if (indexASupprimer!=-1) {
+            opinions.splice(indexASupprimer,1)
+          }
+          let positions= this.previewForm.get('positions')?.value;
+          indexASupprimer =positions.indexOf(committee)
+          if (indexASupprimer!=-1) {
+            positions.splice(indexASupprimer,1)
+          }
+          //uncheck des cases à cocher
+          var cbs = Array.from(document.getElementsByClassName("cb"+line)) as HTMLInputElement[];
+          console.log (cbs);
+          cbs[1].checked = false;
+          cbs[2].checked = false;
         }else{
           const indexASupprimer: number = letters.indexOf(committee);
           if (indexASupprimer!=-1) {
             letters.splice(indexASupprimer,1)
           }
         }
-        this.uncheckboxes(3);
-        this.uncheckboxes(4);
         this.previewForm.get('letters')?.setValue(letters);
         break;
       case 3:
         let opinions= this.previewForm.get('opinions')?.value;
         if (event.target.checked) {
           opinions.push(committee);
+          // suppression du commite dans les listes letter et position
+          let letters= this.previewForm.get('letters')?.value;
+          var indexASupprimer: number =letters.indexOf(committee)
+          if (indexASupprimer!=-1) {
+            letters.splice(indexASupprimer,1)
+          }
+          let positions= this.previewForm.get('positions')?.value;
+          indexASupprimer =positions.indexOf(committee)
+          if (indexASupprimer!=-1) {
+            positions.splice(indexASupprimer,1)
+          }
+          //uncheck des cases à cocher
+          var cbs = Array.from(document.getElementsByClassName("cb"+line)) as HTMLInputElement[];
+          console.log (cbs);
+          cbs[0].checked = false;
+          cbs[2].checked = false;
         }else{
           const indexASupprimer: number = opinions.indexOf(committee);
           if (indexASupprimer!=-1) {
             opinions.splice(indexASupprimer,1)
           }
         }
-        this.uncheckboxes(2);
-        this.uncheckboxes(4);
         this.previewForm.get('opinions')?.setValue(opinions);
         break;
       case 4:
         let positions= this.previewForm.get('positions')?.value;
         if (event.target.checked) {
           positions.push(committee);
+          // suppression du commite dans les listes letter et opinion
+          let letters= this.previewForm.get('letters')?.value;
+          var indexASupprimer: number =letters.indexOf(committee)
+          if (indexASupprimer!=-1) {
+            letters.splice(indexASupprimer,1)
+          }
+          let opinions= this.previewForm.get('opinions')?.value;
+          var indexASupprimer: number =opinions.indexOf(committee)
+          if (indexASupprimer!=-1) {
+            opinions.splice(indexASupprimer,1)
+          }
+          //uncheck des cases à cocher
+          var cbs = Array.from(document.getElementsByClassName("cb"+line)) as HTMLInputElement[];
+          console.log (cbs);
+          cbs[0].checked = false;
+          cbs[1].checked = false;
         }else{
           const indexASupprimer: number = positions.indexOf(committee);
           if (indexASupprimer!=-1) {
             positions.splice(indexASupprimer,1)
           }
         }
-        this.uncheckboxes(2);
-        this.uncheckboxes(3);
         this.previewForm.get('positions')?.setValue(positions);
         break;
       case 5:
@@ -307,26 +354,6 @@ export class PreviewComponent implements OnInit {
       break;
       default:
         break;
-    }
-  }
-
-  uncheckboxes(column: number){
-    var cbs = Array.from(document.getElementsByClassName("cb"+column)) as HTMLInputElement[];
-    
-    for (var i = 0; i < cbs.length; i++) {
-      //console.log(cbs[i].checked)  
-      cbs[i].checked = false;
-    }
-    switch (column) {
-      case 2:
-        this.previewForm.get('letters')?.setValue([]);
-        break;
-      case 3:
-        this.previewForm.get('opinions')?.setValue([]);
-        break;
-      case 4:
-      this.previewForm.get('positions')?.setValue([]);
-      break;
     }
   }
 }

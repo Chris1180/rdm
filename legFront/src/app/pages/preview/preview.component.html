@@ -86,6 +86,14 @@
                             </select>
                         </div>
                     </div>-->
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <label class="col-4 col-form-label col-form-label-sm">Doc Leg Specialization</label>
+                            <select class="form-select form-select-sm" formControlName="docLegSpecialization">
+                                <option *ngFor="let d of docLegSpecialization | keyvalue: originalOrder" [ngValue]="d.key">{{d.value}} </option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-sm-2">
                         <div class="input-group">
                             <label class="col-4 col-form-label col-form-label-sm">Language</label>
@@ -107,7 +115,7 @@
                             </span>
                         </ng-template>
                         <div class="input-group"  [ngbTooltip]='TooltipPN'>
-                            <label class="col-6 col-form-label col-form-label-sm">[Procedure/Axx Number]</label>
+                            <label class="col-6 col-form-label col-form-label-sm">[Procedure Number]</label>
                             <input class="form-control form-control-sm" type="text" formControlName="procedureNumber">
                         </div>
                     </div>
@@ -166,9 +174,14 @@
                         </div>
                     </div>
                     <div class="col-sm-3">
-                        <div class="input-group">
-                            <label class="col-4 col-form-label col-form-label-sm">[Doc Ref]</label>
-                            <input class="form-control form-control-sm" type="text" formControlName="docRef">   
+                        <ng-template #TooltipAxx>
+                            <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                                The Axx Number is only for RR report (e.a.: 2021/0342(COD))
+                            </span>
+                        </ng-template>
+                        <div class="input-group" [ngbTooltip]='TooltipAxx'>
+                            <label class="col-4 col-form-label col-form-label-sm">[Axx Number]</label>
+                            <input class="form-control form-control-sm" type="text" formControlName="axxNumber">   
                         </div>
                     </div>
                     <div class="col-sm-3">
@@ -219,6 +232,23 @@
                         <div class="input-group" [ngbTooltip]='TooltipIT'>
                             <label class="col-2 col-form-label col-form-label-sm">[ITER Title]</label>
                             <input class="form-control form-control-sm" type="text" formControlName="iterTitle">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3 form-group">
+                    <div class="col-sm-6">
+                        
+                        <div class="input-group" [ngbTooltip]='TooltipPT'>
+                            <label class="col-2 col-form-label col-form-label-sm">[Doc COM Ref]</label>
+                            <input class="form-control form-control-sm" type="text" formControlName="docComRef">
+                        </div> 
+                        
+                    </div>
+                    <div class="col-sm-6">
+                        
+                        <div class="input-group" [ngbTooltip]='TooltipIT'>
+                            <label class="col-2 col-form-label col-form-label-sm">[Doc Council Ref]</label>
+                            <input class="form-control form-control-sm" type="text" formControlName="docCouncilRef">
                         </div>
                     </div>
                 </div>
@@ -294,9 +324,9 @@
                     <tr *ngFor="let committee of ListOfCommittee ; let c = index">
                         <th>{{ committee }}</th>
                         <td *ngFor="let header of headers; let i = index">
-                        <input *ngIf="i==0" type="radio" name="{{header}}" (change)="onChange(i, committee, $event)" [checked]="c===0">
-                        <input *ngIf="i==1" type="radio" name="{{header}}" (change)="onChange(i, committee, $event)" [checked]="c===1">
-                        <input *ngIf="i!=0 && i!=1" type="checkbox" class="cb{{i}}" (change)="onChange(i, committee, $event)" [checked]="c===0 && (i===5 || i===3)">
+                        <input *ngIf="i==0" type="radio" name="{{header}}" (change)="onChange(i, committee, $event, c)" [checked]="c===0">
+                        <input *ngIf="i==1" type="radio" name="{{header}}" (change)="onChange(i, committee, $event, c)" [checked]="c===1">
+                        <input *ngIf="i!=0 && i!=1" type="checkbox" class="cb{{c}}" (change)="onChange(i, committee, $event, c)" [checked]="c===0 && (i===5 || i===3)">
                         </td>
                     </tr>
                     </tbody>

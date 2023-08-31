@@ -44,10 +44,11 @@ export class CheckRulesService {
       "||", "&&", "true", "false" , "",
       "INI", "COD", "INL", "DEC", "REG",
       "RPCD", "RPCF", "OPCD", "OPCF",
-      "ONGOING_DRAFT", "FINALISED_DRAFT", "SENT_TO_TOP", "TABLED",
+      "ONGOING_DRAFT", "FINALISED_DRAFT", "SENT_TO_TOP", "AFTER_VOTE", "TABLED",
       "JOINTCOMM", "NOJOINTCOM",
       "ASSOCCOMM", "NOASSOCCOMM",
       "FIRST_READING", "SECOND_READING", "THIRD_READING", "RECAST",
+      "NA","AMEND", "APPROVE_APP", "REJECT_REJ",
       "LETTERS", "LETTER", "POSITION", "POSITIONS", "OPINION", "OPINIONS",
       "BG", "ES", "CS", "DA", "DE", "ET", "EL", "EN", "FR", "GA", "HR", "IT", "LV", "LT", "HU", "MT", "NL", "PL", "PT", "RO", "SK", "SL", "FI", "SV"
     ]
@@ -155,7 +156,8 @@ export class CheckRulesService {
       if (element === "ONGOING_DRAFT" || element === "FINALISED_DRAFT" || element === "SENT_TO_TOP" || element === "TABLED") {
         finalCondition += element 
         if(closingBracket) finalCondition += ")"
-        if(doubleclosingBracket) finalCondition += "))"
+        if(doubleclosingBracket) finalCondition += "
+        "
         finalCondition += " "
         continue;
       }
@@ -249,8 +251,8 @@ export class CheckRulesService {
         return this.form.authoringCommittee;
       case OutputParametersList['[DOC LANGUAGE]']:
         return this.form.docLanguage;
-      case OutputParametersList['[DOC REF]']:
-        return this.form.docRef;
+      case OutputParametersList['[AXX NUMBER]']:
+        return this.form.axxNumber.trim()==""? initialValue : this.form.axxNumber;
       case OutputParametersList['[EPADES REF]']:
         return this.form.epadesRef;
       case OutputParametersList['[GENERATING DATE]']:
@@ -272,7 +274,11 @@ export class CheckRulesService {
         return this.form.peNumber;
       case OutputParametersList['[PREFIX TITLE]']:
         return this.form.prefixTitle;
-      case OutputParametersList['[PROCEDURE/AXX NUMBER]'] || "[PROCEDURE NUMBER]":
+      case OutputParametersList['[DOC COM REF]']:
+        return this.form.docComRef.trim()==""? initialValue : this.form.docComRef;
+      case OutputParametersList['[DOC COUNCIL REF]']:
+        return this.form.procedureNumber.trim()==""? initialValue : this.form.docCouncilRef;
+      case OutputParametersList['[PROCEDURE NUMBER]']:
         return this.form.procedureNumber.trim()==""? initialValue : this.form.procedureNumber;
       case OutputParametersList['[SEND TO TOP DATE]']:
         return this.form.sendToTopDate.day + "." + this.form.sendToTopDate.month + "." + this.form.sendToTopDate.year;
@@ -337,6 +343,7 @@ export class CheckRulesService {
     let ONGOING_DRAFT: boolean = (this.form.documentStatus == "ONGOING_DRAFT");
     let FINALISED_DRAFT: boolean = (this.form.documentStatus == "FINALISED_DRAFT");
     let SENT_TO_TOP: boolean = (this.form.documentStatus == "SENT_TO_TOP");
+    let AFTER_VOTE: boolean = (this.form.documentStatus == "AFTER_VOTE");
     let TABLED: boolean = (this.form.documentStatus == "TABLED");
     // Doc with Joint (le champ docWithJoint du formulaire ne sera plus utilisé puisque déterminé par la valeur du tableau 'Authoring Committee')
     let authoringCommittee = String(this.form.authoringCommittee);
@@ -351,6 +358,11 @@ export class CheckRulesService {
     let SECOND_READING: boolean = (this.form.reading == "SECOND_READING");
     let THIRD_READING: boolean = (this.form.reading == "THIRD_READING");
     let RECAST: boolean = (this.form.reading == "RECAST");
+    // DocLegSpecialization
+    let NA: boolean = (this.form.docLegSpecialization == "NA");
+    let AMEND: boolean = (this.form.docLegSpecialization == "AMEND");
+    let APPROVE_APP: boolean = (this.form.docLegSpecialization == "APPROVE_APP");
+    let REJECT_REJ: boolean = (this.form.docLegSpecialization == "REJECT_REJ");
     // Form
     //let STANDARD: boolean = (this.form.form == "STANDARD");
     //let POSITION: boolean = (this.form.form == "POSITION");
