@@ -66,27 +66,42 @@ export class PreviewComponent implements OnInit {
     'Constitutional Affairs',
     'Foreign Affairs',
     'Agriculture and Rural Development',
-    'Budgetary Conciliation Committee',
     'Budgets',
     'Budgetary Control',
     'Culture and Education',
     'Development',
-    'Human Rights',
     'Economic and Monetary Affairs',
     'Employment and Social Affairs',
     'Environment, Public Health and Food Safety',
     'Women’s Rights and Gender Equality',
-    'Tax Matters',
     'Civil Liberties, Justice and Home Affairs',
-    'Joint ITRE - TRAN',
-    'Joint IMCO - TRAN',
-    'Joint DEVE - FEMM',
-    'Joint JURI - LIBE - AFCO',
-    'Joint CONT - LIBE',
-  
+    'Joint ENVI - ITRE',
+    'Joint IMCO - JURI',
+    'Joint AFET - DEVE',
+    'Joint JURI - LIBE',
+    'Joint FEMM - LIBE',
+  ];
+  ListOfRapporteurs: string[] = [
+    'Domènec Ruiz Devesa (M), Sven Simon (M)',
+    'Alviina Alametsä (F), Hilde Vautmans (F)',
+    'Elisabeth Jeggle (F)',
+    'Giovanni La Via (M), Georgios Papastamkos (M)',
+    'DEUTSCH Tamás (M), Iliana Ivanova (F)',
+    'Laurence Farreng (F)',
+    'Birgit Schnieber-Jastram (F)',
+    'Markus Ferber (M)',
+    '',
+    'KADENBACH Karin (F)',
+    'Heléne Fritzon (F), Michal Šimečka (M)',
+    'Juan Fernando López Aguilar (M)',
+    'Pascal Canfin (M), Jutta Paulus (F)',
+    'Pascal Arimont (M), Vlad-Marius Botoş (M)',
+    'Michael Gahler (M), Charles Goerens (M), Pedro Marques (M), Tomas Tobé (M)',
+    'Emil Radev (M), Marina Kaljurand (F)',
+    'Malin Björk (M), Eugenia Rodríguez Palop (F)',
   ];
 
-  headers = ['Authoring Committee [JOINTCOM]', 'Lead Committee', 'Drafting Letter \n [LETTER(S)]', 'Drafting Opinion [OPINION(S)]', 'Drafting Position [POSITION(S)]', 'List Of Assoc / Rapporteurs [ASSOCCOMM]']
+  headers = ['Authoring Committee \n (JOINTCOM)', 'Lead Committee \n ', 'Drafting Letter \n (LETTER(S))', 'Drafting Opinion \n (OPINION(S))', 'Drafting Position \n (POSITION(S))', 'List Of Assoc \n (ASSOCCOMM)', 'Rapporteur(s) \n [LIST OF RAPPORTEURS] [LIST OF ASSOC / RAPPORTEURS]']
   
 
 
@@ -118,11 +133,11 @@ export class PreviewComponent implements OnInit {
       procedureType : new FormControl<string>('INI'),
       documentType : new FormControl<string>('OPCD'),
       documentStatus : new FormControl<string>('ONGOING_DRAFT'),
-      docWithJoint : new FormControl<string>('NOJOINTCOM'), // to be removed
-      docWithAssoc : new FormControl<string>('NOASSOCCOMM'), // to be removed
+      //docWithJoint : new FormControl<string>('NOJOINTCOM'), // to be removed
+      //docWithAssoc : new FormControl<string>('NOASSOCCOMM'), // to be removed
       reading : new FormControl<string>('FIRST_READING'),
       docLegSpecialization : new FormControl<string>('NA'),
-      form : new FormControl<string>('STANDARD'), // to be removed
+      //form : new FormControl<string>('STANDARD'), // to be removed
       language : new FormControl<string>('EN'),
       procedureNumber : new FormControl<string>('2023/0011(INI)'),
       generatingDate : new UntypedFormControl({
@@ -144,19 +159,20 @@ export class PreviewComponent implements OnInit {
       axxNumber : new FormControl<string>(''),
       epadesRef : new FormControl<string>('PR\\1269845EN.docx'),
       docLanguage : new FormControl<string>('EN'),
-      prefixTitle : new FormControl<string>('on'),
+      prefixTitle : new FormControl<string>('on'), // to be checked if used
       iterTitle : new FormControl<string>('lessons learnt from the Pandora Papers and other revelations'),
       docComRef : new FormControl<string>('COM(2021)0664'),
       docCouncilRef : new FormControl<string>('C9-0397/2021'),
       authoringCommittee : new FormControl<string>('Committee on Constitutional Affairs'),
       leadCommittee : new FormControl<string>('Committee on Foreign Affairs'),
       prefixListOfRapporteurs : new FormControl<string>(''),
-      listOfRapporteurs : new FormControl<[string]>(['Jan Mulder']),
+      listOfRapporteurs : new FormControl<[string]>(['Domènec Ruiz Devesa (M), Sven Simon (M)']),
       suffixListOfRapporteurs : new FormControl<string>(''), // to be checked if used
       authorOfProposal : new FormControl<[string]>(['Sara Matthieu']),
-      listOfAssoc : new FormControl<[string]>(["Constitutional Affairs"]),
+      listOfAssoc : new FormControl<[string]>(['']),
+      listOfAssocRapporteurs : new FormControl<any>([]),
       letters : new FormControl<any>([]),
-      opinions : new FormControl<any>(["Constitutional Affairs"]),
+      opinions : new FormControl<any>(["Agriculture and Rural Development"]),
       positions : new FormControl<any>([]),
     });
   }// fin du ngOnInit
@@ -252,108 +268,85 @@ export class PreviewComponent implements OnInit {
     switch (index) {
       case 0:
         this.previewForm.get('authoringCommittee')?.setValue(committee)
+        this.previewForm.get('listOfRapporteurs')?.setValue(this.ListOfRapporteurs[line])
         break;
       case 1:
         this.previewForm.get('leadCommittee')?.setValue(committee)
         break;
-      case 2:
-        let letters= this.previewForm.get('letters')?.value;
-        if (event.target.checked) {
-          letters.push(committee);
-          // suppression du commite dans les liste opinion et position
-          let opinions= this.previewForm.get('opinions')?.value;
-          var indexASupprimer: number =opinions.indexOf(committee)
-          if (indexASupprimer!=-1) {
-            opinions.splice(indexASupprimer,1)
-          }
-          let positions= this.previewForm.get('positions')?.value;
-          indexASupprimer =positions.indexOf(committee)
-          if (indexASupprimer!=-1) {
-            positions.splice(indexASupprimer,1)
-          }
-          //uncheck des cases à cocher
-          var cbs = Array.from(document.getElementsByClassName("cb"+line)) as HTMLInputElement[];
-          console.log (cbs);
-          cbs[1].checked = false;
-          cbs[2].checked = false;
-        }else{
-          const indexASupprimer: number = letters.indexOf(committee);
-          if (indexASupprimer!=-1) {
-            letters.splice(indexASupprimer,1)
-          }
-        }
-        this.previewForm.get('letters')?.setValue(letters);
+      case 2: //LETTER(S)
+        this.uncheckOtherLines('letters', 'opinions', 'positions', event.target.checked, committee, line)
         break;
-      case 3:
-        let opinions= this.previewForm.get('opinions')?.value;
-        if (event.target.checked) {
-          opinions.push(committee);
-          // suppression du commite dans les listes letter et position
-          let letters= this.previewForm.get('letters')?.value;
-          var indexASupprimer: number =letters.indexOf(committee)
-          if (indexASupprimer!=-1) {
-            letters.splice(indexASupprimer,1)
-          }
-          let positions= this.previewForm.get('positions')?.value;
-          indexASupprimer =positions.indexOf(committee)
-          if (indexASupprimer!=-1) {
-            positions.splice(indexASupprimer,1)
-          }
-          //uncheck des cases à cocher
-          var cbs = Array.from(document.getElementsByClassName("cb"+line)) as HTMLInputElement[];
-          console.log (cbs);
-          cbs[0].checked = false;
-          cbs[2].checked = false;
-        }else{
-          const indexASupprimer: number = opinions.indexOf(committee);
-          if (indexASupprimer!=-1) {
-            opinions.splice(indexASupprimer,1)
-          }
-        }
-        this.previewForm.get('opinions')?.setValue(opinions);
+      case 3: //OPINIONS
+        this.uncheckOtherLines('opinions', 'letters', 'positions', event.target.checked, committee, line)
         break;
-      case 4:
-        let positions= this.previewForm.get('positions')?.value;
-        if (event.target.checked) {
-          positions.push(committee);
-          // suppression du commite dans les listes letter et opinion
-          let letters= this.previewForm.get('letters')?.value;
-          var indexASupprimer: number =letters.indexOf(committee)
-          if (indexASupprimer!=-1) {
-            letters.splice(indexASupprimer,1)
-          }
-          let opinions= this.previewForm.get('opinions')?.value;
-          var indexASupprimer: number =opinions.indexOf(committee)
-          if (indexASupprimer!=-1) {
-            opinions.splice(indexASupprimer,1)
-          }
-          //uncheck des cases à cocher
-          var cbs = Array.from(document.getElementsByClassName("cb"+line)) as HTMLInputElement[];
-          console.log (cbs);
-          cbs[0].checked = false;
-          cbs[1].checked = false;
-        }else{
-          const indexASupprimer: number = positions.indexOf(committee);
-          if (indexASupprimer!=-1) {
-            positions.splice(indexASupprimer,1)
-          }
-        }
-        this.previewForm.get('positions')?.setValue(positions);
+      case 4: //POSITIONS
+        this.uncheckOtherLines('positions', 'letters', 'opinions', event.target.checked, committee, line)
         break;
       case 5:
         let listOfAssoc= this.previewForm.get('listOfAssoc')?.value;
+        // C'est la liste des ASSOCCOM qui définie la liste des rapporteurs de la valeur listOfAssocRapporteurs
+        // il faut donc également mettre à jour le formulaire avec les valeurs séléctionnées
+        let listOfAssocRapporteurs = this.previewForm.get('listOfAssocRapporteurs')?.value;
         if (event.target.checked) {
           listOfAssoc.push(committee);
+          listOfAssocRapporteurs.push(this.ListOfRapporteurs[line])
         }else{
           const indexASupprimer: number = listOfAssoc.indexOf(committee);
           if (indexASupprimer!=-1) {
             listOfAssoc.splice(indexASupprimer,1)
           }
+          const indexRapporteurASupprimer: number = listOfAssocRapporteurs.indexOf(this.ListOfRapporteurs[line]);
+          if (indexRapporteurASupprimer!=-1) {
+            listOfAssocRapporteurs.splice(indexRapporteurASupprimer,1)
+          }
         }
         this.previewForm.get('listOfAssoc')?.setValue(listOfAssoc);
+        this.previewForm.get('listOfAssocRapporteurs')?.setValue(listOfAssocRapporteurs);
+        console.log (this.previewForm.get('listOfRapporteurs')?.value);
+        console.log (this.previewForm.get('listOfAssocRapporteurs')?.value)
       break;
       default:
         break;
     }
   }
+  checkProcNumber(){
+    //Modifie la valeur par defaut de [Procedure Number] en fonction de la valeur de procedure type
+    let procedureType = this.previewForm.get('procedureType')?.value;
+    this.previewForm.get('procedureNumber')?.setValue('2023/0011('+procedureType+')')
+  }
+
+  uncheckOtherLines(actionValue: string, uncheckValue1: string, uncheckValue2: string, checked: boolean, committee: any, line: number) {
+    // dans cette fonction on vérifie que si la case est cochée pour letters, sur la même ligne opinion et position sont décochés
+    let listActionValue = this.previewForm.get(actionValue)?.value;
+    if (checked) { // la case vient d'être cochée
+      // mise à jour du champ dans le formulaire
+      listActionValue.push(committee)
+      this.previewForm.get(actionValue)?.setValue(listActionValue);
+      // suppression du committe dans les liste opinion et position (si letters)
+      let update1 = this.previewForm.get(uncheckValue1)?.value;
+      var indexASupprimer: number =update1.indexOf(committee)
+      if (indexASupprimer!=-1) {
+        update1.splice(indexASupprimer,1)
+      }
+      let update2= this.previewForm.get(uncheckValue2)?.value;
+      indexASupprimer =update2.indexOf(committee)
+      if (indexASupprimer!=-1) {
+        update2.splice(indexASupprimer,1)
+      }
+      //uncheck des cases à cocher dans la page HTML
+      var cbs = Array.from(document.getElementsByClassName("cb"+line)) as HTMLInputElement[];
+      for (let index = 0; index < cbs.length; index++) {
+        if (cbs[index].name != actionValue) cbs[index].checked = false
+      }
+    }else{
+      const indexASupprimer: number = this.previewForm.get(actionValue)?.value.indexOf(committee);
+      if (indexASupprimer!=-1) {
+        listActionValue.splice(indexASupprimer,1);
+        this.previewForm.get(actionValue)?.setValue(listActionValue)
+      }
+    }
+    
+  }
 }
+
+

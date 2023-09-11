@@ -45,19 +45,19 @@ export class CheckRulesService {
       "INI", "COD", "INL", "DEC", "REG",
       "RPCD", "RPCF", "OPCD", "OPCF",
       "ONGOING_DRAFT", "FINALISED_DRAFT", "SENT_TO_TOP", "AFTER_VOTE", "TABLED",
-      "JOINTCOMM", "NOJOINTCOM",
-      "ASSOCCOMM", "NOASSOCCOMM",
+      "JOINTCOM",
+      "ASSOCCOM",
       "FIRST_READING", "SECOND_READING", "THIRD_READING", "RECAST",
       "NA","AMEND", "APPROVE_APP", "REJECT_REJ",
       "LETTERS", "LETTER", "POSITION", "POSITIONS", "OPINION", "OPINIONS",
       "BG", "ES", "CS", "DA", "DE", "ET", "EL", "EN", "FR", "GA", "HR", "IT", "LV", "LT", "HU", "MT", "NL", "PL", "PT", "RO", "SK", "SL", "FI", "SV"
     ]
     // on parcour la chaine caractère par caractère
-    console.log("condition initiale:")
-    console.log(condition)
+    //console.log("condition initiale:")
+    //console.log(condition)
     for (let index = 0; index < condition.length; index++) {
       const element = condition[index].toUpperCase();
-      console.log ("element: "+ element)
+      //console.log ("element: "+ element)
       if (element === '(') {
         finalCondition+=element;
         continue;
@@ -77,7 +77,7 @@ export class CheckRulesService {
         //param.replace("!", "")
         var re = /[!)\s]+/g; 
         let paramTobeChecked = param.replace(re, "")
-        console.log ("param to be checked : "+paramTobeChecked)
+        //console.log ("param to be checked : "+paramTobeChecked)
         if (listOfKnownParam.indexOf(paramTobeChecked) == -1) {
           if(this.unknownInput.indexOf(paramTobeChecked) == -1)
           this.unknownInput.push(paramTobeChecked);
@@ -86,159 +86,15 @@ export class CheckRulesService {
         }
         
         // reinit de param pour la suite 
-        console.log("param : "+param)
+        //console.log("param : "+param)
         param="";
       }else {
         param+=element;
       }
     }
-    /*
-    // on commence par récupérer tous les mots-clés séparés par un espace
-    let elements = condition.split(" ");
-    //(OPCD or OPCF) and (INI or INL or DEC) and (OPINION or OPINIONS) and JOINTCOMM
-    //console.log (elements)
-    for (let index = 0; index < elements.length; index++) {
-      let element = elements[index].toLocaleUpperCase().trim();
-      let closingBracket = false;
-      let doubleclosingBracket = false;
-      
-      // cas du TRUE / VRAI ...
-      if (element === "TRUE" || element === "VRAI") {
-        finalCondition += "true ";
-        continue;
-      }
-      // cas du FALSE / FAUX ...
-      if (element === "FALSE" || element === "FAUX") {
-        finalCondition += "false ";
-        continue;
-      }
-      // remplace la chaine NOT_ par !
-      if (element.startsWith("NOT_")) {
-        //console.log("Dans le NOT_  element= "+element)
-        finalCondition += "!";
-        element = element.replace("NOT_", "");
-        //console.log("apres le NOT_  element= "+element)
-      }
-      if (element.startsWith("((")){
-        finalCondition += "((";
-        element = element.replace("((", "");
-      }
-      if (element.startsWith("(")){
-        finalCondition += "(";
-        element = element.replace("(", "");
-      }
-      if (element.endsWith("))")){
-        doubleclosingBracket = true;
-        element = element.replace("))", "");
-      }
-      if (element.endsWith(")")){
-        closingBracket = true;
-        element = element.replace(")", "");
-      }
-      
-      // teste les valeurs du Procedure Type
-      if (element === "INI" || element === "COD" || element === "INL" || element === "DEC" || element === "REG") {
-        finalCondition += element 
-        if(closingBracket) finalCondition += ")"
-        if(doubleclosingBracket) finalCondition += "))"
-        finalCondition += " "
-        continue;
-      }
-      // teste les valeurs du document type
-      if (element === "RPCD" || element === "RPCF" || element === "OPCD" || element === "OPCF") {      
-        finalCondition += element 
-        if(closingBracket) finalCondition += ")"
-        if(doubleclosingBracket) finalCondition += "))"
-        finalCondition += " "
-        continue;
-      }
-      // teste les valeurs de document status
-      if (element === "ONGOING_DRAFT" || element === "FINALISED_DRAFT" || element === "SENT_TO_TOP" || element === "TABLED") {
-        finalCondition += element 
-        if(closingBracket) finalCondition += ")"
-        if(doubleclosingBracket) finalCondition += "
-        "
-        finalCondition += " "
-        continue;
-      }
-      // teste les valeurs de Doc with Joint
-      if (element === "JOINTCOMM" || element === "NOJOINTCOM") {
-        finalCondition += element 
-        if(closingBracket) finalCondition += ")"
-        if(doubleclosingBracket) finalCondition += "))"
-        finalCondition += " "
-        continue;
-      }
-      // teste les valeurs de Doc With Assoc
-      if (element === "ASSOCCOMM" || element === "NOASSOCCOMM") {
-        finalCondition += element 
-        if(closingBracket) finalCondition += ")"
-        if(doubleclosingBracket) finalCondition += "))"
-        finalCondition += " "
-        continue;
-      }
-      // teste les valeurs de reading
-      if (element === "FIRST_READING" || element === "SECOND_READING" || element === "THIRD_READING" || element === "RECAST") {
-        finalCondition += element 
-        if(closingBracket) finalCondition += ")"
-        if(doubleclosingBracket) finalCondition += "))"
-        finalCondition += " "
-        continue;
-      }
-      
-      // teste les valeurs déduites du tableau
-      if (element === "LETTERS" || element === "LETTER" || element === "POSITION" || element === "POSITIONS" || element === "OPINION" || element === "OPINIONS") {
-        finalCondition += element 
-        if(closingBracket) finalCondition += ")"
-        if(doubleclosingBracket) finalCondition += "))"
-        finalCondition += " "
-        continue;
-      }
-
-      // teste les valeurs de language
-
-      if (element === "BG" || element === "ES" || element === "CS"
-        || element === "DA" || element === "DE" || element === "ET"
-        || element === "EL" || element === "EN" || element === "FR"
-        || element === "GA" || element === "HR" || element === "IT"
-        || element === "LV" || element === "LT" || element === "HU"
-        || element === "MT" || element === "NL" || element === "PL"
-        || element === "PT" || element === "RO" || element === "SK"
-        || element === "SL" || element === "FI" || element === "SV"){
-          finalCondition += element 
-          if(closingBracket) finalCondition += ")"
-          if(doubleclosingBracket) finalCondition += "))"
-          finalCondition += " "
-          continue;
-      }
-      // teste les valeurs de condition
-      if (element == "OR") {
-        finalCondition += "|| ";
-        continue;
-      }
-      if (element == "AND") {
-        finalCondition += "&& ";
-        continue;
-      }
-
-      // aucune correspondance avec un champ Input n'a été trouvé on ajoute cet élément au tableau des règles n'étant pas évaluées
-      // si il n'y est pas déjà
-      
-      if (element.length > 0 && element !== "IF"){
-        finalCondition += element;
-        if(closingBracket) finalCondition += ")"
-        if(doubleclosingBracket) finalCondition += "))"
-        finalCondition += " "
-        if(this.unknownInput.indexOf(element) == -1)
-          this.unknownInput.push(element);
-        if(this.rulesWithUnknownInput.indexOf(id) == -1)
-          this.rulesWithUnknownInput.push(id)
-      }
-        
-    }// fin du for
-    */
-   console.log("condition retournée")
-   console.log (finalCondition)
+    
+   //console.log("condition retournée")
+   //console.log (finalCondition)
     return finalCondition
   }
 
@@ -263,12 +119,9 @@ export class CheckRulesService {
         // le "for the" est ajouté dans l'enum pour les comités simples
         return this.form.leadCommittee;
       case OutputParametersList['[LIST OF ASSOC / RAPPORTEURS]']:
-        let outputValue: string = '';
-        for (let index = 0; index < this.form.listOfAssoc.length; index++) {
-          outputValue += this.form.listOfAssoc[index] + "\n";
-        }
-        return outputValue;
+        return this.form.listOfAssocRapporteurs;
       case OutputParametersList['[LIST OF RAPPORTEURS]']:
+        //console.log(this.form.listOfRapporteurs);
         return this.form.listOfRapporteurs.join(", ");
       case OutputParametersList['[PE NUMBER]']:
         return this.form.peNumber;
@@ -314,9 +167,7 @@ export class CheckRulesService {
         return this.form.letters;
       case OutputParametersList['[LIST OF COMMITTEES HAVING LETTER]']:
         return this.form.letters.join(", ");
-      case OutputParametersList['[A9-0227/2019]']:
-        return "[A9-0227/2019]";
-        
+      
     }// fin du switch
     // ajout du paramètre manquant si pas déjà dans la liste
     if (this.unknownOutput.indexOf(outputParam)==-1){
@@ -345,14 +196,13 @@ export class CheckRulesService {
     let SENT_TO_TOP: boolean = (this.form.documentStatus == "SENT_TO_TOP");
     let AFTER_VOTE: boolean = (this.form.documentStatus == "AFTER_VOTE");
     let TABLED: boolean = (this.form.documentStatus == "TABLED");
-    // Doc with Joint (le champ docWithJoint du formulaire ne sera plus utilisé puisque déterminé par la valeur du tableau 'Authoring Committee')
     let authoringCommittee = String(this.form.authoringCommittee);
-    let JOINTCOMM: boolean = (authoringCommittee.startsWith('Joint'));
-    let NOJOINTCOM: boolean = !JOINTCOMM; // to be checked if used
+    let JOINTCOM: boolean = (authoringCommittee.startsWith('Joint'));
+    
     // Doc with Assoc (le champ docWithAssoc du formulaire ne sera plus utilisé puisque déterminé par la valeur du tableau 'List of Assoc')
     let listOfAssoc = String(this.form.listOfAssoc).split(',')
-    let ASSOCCOMM: boolean = (listOfAssoc.length === 1 && listOfAssoc[0].length!=0)|| listOfAssoc.length>1;
-    let NOASSOCCOMM: boolean = !ASSOCCOMM; // not used
+    let ASSOCCOM: boolean = (listOfAssoc.length === 1 && listOfAssoc[0].length!=0)|| listOfAssoc.length>1;
+
     // Reading
     let FIRST_READING: boolean = (this.form.reading == "FIRST_READING");
     let SECOND_READING: boolean = (this.form.reading == "SECOND_READING");

@@ -24,7 +24,7 @@
                     <div class="col-sm-4">
                         <div class="input-group">
                             <label class="col-3 col-form-label col-form-label-sm">Procedure Type</label>
-                            <select class="form-select form-select-sm" formControlName="procedureType">
+                            <select class="form-select form-select-sm" formControlName="procedureType" (change)="checkProcNumber()">
                                 <option *ngFor="let p of procedureType | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
                                 </option>
                             </select>
@@ -51,25 +51,7 @@
                 </div>
                 <!-- 2nd line Input Parameters-->
                 <div class="row mb-3 form-group">
-                    <!--
-                    <div class="col-sm-3">
-                        <div class="input-group">
-                            <label class="col-4 col-form-label col-form-label-sm">Doc With Joint?</label>
-                            <select class="form-select form-select-sm" formControlName="docWithJoint">
-                                <option *ngFor="let p of docWithJoint | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="input-group">
-                            <label class="col-4 col-form-label col-form-label-sm">Doc With Assoc?</label>
-                            <select class="form-select form-select-sm" formControlName="docWithAssoc">
-                                <option *ngFor="let p of docWithAssoc | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                                </option>
-                            </select>
-                        </div>
-                    </div>-->
+                    
                     <div class="col-sm-2">
                         <div class="input-group">
                             <label class="col-4 col-form-label col-form-label-sm">Reading</label>
@@ -78,14 +60,7 @@
                             </select>
                         </div>
                     </div>
-                    <!--<div class="col-sm-2">
-                        <div class="input-group">
-                            <label class="col-4 col-form-label col-form-label-sm">Form</label>
-                            <select class="form-select form-select-sm" formControlName="form">
-                                <option *ngFor="let p of form | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}} </option>
-                            </select>
-                        </div>
-                    </div>-->
+                    
                     <div class="col-sm-4">
                         <div class="input-group">
                             <label class="col-4 col-form-label col-form-label-sm">Doc Leg Specialization</label>
@@ -176,7 +151,7 @@
                     <div class="col-sm-3">
                         <ng-template #TooltipAxx>
                             <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
-                                The Axx Number is only for RR report (e.a.: 2021/0342(COD))
+                                The Axx Number is only for a TABLED RR report (e.a.: A9-0184/2023))
                             </span>
                         </ng-template>
                         <div class="input-group" [ngbTooltip]='TooltipAxx'>
@@ -252,43 +227,8 @@
                         </div>
                     </div>
                 </div>
-                <!--
+                
                 <div class="row mb-1 form-group">
-                    <div class="col-sm-6">
-                        <ng-template #TooltipAU>
-                            <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
-                                For OPCD and OPCF not Joint Committee
-                            </span>
-                        </ng-template>
-                        <div class="input-group" [ngbTooltip]='TooltipAU'>
-                            <label class="col-3 col-form-label col-form-label-sm">[Authoring Committee]</label>
-                            <select class="form-select form-select-sm" formControlName="authoringCommittee">
-                                <option *ngFor="let p of authoringCommittee | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="input-group">
-                            <label class="col-3 col-form-label col-form-label-sm">[Lead Committee]</label>
-                            <select class="form-select form-select-sm" formControlName="leadCommittee">
-                                <option *ngFor="let p of leadCommittee | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                </div>-->
-                <div class="row mb-1 form-group">
-                    <div class="col-sm-4">
-                        <label class="col-form-label col-form-label-sm">[List Of Rapporteurs]</label>
-                        <select class="form-select form-select-sm" multiple formControlName="listOfRapporteurs">
-                            <option *ngFor="let p of listOfRapporteurs | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                            </option>
-                        </select>
-                        <label class="col-form-label form-text ico-info">
-                            Multiple selection allowed
-                        </label>
-                    </div>
                     <div class="col-sm-4">
                         <label class="col-form-label col-form-label-sm">[Author Of Proposal]</label>
                         <select class="form-select form-select-sm" multiple formControlName="authorOfProposal">
@@ -299,17 +239,6 @@
                             Multiple selection allowed
                         </label>
                     </div>
-                    <!--
-                    <div class="col-sm-4">
-                        <label class="col-form-label col-form-label-sm">[List Of Assoc / Rapporteurs]</label>
-                        <select class="form-select form-select-sm" multiple formControlName="listOfAssoc">
-                            <option *ngFor="let p of listOfAssoc | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                            </option>
-                        </select>
-                        <label class="col-form-label form-text ico-info">
-                            Multiple selection allowed
-                        </label>
-                    </div>-->
                 </div>
                 
                 <!-- test tableau case à cocher-->
@@ -317,7 +246,7 @@
                     <thead>
                     <tr>
                         <th></th>
-                        <th *ngFor="let header of headers">{{ header }}</th>
+                        <th *ngFor="let header of headers" style="white-space: pre;">{{ header }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -326,7 +255,9 @@
                         <td *ngFor="let header of headers; let i = index">
                         <input *ngIf="i==0" type="radio" name="{{header}}" (change)="onChange(i, committee, $event, c)" [checked]="c===0">
                         <input *ngIf="i==1" type="radio" name="{{header}}" (change)="onChange(i, committee, $event, c)" [checked]="c===1">
-                        <input *ngIf="i!=0 && i!=1" type="checkbox" class="cb{{c}}" (change)="onChange(i, committee, $event, c)" [checked]="c===0 && (i===5 || i===3)">
+                        <input *ngIf="i!=0 && i!=1 && i!=5 && i!=6" type="checkbox" [name]="i==2 ? 'letters' : i==3 ? 'opinions' : 'positions'" class="cb{{c}}" (change)="onChange(i, committee, $event, c)" [checked]="c===2 && i===3">
+                        <input *ngIf="i==5" type="checkbox" (change)="onChange(i, committee, $event, c)">
+                        <span *ngIf="i==6">{{ListOfRapporteurs[c]}}</span>
                         </td>
                     </tr>
                     </tbody>
