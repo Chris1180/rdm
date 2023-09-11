@@ -100,6 +100,9 @@ export class PreviewComponent implements OnInit {
     'Emil Radev (M), Marina Kaljurand (F)',
     'Malin Björk (M), Eugenia Rodríguez Palop (F)',
   ];
+  TitleList: string[] = [
+    'MM','FF','F','MM','MF','F','F','M','','F','FM','M','MF','MM','MM','MF','MF'
+  ]
 
   headers = ['Authoring Committee \n (JOINTCOM)', 'Lead Committee \n ', 'Drafting Letter \n (LETTER(S))', 'Drafting Opinion \n (OPINION(S))', 'Drafting Position \n (POSITION(S))', 'List Of Assoc \n (ASSOCCOMM)', 'Rapporteur(s) \n [LIST OF RAPPORTEURS] [LIST OF ASSOC / RAPPORTEURS]']
   
@@ -133,11 +136,8 @@ export class PreviewComponent implements OnInit {
       procedureType : new FormControl<string>('INI'),
       documentType : new FormControl<string>('OPCD'),
       documentStatus : new FormControl<string>('ONGOING_DRAFT'),
-      //docWithJoint : new FormControl<string>('NOJOINTCOM'), // to be removed
-      //docWithAssoc : new FormControl<string>('NOASSOCCOMM'), // to be removed
       reading : new FormControl<string>('FIRST_READING'),
       docLegSpecialization : new FormControl<string>('NA'),
-      //form : new FormControl<string>('STANDARD'), // to be removed
       language : new FormControl<string>('EN'),
       procedureNumber : new FormControl<string>('2023/0011(INI)'),
       generatingDate : new UntypedFormControl({
@@ -167,10 +167,12 @@ export class PreviewComponent implements OnInit {
       leadCommittee : new FormControl<string>('Committee on Foreign Affairs'),
       prefixListOfRapporteurs : new FormControl<string>(''),
       listOfRapporteurs : new FormControl<[string]>(['Domènec Ruiz Devesa (M), Sven Simon (M)']),
+      listOfRapporteursTitle : new FormControl<string>('MM'),
       suffixListOfRapporteurs : new FormControl<string>(''), // to be checked if used
       authorOfProposal : new FormControl<[string]>(['Sara Matthieu']),
       listOfAssoc : new FormControl<[string]>(['']),
       listOfAssocRapporteurs : new FormControl<any>([]),
+      listOfAssocRapporteursTitle : new FormControl<string>(''),
       letters : new FormControl<any>([]),
       opinions : new FormControl<any>(["Agriculture and Rural Development"]),
       positions : new FormControl<any>([]),
@@ -268,7 +270,8 @@ export class PreviewComponent implements OnInit {
     switch (index) {
       case 0:
         this.previewForm.get('authoringCommittee')?.setValue(committee)
-        this.previewForm.get('listOfRapporteurs')?.setValue(this.ListOfRapporteurs[line])
+        this.previewForm.get('listOfRapporteurs')?.setValue([this.ListOfRapporteurs[line]])
+        this.previewForm.get('listOfRapporteursTitle')?.setValue(this.TitleList[line])
         break;
       case 1:
         this.previewForm.get('leadCommittee')?.setValue(committee)
@@ -302,8 +305,48 @@ export class PreviewComponent implements OnInit {
         }
         this.previewForm.get('listOfAssoc')?.setValue(listOfAssoc);
         this.previewForm.get('listOfAssocRapporteurs')?.setValue(listOfAssocRapporteurs);
-        console.log (this.previewForm.get('listOfRapporteurs')?.value);
-        console.log (this.previewForm.get('listOfAssocRapporteurs')?.value)
+        // à faire avant d'ajouter le titre pour assoccomm (vérif des titres des autres commités)
+        // parcours l'ensemble des rapporteurs de l'assocomm puis pour chaque valeur de TitleLIST
+        let titleToBeSet = '';
+        for (let index = 0; index < listOfAssocRapporteurs.length; index++) {
+          // recherche de l'index dans la liste globale pour avoir le titre (grace à l'index)
+          let indexTitleList = this.ListOfRapporteurs.indexOf(listOfAssocRapporteurs[index])
+          // ensemble de règles (masculin l'emporte sur le femminin)
+          let title = this.TitleList[indexTitleList];
+          switch (title) {
+            case '':
+              // pas d'action dans le cas dun comité vide
+              break;
+            case 'M':
+              if (titleToBeSet=='M') titleToBeSet='MM'
+              if (titleToBeSet=='') titleToBeSet='M'
+              if (titleToBeSet=='F' || titleToBeSet=='FF') titleToBeSet='MF'
+              break;
+            case 'F':
+              if (titleToBeSet=='F') titleToBeSet='FF'
+              if (titleToBeSet=='') titleToBeSet='F'
+              if (titleToBeSet=='M' || titleToBeSet== 'MM') titleToBeSet='MF' 
+              break;
+            case 'MF'||'FM':
+              titleToBeSet = 'MF' 
+            break;
+            case 'MM':
+              if (titleToBeSet=='' || titleToBeSet=='M') titleToBeSet='MM'
+              if (titleToBeSet=='F' || titleToBeSet=='FM' || titleToBeSet=='MF') titleToBeSet='MF'
+            break;
+            case 'FF':
+              if (titleToBeSet=='' || titleToBeSet=='F') titleToBeSet='FF'
+              if (titleToBeSet=='M' || titleToBeSet=='MM') titleToBeSet='MF'
+            break;
+          }
+          
+        } // fin de la boucle for
+        this.previewForm.get('listOfAssocRapporteursTitle')?.setValue(titleToBeSet)
+        
+        //console.log (this.previewForm.get('listOfAssocRapporteurs')?.value);
+        //console.log (this.previewForm.get('listOfAssocRapporteursTitle')?.value);
+        
+
       break;
       default:
         break;

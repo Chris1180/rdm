@@ -50,7 +50,9 @@ export class CheckRulesService {
       "FIRST_READING", "SECOND_READING", "THIRD_READING", "RECAST",
       "NA","AMEND", "APPROVE_APP", "REJECT_REJ",
       "LETTERS", "LETTER", "POSITION", "POSITIONS", "OPINION", "OPINIONS",
-      "BG", "ES", "CS", "DA", "DE", "ET", "EL", "EN", "FR", "GA", "HR", "IT", "LV", "LT", "HU", "MT", "NL", "PL", "PT", "RO", "SK", "SL", "FI", "SV"
+      "BG", "ES", "CS", "DA", "DE", "ET", "EL", "EN", "FR", "GA", "HR", "IT", "LV", "LT", "HU", "MT", "NL", "PL", "PT", "RO", "SK", "SL", "FI", "SV",
+      "AUTHCOM_MAN","AUTHCOM_MEN","AUTHCOM_WOMAN","AUTHCOM_WOMEN","AUTHCOM_BOTH",
+      "ASSOCOM_MAN","ASSOCOM_MEN","ASSOCOM_WOMAN","ASSOCOM_WOMEN","ASSOCOM_BOTH"
     ]
     // on parcour la chaine caractère par caractère
     //console.log("condition initiale:")
@@ -121,7 +123,6 @@ export class CheckRulesService {
       case OutputParametersList['[LIST OF ASSOC / RAPPORTEURS]']:
         return this.form.listOfAssocRapporteurs;
       case OutputParametersList['[LIST OF RAPPORTEURS]']:
-        //console.log(this.form.listOfRapporteurs);
         return this.form.listOfRapporteurs.join(", ");
       case OutputParametersList['[PE NUMBER]']:
         return this.form.peNumber;
@@ -255,6 +256,18 @@ export class CheckRulesService {
     let positions = String(this.form.positions).split(',')
     let POSITION: boolean = (positions.length === 1 && positions[0].length!=0); 
     let POSITIONS: boolean = (positions.length > 1);
+    // Title for Authoring Committe
+    let AUTHCOM_MAN: boolean = this.form.listOfRapporteursTitle == 'M'
+    let AUTHCOM_MEN: boolean = this.form.listOfRapporteursTitle == 'MM'
+    let AUTHCOM_WOMAN: boolean = this.form.listOfRapporteursTitle == 'F'
+    let AUTHCOM_WOMEN: boolean = this.form.listOfRapporteursTitle == 'FF'
+    let AUTHCOM_BOTH: boolean = this.form.listOfRapporteursTitle == 'MF'
+    // Title for ASSOCOM Committe
+    let ASSOCOM_MAN: boolean = this.form.listOfRapporteursTitle == 'M'
+    let ASSOCOM_MEN: boolean = this.form.listOfRapporteursTitle == 'MM'
+    let ASSOCOM_WOMAN: boolean = this.form.listOfRapporteursTitle == 'F'
+    let ASSOCOM_WOMEN: boolean = this.form.listOfRapporteursTitle == 'FF'
+    let ASSOCOM_BOTH: boolean = this.form.listOfRapporteursTitle == 'MF'
 
     // on remplace la valeur des paramètres manquants par la valeur saisie par l'utilisateur
     if (inputMissingParamMap.size>0){
