@@ -86,12 +86,12 @@ export class PreviewComponent implements OnInit {
     'Alviina Alametsä (F), Hilde Vautmans (F)',
     'Elisabeth Jeggle (F)',
     'Giovanni La Via (M), Georgios Papastamkos (M)',
-    'DEUTSCH Tamás (M), Iliana Ivanova (F)',
+    'Tamás Deutsch (M), Iliana Ivanova (F)',
     'Laurence Farreng (F)',
     'Birgit Schnieber-Jastram (F)',
     'Markus Ferber (M)',
     '',
-    'KADENBACH Karin (F)',
+    'Karin Kadenbach (F)',
     'Heléne Fritzon (F), Michal Šimečka (M)',
     'Juan Fernando López Aguilar (M)',
     'Pascal Canfin (M), Jutta Paulus (F)',
@@ -104,7 +104,7 @@ export class PreviewComponent implements OnInit {
     'MM','FF','F','MM','MF','F','F','M','','F','FM','M','MF','MM','MM','MF','MF'
   ]
 
-  headers = ['Authoring Committee \n (JOINTCOM)', 'Lead Committee \n ', 'Drafting Letter \n (LETTER(S))', 'Drafting Opinion \n (OPINION(S))', 'Drafting Position \n (POSITION(S))', 'List Of Assoc \n (ASSOCCOMM)', 'Rapporteur(s) \n [LIST OF RAPPORTEURS] [LIST OF ASSOC / RAPPORTEURS]']
+  headers = ['Authoring Committee \n (JOINTCOM)\n [AUTHORING COMMITTEE]', 'Lead Committee \n \n [LEAD COMMITTEE]', 'Drafting Letter \n (LETTER(S)) \n ', 'Drafting Opinion \n (OPINION(S)) \n ', 'Drafting Position \n (POSITION(S)) \n ', 'List Of Assoc \n (ASSOCOM) \n ', 'Rapporteur(s) \n (AUTHCOM_...) (ASSOCOM_...)\n[LIST OF RAPPORTEURS] [RAPPORTEURS / LIST OF ASSOC]']
   
 
 
@@ -170,7 +170,7 @@ export class PreviewComponent implements OnInit {
       listOfRapporteursTitle : new FormControl<string>('MM'),
       suffixListOfRapporteurs : new FormControl<string>(''), // to be checked if used
       authorOfProposal : new FormControl<[string]>(['Sara Matthieu']),
-      listOfAssoc : new FormControl<[string]>(['']),
+      listOfAssoc : new FormControl<any>([]),
       listOfAssocRapporteurs : new FormControl<any>([]),
       listOfAssocRapporteursTitle : new FormControl<string>(''),
       letters : new FormControl<any>([]),
@@ -342,7 +342,7 @@ export class PreviewComponent implements OnInit {
           
         } // fin de la boucle for
         this.previewForm.get('listOfAssocRapporteursTitle')?.setValue(titleToBeSet)
-        
+        //console.log(this.previewForm.get('listOfAssoc')?.value)
         //console.log (this.previewForm.get('listOfAssocRapporteurs')?.value);
         //console.log (this.previewForm.get('listOfAssocRapporteursTitle')?.value);
         

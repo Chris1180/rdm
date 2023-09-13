@@ -46,7 +46,7 @@ export class CheckRulesService {
       "RPCD", "RPCF", "OPCD", "OPCF",
       "ONGOING_DRAFT", "FINALISED_DRAFT", "SENT_TO_TOP", "AFTER_VOTE", "TABLED",
       "JOINTCOM",
-      "ASSOCCOM",
+      "ASSOCOM",
       "FIRST_READING", "SECOND_READING", "THIRD_READING", "RECAST",
       "NA","AMEND", "APPROVE_APP", "REJECT_REJ",
       "LETTERS", "LETTER", "POSITION", "POSITIONS", "OPINION", "OPINIONS",
@@ -120,7 +120,13 @@ export class CheckRulesService {
       case OutputParametersList['[LEAD COMMITTEE]']:
         // le "for the" est ajouté dans l'enum pour les comités simples
         return this.form.leadCommittee;
-      case OutputParametersList['[LIST OF ASSOC / RAPPORTEURS]']:
+      case OutputParametersList['[RAPPORTEURS / LIST OF ASSOC]']:
+        // formattage de la sortie ecran: 'noms des rapporteurs' , committe on 'le nom du committee'
+        let outputValue: string = '';
+        for (let index = 0; index < this.form.listOfAssoc.length; index++) {
+          outputValue += this.form.listOfAssocRapporteurs[index]+ ', committee on ' + this.form.listOfAssoc[index] + "\n";
+        }
+        return outputValue;
         return this.form.listOfAssocRapporteurs;
       case OutputParametersList['[LIST OF RAPPORTEURS]']:
         return this.form.listOfRapporteurs.join(", ");
@@ -202,7 +208,7 @@ export class CheckRulesService {
     
     // Doc with Assoc (le champ docWithAssoc du formulaire ne sera plus utilisé puisque déterminé par la valeur du tableau 'List of Assoc')
     let listOfAssoc = String(this.form.listOfAssoc).split(',')
-    let ASSOCCOM: boolean = (listOfAssoc.length === 1 && listOfAssoc[0].length!=0)|| listOfAssoc.length>1;
+    let ASSOCOM: boolean = (listOfAssoc.length === 1 && listOfAssoc[0].length!=0)|| listOfAssoc.length>1;
 
     // Reading
     let FIRST_READING: boolean = (this.form.reading == "FIRST_READING");
@@ -263,11 +269,11 @@ export class CheckRulesService {
     let AUTHCOM_WOMEN: boolean = this.form.listOfRapporteursTitle == 'FF'
     let AUTHCOM_BOTH: boolean = this.form.listOfRapporteursTitle == 'MF'
     // Title for ASSOCOM Committe
-    let ASSOCOM_MAN: boolean = this.form.listOfRapporteursTitle == 'M'
-    let ASSOCOM_MEN: boolean = this.form.listOfRapporteursTitle == 'MM'
-    let ASSOCOM_WOMAN: boolean = this.form.listOfRapporteursTitle == 'F'
-    let ASSOCOM_WOMEN: boolean = this.form.listOfRapporteursTitle == 'FF'
-    let ASSOCOM_BOTH: boolean = this.form.listOfRapporteursTitle == 'MF'
+    let ASSOCOM_MAN: boolean = this.form.listOfAssocRapporteursTitle == 'M'
+    let ASSOCOM_MEN: boolean = this.form.listOfAssocRapporteursTitle == 'MM'
+    let ASSOCOM_WOMAN: boolean = this.form.listOfAssocRapporteursTitle == 'F'
+    let ASSOCOM_WOMEN: boolean = this.form.listOfAssocRapporteursTitle == 'FF'
+    let ASSOCOM_BOTH: boolean = this.form.listOfAssocRapporteursTitle == 'MF'
 
     // on remplace la valeur des paramètres manquants par la valeur saisie par l'utilisateur
     if (inputMissingParamMap.size>0){

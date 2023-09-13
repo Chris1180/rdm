@@ -15,7 +15,7 @@ export enum OutputParametersList {
     "[LEAD COMMITTEE]" = "[LEAD COMMITTEE]",
     "[LIST OF RAPPORTEURS]" = "[LIST OF RAPPORTEURS]",
     "[AUTHOR OF PROPOSAL]" = "[AUTHOR OF PROPOSAL]",
-    "[LIST OF ASSOC / RAPPORTEURS]" = "[LIST OF ASSOC / RAPPORTEURS]",
+    "[RAPPORTEURS / LIST OF ASSOC]" = "[RAPPORTEURS / LIST OF ASSOC]",
     "[DOC MULTI LANG]" = "[DOC MULTI LANG]",
     "[PREFIX LIST OF RAPPORTEURS]" = "[PREFIX LIST OF RAPPORTEURS]",
     "[SUFFIX LIST OF RAPPORTEURS]" = "[SUFFIX LIST OF RAPPORTEURS]",
@@ -25,7 +25,6 @@ export enum OutputParametersList {
     "[LIST OF COMMITTEES HAVING POSITION]" = "[LIST OF COMMITTEES HAVING POSITION]",
     "[COMMITTEE HAVING LETTER]" = "[COMMITTEE HAVING LETTER]",
     "[LIST OF COMMITTEES HAVING LETTER]" = "[LIST OF COMMITTEES HAVING LETTER]",
-    "[A9-0227/2019]" = "[A9-0227/2019]" //exception dans la règle => garde la même valeur sans être demandé à l'utilisateur
 
     /*
     "[Procedure/Axx Number]" = "[Procedure/Axx Number]",
