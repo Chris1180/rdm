@@ -62,7 +62,7 @@ public class Controller {
 		
 		//System.out.println(rule);
 		//System.out.println(languages);
-		// sauvegarde des version linguistique
+		// sauvegarde des versions linguistiques contenues dans le tableau languages
 		for (Language lang: languages) {
 			lang.setRule(rule);
 			if(lang.getId() == 0) {

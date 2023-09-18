@@ -53,7 +53,7 @@ export class EditionComponent implements OnInit {
       condition : new UntypedFormControl(this.rule.condition),
       command : new UntypedFormControl(this.rule.command),
       mandatory : new UntypedFormControl(this.rule.mandatory),
-      languages : new UntypedFormControl('EN'),
+      languageSelected : new UntypedFormControl('EN'),
       initialValue : new UntypedFormControl(this.rule.initialValue),
       position : new UntypedFormControl(this.rule.position),
       format : new UntypedFormControl(this.rule.format),
@@ -65,12 +65,13 @@ export class EditionComponent implements OnInit {
     
     // Par défaut l'initial value de la règle correspond à la langue EN
     // mais si c'est une règle multi langue sans valeur par defaut pour l'EN alors on affiche la première version linguistique
-    if (this.rule.languages.length>0 && this.rule.initialValue=='') {
+    if (this.rule.languages.length>0 && this.rule.command=='') {
       //console.log("multi langue rule"); 
-      this.ruleForm.get("languages")?.setValue(this.rule.languages[0].lang)
-      this.ruleForm.get("initialValue")?.setValue(this.rule.languages[0].value)
+      this.ruleForm.get("languageSelected")?.setValue(this.rule.languages[0].lang)
+      this.ruleForm.get("command")?.setValue(this.rule.languages[0].value)
     
     }
+    //console.log(this.rule)
   }
 
   onSubmit() {
@@ -78,10 +79,11 @@ export class EditionComponent implements OnInit {
     this.rule.part  = this.ruleForm.get('part')?.value.trim();
     this.rule.label = this.ruleForm.get('label')?.value.trim();
     this.rule.condition  = this.ruleForm.get('condition')?.value.trim();
-    this.rule.command = this.ruleForm.get('command')?.value.trim();
+    // inutile puisque ce champ garde par défaut la valeur EN
+    //this.rule.command = this.ruleForm.get('command')?.value.trim();
     this.rule.mandatory  = this.ruleForm.get('mandatory')?.value;
-    // position and format not used
-    this.rule.position = this.ruleForm.get('position')?.value;
+    // position not used
+    //this.rule.position = this.ruleForm.get('position')?.value;
     this.rule.format  = this.ruleForm.get('format')?.value;
 
     this.rule.comment = this.ruleForm.get('comment')?.value.trim();
@@ -105,47 +107,51 @@ export class EditionComponent implements OnInit {
   }
 
   onLangChange(event: any){
+    // l'utilisateur change l'affichage de la langue
+    // par defaut le champ command est rempli avec la valeur de l'EN
     let langSelected = event.target.value.slice(event.target.value.length - 2);
-    this.ruleForm.get("languages")?.setValue(langSelected);
+    this.ruleForm.get("languageSelected")?.setValue(langSelected);
     // on selectionne dans rule la langue si elle existe (filter renvoi un tab mais on aura 1 seule valeur)
     let languages : Lang[] = this.rule.languages.filter(lang => lang.lang === langSelected);
     
     if (langSelected ==='EN'){
-      this.ruleForm.get("initialValue")?.setValue(this.rule.initialValue)
+      this.ruleForm.get("command")?.setValue(this.rule.command)
     }else{
       if (languages.length>0) {
-        this.ruleForm.get("initialValue")?.setValue(languages[0].value)
+        this.ruleForm.get("command")?.setValue(languages[0].value)
       }else{
-        this.ruleForm.get("initialValue")?.setValue('')
+        this.ruleForm.get("command")?.setValue('')
       }
     }
     
   }
 
-  onInitValueChange(event: any){
-    // lorsque un changement est fait dans le champ initValue
-    // on sauvegarde les changement dans rule
-    let initValue = event.target.value;
+  onCommandValueChange(event: any){
+    // lorsque un changement est fait dans le champ command
+    // on sauvegarde les changements dans rule
+    let command = event.target.value;
     
-    if(this.ruleForm.get('languages')?.value ==='EN'){
-      this.rule.initialValue = initValue;
+    // par défaut c'est l'EN qui est encodé dans le champ command
+    if(this.ruleForm.get('languageSelected')?.value ==='EN'){
+      this.rule.command = command;
       return;
     }
 
-    // on teste si une version linguistique existe déjà ou pas
-    let lang : Lang = this.rule.languages.filter(lang => lang.lang === this.ruleForm.get('languages')?.value)[0]
+    // on teste si une commande dans la langue existe déjà ou pas
+    let lang : Lang = this.rule.languages.filter(lang => lang.lang === this.ruleForm.get('languageSelected')?.value)[0]
     
     if (lang) {
-      lang.value = this.ruleForm.get('initialValue')?.value;
+      // soit on met à jour le tableau languages
+      lang.value = this.ruleForm.get('command')?.value;
       let index = this.languages.indexOf(lang);
       this.languages[index] = lang
       
     }else{
-      let newLang : Lang = {id: 0, lang: this.ruleForm.get('languages')?.value, value: initValue}
+      // soit on ajoute une entrée au tableau languages
+      let newLang : Lang = {id: 0, lang: this.ruleForm.get('languageSelected')?.value, value: command}
       this.languages.push(newLang)
       
     }
-    
   }
   // Utiliser pour afficher les valeurs des enum dans l'ordre de saisie
   originalOrder = (a: KeyValue<string,string>, b: KeyValue<string,string>): number => {

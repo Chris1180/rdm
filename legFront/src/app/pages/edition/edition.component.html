@@ -72,9 +72,14 @@
         </div>
         <!-- Command -->
         <div class="row align-items-center mb-2">
-            <label class="col-sm-3 col-form-label">Command</label>
+            <label class="col-sm-1 col-form-label">Command</label>
+            <div class="col-sm-2">
+                <select class="form-select form-select-sm" formControlName="languageSelected" (change)="onLangChange($event)">
+                    <option *ngFor="let lang of language | keyvalue: originalOrder" [ngValue]='lang.key'>{{lang.value}}</option>
+                </select>                
+            </div>
             <div class="col-sm-5">
-                <textarea class="form-control form-control-sm" rows="3" formControlName="command"></textarea>
+                <textarea class="form-control form-control-sm" rows="3" formControlName="command" (change)="onCommandValueChange($event)"></textarea>
             </div>
             <div class="col-sm-3">
                 <span class="form-text ico-info">
@@ -97,18 +102,14 @@
         <!-- Initial Value -->
         
         <div class="row align-items-center mb-2">
-            <label class="col-sm-1 col-form-label">Initial Value</label>
-            <div class="col-sm-2">
-                <select class="form-select form-select-sm" formControlName="languages" (change)="onLangChange($event)">
-                    <option *ngFor="let lang of language | keyvalue: originalOrder" [ngValue]='lang.key'>{{lang.value}}</option>
-                </select>                
-            </div>
+            <label class="col-sm-3 col-form-label">Initial Value</label>
+            
             <div class="col-sm-5">
-                <input class="form-control form-control-sm" type="text" formControlName="initialValue" (change)="onInitValueChange($event)">
+                <input class="form-control form-control-sm" type="text" formControlName="initialValue">
             </div>
             <div class="col-sm-3">
                 <span class="form-text ico-info">
-                    This field is used when in command field the value [DOC MULTI LANG] is set OR when the Output parameters is empty (default value)
+                    Used when Output empty parameter (default value)
                 </span>
             </div>
         </div>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Rule } from '../model/rule';
 import { OutputParametersList } from '../model/outputParameters/outputParametersList';
+import { Lang } from '../model/lang';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,8 @@ export class CheckRulesService {
 
   constructor() { }
 
-  checkCondition(allRulesFromSelectedPart: Rule[], selectedPart: string) {
-    this.rules = allRulesFromSelectedPart;
+  checkCondition(allRules: Rule[], selectedPart: string) {
+    this.rules = allRules;
     // reinitialise la liste des règles
     this.rulesApplied = [];
     this.unknownInput = [];
@@ -144,12 +145,6 @@ export class CheckRulesService {
         return this.form.sendToTopDate.day + "." + this.form.sendToTopDate.month + "." + this.form.sendToTopDate.year;
       case OutputParametersList['[TABLING DATE]']:
         return this.form.tablingDate.day + "." + this.form.tablingDate.month + "." + this.form.tablingDate.year;
-      case OutputParametersList['[DOC MULTI LANG]']:
-        if (this.form.language == 'EN') {
-          return this.rules.find(r => r.id == idRule)?.initialValue!;
-        } else {
-          return this.rules.find(r => r.id == idRule)?.languages.find(lang => lang.lang == this.form.language)?.value!;
-        }
       case OutputParametersList['[PREFIX LIST OF RAPPORTEURS]']:
         if (initialValue=='') return this.form.prefixListOfRapporteurs;
         else {
@@ -299,15 +294,29 @@ export class CheckRulesService {
         try {
           if (eval(r.finalCondition)) {
             
-            console.log("Rule :" + r.id + " True => " + r.finalCondition);
+            //console.log("Rule :" + r.id + " True => " + r.finalCondition);
             this.rulesApplied.push(r);
-    
+            // vérification de la version linguistique de la commande
+            let commandWithLinguisticVersion = r.command;
+            if (this.form.language != 'EN'){
+              // il faut vérifier si une version linguistique de la commande existe pour la langue selectionnée
+              //autremant dit on teste si une commande dans la langue existe déjà ou pas
+              let lang : Lang = r.languages.filter(lang => lang.lang === this.form.language)[0]
+              if (lang){
+                commandWithLinguisticVersion = lang.value;
+              }
+              //console.log('La règle n\'est pas en anglais')
+              //console.log(this.form)
+              //console.log(r)
+            }
+
+
             let commandOutputParam : string ="";
             let outputCommand : boolean = false;
             r.outputValue = "";
             // parcour de la chaine de caratère command pour en extraire les infos
-            for (let index = 0; index < r.command.length; index++) {
-              const char = r.command[index];
+            for (let index = 0; index < commandWithLinguisticVersion.length; index++) {
+              const char = commandWithLinguisticVersion[index];
               if (char=='['){
                 // debut d'un paramètre => on enregistre la commande dans commandOutputParam
                 commandOutputParam = char;
@@ -330,7 +339,7 @@ export class CheckRulesService {
               }
             } // fin du for
           } else {
-            console.warn("Rule :" + r.id + " False => " + r.finalCondition);
+            //console.warn("Rule :" + r.id + " False => " + r.finalCondition);
           } // fin du try
         } catch (e) {
           console.error('SyntaxError on rule number : ' + r.id + "\nrule code is : " + r.condition + "\nfinal condition is : " + r.finalCondition) // It is a SyntaxError

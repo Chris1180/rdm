@@ -88,7 +88,7 @@ export class FormComponent implements OnInit {
 
     // si l'index n'est pas -1 alors il s'agit d'une modif
     if (ruleToBeEdited.id!=-1){
-      // la valeur contenu dans init value est par defaut l'EN
+      // la valeur contenu dans command est pour l'EN
       let languages = ruleToBeEdited.languages;
       //ruleToBeEdited.languages = []
       console.log(ruleToBeEdited);
