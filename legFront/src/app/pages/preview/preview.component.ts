@@ -97,11 +97,11 @@ export class PreviewComponent implements OnInit {
     'Pascal Canfin (M), Jutta Paulus (F)',
     'Pascal Arimont (M), Vlad-Marius Botoş (M)',
     'Michael Gahler (M), Charles Goerens (M), Pedro Marques (M), Tomas Tobé (M)',
-    'Emil Radev (M), Marina Kaljurand (F)',
-    'Malin Björk (M), Eugenia Rodríguez Palop (F)',
+    'Marina Kaljurand (F)',
+    'Heléne Fritzon (F), Eugenia Rodríguez Palop (F)',
   ];
   TitleList: string[] = [
-    'MM','FF','F','MM','MF','F','F','M','','F','FM','M','MF','MM','MM','MF','MF'
+    'MM','FF','F','MM','MF','F','F','M','','F','MF','M','MF','MM','MM','F','FF'
   ]
 
   headers = ['Authoring Committee \n (JOINTCOM)\n [AUTHORING COMMITTEE]', 'Lead Committee \n \n [LEAD COMMITTEE]', 'Drafting Letter \n (LETTER(S)) \n ', 'Drafting Opinion \n (OPINION(S)) \n ', 'Drafting Position \n (POSITION(S)) \n ', 'List Of Assoc \n (ASSOCOM) \n ', 'Rapporteur(s) \n (AUTHCOM_...) (ASSOCOM_...)\n[LIST OF RAPPORTEURS] [RAPPORTEURS / LIST OF ASSOC]']
@@ -343,7 +343,7 @@ export class PreviewComponent implements OnInit {
         } // fin de la boucle for
         this.previewForm.get('listOfAssocRapporteursTitle')?.setValue(titleToBeSet)
         //console.log(this.previewForm.get('listOfAssoc')?.value)
-        //console.log (this.previewForm.get('listOfAssocRapporteurs')?.value);
+        //console.log (this.previewForm.get('listOfRapporteursTitle')?.value);
         //console.log (this.previewForm.get('listOfAssocRapporteursTitle')?.value);
         
 
