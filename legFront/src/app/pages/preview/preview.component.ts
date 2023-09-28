@@ -62,6 +62,7 @@ export class PreviewComponent implements OnInit {
   rulesWithUnknownInput: number[] = [];
   inputMissingParamMap = new Map<string, boolean>();
   // pour le tableau des inputs
+  /*
   ListOfCommittee: string[] = [
     'Constitutional Affairs',
     'Foreign Affairs',
@@ -80,7 +81,26 @@ export class PreviewComponent implements OnInit {
     'Joint AFET - DEVE',
     'Joint JURI - LIBE',
     'Joint FEMM - LIBE',
-  ];
+  ];*/
+  ListOfCommitteeMap: Map<string, string> = new Map<string,string>([
+    ['Constitutional Affairs', 'Committee on Constitutional Affairs'],
+    ['Foreign Affairs','Committee on Foreign Affairs'],
+    ['Agriculture and Rural Development', 'Committee on Agriculture and Rural Development'],
+    ['Budgets', 'Committee on Budgets'],
+    ['Budgetary Control','Committee on Budgetary Control'],
+    ['Culture and Education', 'Committee on Culture and Education'],
+    ['Development', 'Committee on Development'],
+    ['Economic and Monetary Affairs', 'Committee on Economic and Monetary Affairs'],
+    ['Employment and Social Affairs', 'Committee on Employment and Social Affairs'],
+    ['Environment, Public Health and Food Safety', 'Committee on Environment, Public Health and Food Safety'],
+    ['Women’s Rights and Gender Equality', 'Committee on Women’s Rights and Gender Equality'],
+    ['Civil Liberties, Justice and Home Affairs', 'Committee on Civil Liberties, Justice and Home Affairs'],
+    ['Joint ENVI - ITRE', 'Committee on Environment, Public Health and Food Safety - ITRE'],
+    ['Joint IMCO - JURI', 'Committee on IMCO and the Committee on JURI'],
+    ['Joint AFET - DEVE', 'Committee on AFET and the Committee on Development'],
+    ['Joint JURI - LIBE', 'Committee on International Trade and the Committee on Civil Liberties, Justice and Home Affairs'],
+    ['Joint FEMM - LIBE', 'Committee on Women’s Rights and Gender Equality \n Committee on Civil Liberties, Justice and Home Affairs']
+  ]);
   ListOfRapporteurs: string[] = [
     'Domènec Ruiz Devesa (M), Sven Simon (M)',
     'Alviina Alametsä (F), Hilde Vautmans (F)',
@@ -110,7 +130,7 @@ export class PreviewComponent implements OnInit {
 
 
   constructor(private checkRules: CheckRulesService, private ruleService: RulesService) { 
-    const numRows = this.ListOfCommittee.length;
+    const numRows = this.ListOfCommitteeMap.size;
     const numCols = this.headers.length;
   }
 
@@ -269,12 +289,15 @@ export class PreviewComponent implements OnInit {
     
     switch (index) {
       case 0:
-        this.previewForm.get('authoringCommittee')?.setValue(committee)
+        
+        //console.log(this.ListOfCommitteeMap.get(committee))
+        
+        this.previewForm.get('authoringCommittee')?.setValue(this.ListOfCommitteeMap.get(committee))
         this.previewForm.get('listOfRapporteurs')?.setValue([this.ListOfRapporteurs[line]])
         this.previewForm.get('listOfRapporteursTitle')?.setValue(this.TitleList[line])
         break;
       case 1:
-        this.previewForm.get('leadCommittee')?.setValue(committee)
+        this.previewForm.get('leadCommittee')?.setValue(this.ListOfCommitteeMap.get(committee)?.replace('\n','and the '))
         break;
       case 2: //LETTER(S)
         this.uncheckOtherLines('letters', 'opinions', 'positions', event.target.checked, committee, line)

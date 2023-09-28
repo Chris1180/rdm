@@ -250,13 +250,13 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let committee of ListOfCommittee ; let c = index">
-                        <th>{{ committee }}</th>
+                    <tr *ngFor="let committee of ListOfCommitteeMap | keyvalue: originalOrder ; let c = index">
+                        <th>{{ committee.key }}</th>
                         <td *ngFor="let header of headers; let i = index">
-                        <input *ngIf="i==0" type="radio" name="{{header}}" (change)="onChange(i, committee, $event, c)" [checked]="c===0">
-                        <input *ngIf="i==1" type="radio" name="{{header}}" (change)="onChange(i, committee, $event, c)" [checked]="c===1">
-                        <input *ngIf="i!=0 && i!=1 && i!=5 && i!=6" type="checkbox" [name]="i==2 ? 'letters' : i==3 ? 'opinions' : 'positions'" class="cb{{c}}" (change)="onChange(i, committee, $event, c)" [checked]="c===2 && i===3">
-                        <input *ngIf="i==5" type="checkbox" (change)="onChange(i, committee, $event, c)">
+                        <input *ngIf="i==0" type="radio" name="{{header}}" (change)="onChange(i, committee.key, $event, c)" [checked]="c===0">
+                        <input *ngIf="i==1" type="radio" name="{{header}}" (change)="onChange(i, committee.key, $event, c)" [checked]="c===1">
+                        <input *ngIf="i!=0 && i!=1 && i!=5 && i!=6" type="checkbox" [name]="i==2 ? 'letters' : i==3 ? 'opinions' : 'positions'" class="cb{{c}}" (change)="onChange(i, committee.key, $event, c)" [checked]="c===2 && i===3">
+                        <input *ngIf="i==5" type="checkbox" (change)="onChange(i, committee.key, $event, c)">
                         <span *ngIf="i==6">{{ListOfRapporteurs[c]}}</span>
                         </td>
                     </tr>
