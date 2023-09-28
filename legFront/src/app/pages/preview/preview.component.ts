@@ -95,10 +95,10 @@ export class PreviewComponent implements OnInit {
     ['Environment, Public Health and Food Safety', 'Committee on Environment, Public Health and Food Safety'],
     ['Women’s Rights and Gender Equality', 'Committee on Women’s Rights and Gender Equality'],
     ['Civil Liberties, Justice and Home Affairs', 'Committee on Civil Liberties, Justice and Home Affairs'],
-    ['Joint ENVI - ITRE', 'Committee on Environment, Public Health and Food Safety - ITRE'],
-    ['Joint IMCO - JURI', 'Committee on IMCO and the Committee on JURI'],
-    ['Joint AFET - DEVE', 'Committee on AFET and the Committee on Development'],
-    ['Joint JURI - LIBE', 'Committee on International Trade and the Committee on Civil Liberties, Justice and Home Affairs'],
+    ['Joint ENVI - ITRE', 'Committee on Environment, Public Health and Food Safety \n Committee on Industry, Research and Energy'],
+    ['Joint IMCO - JURI', 'Committee on the Internal Market and Consumer Protection \n Committee on Legal Affairs'],
+    ['Joint AFET - DEVE', 'Committee on Foreign Affairs \n Committee on Development'],
+    ['Joint JURI - LIBE', 'Committee on International Trade \n Committee on Civil Liberties, Justice and Home Affairs'],
     ['Joint FEMM - LIBE', 'Committee on Women’s Rights and Gender Equality \n Committee on Civil Liberties, Justice and Home Affairs']
   ]);
   ListOfRapporteurs: string[] = [
