@@ -232,7 +232,7 @@
                     <div class="col-sm-4">
                         <label class="col-form-label col-form-label-sm">[Author Of Proposal]</label>
                         <select class="form-select form-select-sm" multiple formControlName="authorOfProposal">
-                            <option *ngFor="let p of listOfRapporteurs | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                            <option *ngFor="let author of authorOfProposal | keyvalue: originalOrder" [ngValue]="author.key">{{author.value}}
                             </option>
                         </select>
                         <label class="col-form-label form-text ico-info">

@@ -1,4 +1,4 @@
-export enum ListOfRapporteurs {
+export enum AuthorOfProposal {
 'None' = 'None',
 'Jan Mulder' = 'Jan Mulder',
 'Niels Fuglsang' = 'Niels Fuglsang',

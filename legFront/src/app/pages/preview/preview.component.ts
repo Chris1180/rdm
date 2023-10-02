@@ -7,14 +7,10 @@ import { DocumentStatus } from 'src/app/model/inputParameters/documentStatus';
 import { DocumentType } from 'src/app/model/inputParameters/documentType';
 import { DocWithAssoc } from 'src/app/model/inputParameters/docWithAssoc';
 import { DocWithJoint } from 'src/app/model/inputParameters/docWithJoint';
-import { Form } from 'src/app/model/inputParameters/form';
 import { Language } from 'src/app/model/inputParameters/language';
 import { ProcedureType } from 'src/app/model/inputParameters/procedureType';
 import { Reading } from 'src/app/model/inputParameters/reading';
-import { AuthoringCommittee } from 'src/app/model/outputParameters/authoringCommittee';
-import { LeadCommittee } from 'src/app/model/outputParameters/leadCommittee';
-import { ListOfAssoc } from 'src/app/model/outputParameters/listOfAssoc';
-import { ListOfRapporteurs } from 'src/app/model/outputParameters/listOfRapporteurs';
+import { AuthorOfProposal } from 'src/app/model/outputParameters/authorOfProposal';
 import { OutputLanguage } from 'src/app/model/outputParameters/outputLanguage';
 import { Rule } from 'src/app/model/rule';
 import { CheckRulesService } from 'src/app/shared/check-rules.service';
@@ -40,13 +36,9 @@ export class PreviewComponent implements OnInit {
   docWithAssoc = DocWithAssoc;
   reading = Reading;
   docLegSpecialization = DocLegSpecialization;
-  form = Form;
   language = Language;
   outputLanguage = OutputLanguage; 
-  authoringCommittee = AuthoringCommittee;
-  leadCommittee = LeadCommittee;
-  listOfRapporteurs = ListOfRapporteurs;
-  listOfAssoc = ListOfAssoc;
+  authorOfProposal = AuthorOfProposal;
   partUniqueValues: Array<string>= [];
   partSelectedForPreview: string = "";
   // utilisé pur mettre la valeur du jour par defaut dans le datePicker
@@ -61,27 +53,8 @@ export class PreviewComponent implements OnInit {
   outputMissingParamMap = new Map<string, string>();
   rulesWithUnknownInput: number[] = [];
   inputMissingParamMap = new Map<string, boolean>();
-  // pour le tableau des inputs
-  /*
-  ListOfCommittee: string[] = [
-    'Constitutional Affairs',
-    'Foreign Affairs',
-    'Agriculture and Rural Development',
-    'Budgets',
-    'Budgetary Control',
-    'Culture and Education',
-    'Development',
-    'Economic and Monetary Affairs',
-    'Employment and Social Affairs',
-    'Environment, Public Health and Food Safety',
-    'Women’s Rights and Gender Equality',
-    'Civil Liberties, Justice and Home Affairs',
-    'Joint ENVI - ITRE',
-    'Joint IMCO - JURI',
-    'Joint AFET - DEVE',
-    'Joint JURI - LIBE',
-    'Joint FEMM - LIBE',
-  ];*/
+  
+  // pour le tableau des inputs et le rendu
   ListOfCommitteeMap: Map<string, string> = new Map<string,string>([
     ['Constitutional Affairs', 'Committee on Constitutional Affairs'],
     ['Foreign Affairs','Committee on Foreign Affairs'],

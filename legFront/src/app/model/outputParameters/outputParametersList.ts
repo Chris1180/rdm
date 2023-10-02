@@ -25,19 +25,4 @@ export enum OutputParametersList {
     "[COMMITTEE HAVING LETTER]" = "[COMMITTEE HAVING LETTER]",
     "[LIST OF COMMITTEES HAVING LETTER]" = "[LIST OF COMMITTEES HAVING LETTER]",
 
-    /*
-    "[Procedure/Axx Number]" = "[Procedure/Axx Number]",
-    "[Generating Date]" = "[Generating Date]",
-    "[Send To Top Date]" = "[Send To Top Date]",
-    "[Tabling Date]" = "[Tabling Date]",
-    "[PE Number]" = "[PE Number]",
-    "[EPADES Ref]" = "[EPADES Ref]",
-    "[Doc Language]" = "[Doc Language]",
-    "[Prefix Title]" = "[Prefix Title]",
-    "[ITER Title]" = "[ITER Title]",
-    "[Authoring Committee]" = "[Authoring Committee]",
-    "[Lead Committee]" = "[Lead Committee]",
-    "[List Of Rapporteurs]" = "[List Of Rapporteurs]",
-    "[Author Of Proposal]" = "[Author Of Proposal]",
-    "[List Of Assoc / Rapporteurs]" = "[List Of Assoc / Rapporteurs]"*/
 }
