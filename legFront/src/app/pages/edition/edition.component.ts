@@ -82,10 +82,8 @@ export class EditionComponent implements OnInit {
     // inutile puisque ce champ garde par défaut la valeur EN
     //this.rule.command = this.ruleForm.get('command')?.value.trim();
     this.rule.mandatory  = this.ruleForm.get('mandatory')?.value;
-    // position not used
-    //this.rule.position = this.ruleForm.get('position')?.value;
-    this.rule.format  = this.ruleForm.get('format')?.value;
-
+    this.rule.initialValue = this.ruleForm.get('initialValue')?.value;
+    //this.rule.format  = this.ruleForm.get('format')?.value; 
     this.rule.comment = this.ruleForm.get('comment')?.value.trim();
     this.rule.application  = this.ruleForm.get('application')?.value.trim();
     this.rule.example  = this.ruleForm.get('example')?.value.trim();
