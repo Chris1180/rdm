@@ -17,7 +17,7 @@ export class CheckRulesService {
 
   constructor() { }
 
-  checkCondition(allRules: Rule[], selectedPart: string) {
+  checkCondition(allRules: Rule[]) {
     this.rules = allRules;
     // reinitialise la liste des règles
     this.rulesApplied = [];
@@ -27,12 +27,12 @@ export class CheckRulesService {
     
     // check des règles les unes après les autres pour formater la condition finale
     this.rules.forEach(r => {
-      if (r.part==selectedPart) {
+      
         let finalCondition: string = "";
       // D'abord on analyse le champ Condition et on le formate de manière à pouvoir l'évaluer 
       finalCondition = this.formatCondition(r.condition, r.id);
       r.finalCondition = finalCondition
-      }
+      
       
     }); // fin du foreach 
     return {unknownInput: this.unknownInput, rulesWithUnknownInput: this.rulesWithUnknownInput};
@@ -178,7 +178,7 @@ export class CheckRulesService {
     return (outputParam)
   }
 
-  evalRules(form: any, inputMissingParamMap: Map<string, boolean>, rulesWithUnknownInput: number[], partSelectedForPreview: string){
+  evalRules(form: any, inputMissingParamMap: Map<string, boolean>, rulesWithUnknownInput: number[], rulesSelectedForPreview: Rule[]){
     this.form = form;
     // mise à jour des variables d'entrée (INPUT PARAMETERS)
     // Procedure Type
@@ -287,14 +287,14 @@ export class CheckRulesService {
       })
 
     }
-    //console.log(this.rules)
+    
     // on évalue les conditions en remplissant rulesApllied et unknowoutput
-    this.rules.forEach(r => {
-      if(partSelectedForPreview==r.part){
+    rulesSelectedForPreview.forEach(r => {
+      
         try {
           if (eval(r.finalCondition)) {
             
-            //console.log("Rule :" + r.id + " True => " + r.finalCondition);
+            console.log("Rule :" + r.id + " True => " + r.finalCondition);
             this.rulesApplied.push(r);
             // vérification de la version linguistique de la commande
             let commandWithLinguisticVersion = r.command;
@@ -339,12 +339,12 @@ export class CheckRulesService {
               }
             } // fin du for
           } else {
-            //console.warn("Rule :" + r.id + " False => " + r.finalCondition);
+            console.warn("Rule :" + r.id + " False => " + r.finalCondition);
           } // fin du try
         } catch (e) {
           console.error('SyntaxError on rule number : ' + r.id + "\nrule code is : " + r.condition + "\nfinal condition is : " + r.finalCondition) // It is a SyntaxError
         }
-      }
+      
       
   
     }); // fin du foreach

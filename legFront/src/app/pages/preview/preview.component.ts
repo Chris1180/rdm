@@ -177,18 +177,135 @@ export class PreviewComponent implements OnInit {
     //console.log(this.partSelectedForPreview);
     // la méthode checkCondition formate la condition avant l'eval et fait une liste des Input manquants
     let checkCondition : {unknownInput: string[], rulesWithUnknownInput: number[]};
-    checkCondition = this.checkRules.checkCondition(this.ruleService.getAllRules(), this.partSelectedForPreview);
+    let filteredRulesByPart : Rule[] = this.ruleService.getAllRules().filter(r => r.part == this.partSelectedForPreview);
+    checkCondition = this.checkRules.checkCondition(filteredRulesByPart);
     this.rulesWithUnknownInput = checkCondition.rulesWithUnknownInput;
+    
     //récup des valeurs input manquantes dans un map
     if (checkCondition.unknownInput.length > 0){  // pour ne pas redemander à chaque fois les inputs manquants: this.inputMissingParamMap.size==0 && 
-      // initialise les valeur manquantes à faux
+      
+      // On ne veut pas demander la valeur d'inputs qui ne seront pas utilisés
+      // ex: COD && AAAA => pas besoin de demander la valeur de AAAA si ce n'est pas un COD
+      // il faut donc mettre à jour le tableau unknownInput et retirer les valeurs dont l'éval est fausse
+      // même si l'input param est true
       checkCondition.unknownInput.forEach(unknownInput => {
-        this.inputMissingParamMap.set(unknownInput, false)
+        this.inputMissingParamMap.set(unknownInput, true)
       });
-      //demande à l'utilisateur de les saisir via vrai/faux
-      this.inputModal.show();
+      // Procedure Type
+      let INI: boolean = (this.previewForm.get('procedureType')?.value == "INI");
+      let COD: boolean = (this.previewForm.get('procedureType')?.value == "COD");
+      let INL: boolean = (this.previewForm.get('procedureType')?.value == "INL");
+      let DEC: boolean = (this.previewForm.get('procedureType')?.value == "DEC");
+      let REG: boolean = (this.previewForm.get('procedureType')?.value == "REG");
+      // Document Type
+      let OPCD: boolean = (this.previewForm.get('documentType')?.value == "OPCD");
+      let OPCF: boolean = (this.previewForm.get('documentType')?.value == "OPCF");
+      let RPCD: boolean = (this.previewForm.get('documentType')?.value == "RPCD");
+      let RPCF: boolean = (this.previewForm.get('documentType')?.value == "RPCF");
+      // Document Status
+      let ONGOING_DRAFT: boolean = (this.previewForm.get('documentStatus')?.value == "ONGOING_DRAFT");
+      let FINALISED_DRAFT: boolean = (this.previewForm.get('documentStatus')?.value == "FINALISED_DRAFT");
+      let SENT_TO_TOP: boolean = (this.previewForm.get('documentStatus')?.value == "SENT_TO_TOP");
+      let AFTER_VOTE: boolean = (this.previewForm.get('documentStatus')?.value == "AFTER_VOTE");
+      let TABLED: boolean = (this.previewForm.get('documentStatus')?.value == "TABLED");
+      let authoringCommittee = this.previewForm.get('authoringCommittee')?.value
+      let JOINTCOM: boolean = (authoringCommittee.startsWith('Joint'));
+      
+      // Doc with Assoc (le champ docWithAssoc du formulaire ne sera plus utilisé puisque déterminé par la valeur du tableau 'List of Assoc')
+      let listOfAssoc = String(this.previewForm.get('listOfAssoc')?.value).split(',')
+      let ASSOCOM: boolean = (listOfAssoc.length === 1 && listOfAssoc[0].length!=0)|| listOfAssoc.length>1;
+
+      // Reading
+      let FIRST_READING: boolean = (this.previewForm.get('reading')?.value == "FIRST_READING");
+      let SECOND_READING: boolean = (this.previewForm.get('reading')?.value == "SECOND_READING");
+      let THIRD_READING: boolean = (this.previewForm.get('reading')?.value == "THIRD_READING");
+      let RECAST: boolean = (this.previewForm.get('reading')?.value == "RECAST");
+      // DocLegSpecialization
+      let NA: boolean = (this.previewForm.get('docLegSpecialization')?.value == "NA");
+      let AMEND: boolean = (this.previewForm.get('docLegSpecialization')?.value == "AMEND");
+      let APPROVE_APP: boolean = (this.previewForm.get('docLegSpecialization')?.value == "APPROVE_APP");
+      let REJECT_REJ: boolean = (this.previewForm.get('docLegSpecialization')?.value == "REJECT_REJ");
+      // Language
+      let BG: boolean = (this.previewForm.get('language')?.value == "BG");
+      let ES: boolean = (this.previewForm.get('language')?.value == "ES");
+      let CS: boolean = (this.previewForm.get('language')?.value == "CS");
+      let DA: boolean = (this.previewForm.get('language')?.value == "DA");
+      let DE: boolean = (this.previewForm.get('language')?.value == "DE");
+      let ET: boolean = (this.previewForm.get('language')?.value == "ET");
+      let EL: boolean = (this.previewForm.get('language')?.value == "EL");
+      let EN: boolean = (this.previewForm.get('language')?.value == "EN");
+      let FR: boolean = (this.previewForm.get('language')?.value == "FR");
+      let GA: boolean = (this.previewForm.get('language')?.value == "GA");
+      let HR: boolean = (this.previewForm.get('language')?.value == "HR");
+      let IT: boolean = (this.previewForm.get('language')?.value == "IT");
+      let LV: boolean = (this.previewForm.get('language')?.value == "LV");
+      let LT: boolean = (this.previewForm.get('language')?.value == "LT");
+      let HU: boolean = (this.previewForm.get('language')?.value == "HU");
+      let MT: boolean = (this.previewForm.get('language')?.value == "MT");
+      let NL: boolean = (this.previewForm.get('language')?.value == "NL");
+      let PL: boolean = (this.previewForm.get('language')?.value == "PL");
+      let PT: boolean = (this.previewForm.get('language')?.value == "PT");
+      let RO: boolean = (this.previewForm.get('language')?.value == "RO");
+      let SK: boolean = (this.previewForm.get('language')?.value == "SK");
+      let SL: boolean = (this.previewForm.get('language')?.value == "SL");
+      let FI: boolean = (this.previewForm.get('language')?.value == "FI");
+      let SV: boolean = (this.previewForm.get('language')?.value == "SV");
+      
+      // Drafting Letter
+      let letters = String(this.previewForm.get('letters')?.value).split(',')
+      let LETTER: boolean = (letters.length === 1 && letters[0].length!=0); 
+      let LETTERS: boolean = (letters.length > 1);
+      // Drafting Opinion
+      let opinions = String(this.previewForm.get('opinions')?.value).split(',')
+      let OPINION: boolean = (opinions.length === 1 && opinions[0].length!=0);
+      let OPINIONS: boolean = (opinions.length > 1);
+      // Drafting Position
+      let positions = String(this.previewForm.get('positions')?.value).split(',')
+      let POSITION: boolean = (positions.length === 1 && positions[0].length!=0); 
+      let POSITIONS: boolean = (positions.length > 1);
+      // Title for Authoring Committe
+      let AUTHCOM_MAN: boolean = this.previewForm.get('listOfRapporteursTitle')?.value == 'M'
+      let AUTHCOM_MEN: boolean = this.previewForm.get('listOfRapporteursTitle')?.value == 'MM'
+      let AUTHCOM_WOMAN: boolean = this.previewForm.get('listOfRapporteursTitle')?.value == 'F'
+      let AUTHCOM_WOMEN: boolean = this.previewForm.get('listOfRapporteursTitle')?.value == 'FF'
+      let AUTHCOM_BOTH: boolean = this.previewForm.get('listOfRapporteursTitle')?.value == 'MF'
+      // Title for ASSOCOM Committe
+      let ASSOCOM_MAN: boolean = this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'M'
+      let ASSOCOM_MEN: boolean = this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'MM'
+      let ASSOCOM_WOMAN: boolean = this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'F'
+      let ASSOCOM_WOMEN: boolean = this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'FF'
+      let ASSOCOM_BOTH: boolean = this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'MF'
+      
+      // dans ce tableau on ne mettra que les règles dont on a besoin des inputs
+      let filteredRulesByPartEvaluated: Rule[] = [];
+      filteredRulesByPart.filter(r => this.rulesWithUnknownInput.includes(r.id)).forEach(r => {
+        //eval
+        try {
+          eval(r.finalCondition);
+        } catch (e) {
+          filteredRulesByPartEvaluated.push(r)
+          // It is a SyntaxError
+        }  
+      });
+      checkCondition = this.checkRules.checkCondition(filteredRulesByPartEvaluated);
+      this.rulesWithUnknownInput = checkCondition.rulesWithUnknownInput;
+      this.inputMissingParamMap.clear()
+      
+      // on refait le test de savoir si on a besoin de demander à l'utilisateur des inputs manquants
+      if (checkCondition.unknownInput.length > 0) {
+        // initialise les valeur manquantes à faux
+        checkCondition.unknownInput.forEach(unknownInput => {
+          this.inputMissingParamMap.set(unknownInput, false)
+        });
+        //demande à l'utilisateur de les saisir via vrai/faux
+        this.inputModal.show();
+      }else{
+        // pas de Input param manquant on peut directement évaluer les conditions
+        this.evalCondition();
+      }
+      
     }else{
-      // pas de Input param manquant on peut directement évaluer les conditions
+      // pas de Input param manquant on peut directement évaluer les conditions    
       this.evalCondition();
     }
     
@@ -235,10 +352,10 @@ export class PreviewComponent implements OnInit {
 
   evalCondition(){
     let resultEval : {unknownOutput : string[], rulesApllied : Rule[]}
-    resultEval = this.checkRules.evalRules(this.previewForm.value, this.inputMissingParamMap, this.rulesWithUnknownInput, this.partSelectedForPreview);
+    
+    resultEval = this.checkRules.evalRules(this.previewForm.value, this.inputMissingParamMap, this.rulesWithUnknownInput, this.ruleService.getAllRules().filter(r => r.part == this.partSelectedForPreview));
     let outputMissingParam: string[] = resultEval.unknownOutput;
     this.rulesApplied = resultEval.rulesApllied;
-    
     // initialisation de la liste des paramètres output manquants si pas déjà fait (si déjà fait alors on garde les anciennes valeurs) 
     if (this.outputMissingParamMap.size==0 && outputMissingParam.length > 0){
       outputMissingParam.forEach(unknownOutput => {
