@@ -187,10 +187,13 @@ export class PreviewComponent implements OnInit {
       // On ne veut pas demander la valeur d'inputs qui ne seront pas utilisés
       // ex: COD && AAAA => pas besoin de demander la valeur de AAAA si ce n'est pas un COD
       // il faut donc mettre à jour le tableau unknownInput et retirer les valeurs dont l'éval est fausse
+      
+      // partie inutile à tester
       // même si l'input param est true
-      checkCondition.unknownInput.forEach(unknownInput => {
-        this.inputMissingParamMap.set(unknownInput, true)
-      });
+      //checkCondition.unknownInput.forEach(unknownInput => {
+      //  this.inputMissingParamMap.set(unknownInput, true)
+      //});
+      // fin partie inutile ?
       // Procedure Type
       let INI: boolean = (this.previewForm.get('procedureType')?.value == "INI");
       let COD: boolean = (this.previewForm.get('procedureType')?.value == "COD");
@@ -289,13 +292,21 @@ export class PreviewComponent implements OnInit {
       });
       checkCondition = this.checkRules.checkCondition(filteredRulesByPartEvaluated);
       this.rulesWithUnknownInput = checkCondition.rulesWithUnknownInput;
-      this.inputMissingParamMap.clear()
       
       // on refait le test de savoir si on a besoin de demander à l'utilisateur des inputs manquants
       if (checkCondition.unknownInput.length > 0) {
-        // initialise les valeur manquantes à faux
+        // comme on veut conserver les valeurs précédentes des inputs on copie les valeurs avant de les effacer
+        let inputMissingParamMapTemp = new Map(this.inputMissingParamMap); // clone le Map
+        this.inputMissingParamMap.clear();
+        // initialise les valeurs manquantes
         checkCondition.unknownInput.forEach(unknownInput => {
-          this.inputMissingParamMap.set(unknownInput, false)
+          if (inputMissingParamMapTemp.has(unknownInput)){
+            //on remet la valeur de l'input param précédente
+            this.inputMissingParamMap.set(unknownInput, inputMissingParamMapTemp.get(unknownInput)||false)
+          }else{
+            // par défaut la valeur de l'input param est fausse
+            this.inputMissingParamMap.set(unknownInput, false)
+          }
         });
         //demande à l'utilisateur de les saisir via vrai/faux
         this.inputModal.show();
