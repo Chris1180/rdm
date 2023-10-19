@@ -78,8 +78,8 @@
 			<groupId>ep-foundry.toolbox</groupId>
 			<artifactId>ep-foundry-spring-security</artifactId>
 			<version>4.1.5</version>
-			<!-- <scope>system</scope>
-			<systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/ep-foundry-spring-security-4.1.5.jar</systemPath>-->
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/ep-foundry-spring-security-4.1.5.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>

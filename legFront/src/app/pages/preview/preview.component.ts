@@ -97,7 +97,7 @@ export class PreviewComponent implements OnInit {
     'MM','FF','F','MM','MF','F','F','M','','F','MF','M','MF','MM','MM','F','FF'
   ]
 
-  headers = ['Authoring Committee \n (JOINTCOM)\n [AUTHORING COMMITTEE]', 'Lead Committee \n \n [LEAD COMMITTEE]', 'Drafting Letter \n (LETTER(S)) \n ', 'Drafting Opinion \n (OPINION(S)) \n ', 'Drafting Position \n (POSITION(S)) \n ', 'List Of Assoc \n (ASSOCOM) \n ', 'Rapporteur(s) \n (AUTHCOM_...) (ASSOCOM_...)\n[LIST OF RAPPORTEURS] [RAPPORTEURS / LIST OF ASSOC]']
+  headers = ['Authoring Committee \n (ACJOINTCOM)\n [AUTHORING COMMITTEE]', 'Lead Committee \n (LCJOINTCOM) \n [LEAD COMMITTEE]', 'Drafting Letter \n (LETTER(S)) \n ', 'Drafting Opinion \n (OPINION(S)) \n ', 'Drafting Position \n (POSITION(S)) \n ', 'List Of Assoc \n (ASSOCOM) \n ', 'Rapporteur(s) \n (AUTHCOM_...) (ASSOCOM_...)\n[LIST OF RAPPORTEURS] [RAPPORTEURS / LIST OF ASSOC]']
   
 
 
@@ -188,12 +188,6 @@ export class PreviewComponent implements OnInit {
       // ex: COD && AAAA => pas besoin de demander la valeur de AAAA si ce n'est pas un COD
       // il faut donc mettre à jour le tableau unknownInput et retirer les valeurs dont l'éval est fausse
       
-      // partie inutile à tester
-      // même si l'input param est true
-      //checkCondition.unknownInput.forEach(unknownInput => {
-      //  this.inputMissingParamMap.set(unknownInput, true)
-      //});
-      // fin partie inutile ?
       // Procedure Type
       let INI: boolean = (this.previewForm.get('procedureType')?.value == "INI");
       let COD: boolean = (this.previewForm.get('procedureType')?.value == "COD");
@@ -211,9 +205,11 @@ export class PreviewComponent implements OnInit {
       let SENT_TO_TOP: boolean = (this.previewForm.get('documentStatus')?.value == "SENT_TO_TOP");
       let AFTER_VOTE: boolean = (this.previewForm.get('documentStatus')?.value == "AFTER_VOTE");
       let TABLED: boolean = (this.previewForm.get('documentStatus')?.value == "TABLED");
-      let authoringCommittee = this.previewForm.get('authoringCommittee')?.value
-      let JOINTCOM: boolean = (authoringCommittee.startsWith('Joint'));
-      
+      let authoringCommittee = this.previewForm.get('authoringCommittee')?.value.split("Committee on");
+      let ACJOINTCOM: boolean = (authoringCommittee.length>2);
+      let leadCommittee = this.previewForm.get('leadCommittee')?.value.split("Committee on");
+      let LCJOINTCOM: boolean = (leadCommittee.length>2);
+
       // Doc with Assoc (le champ docWithAssoc du formulaire ne sera plus utilisé puisque déterminé par la valeur du tableau 'List of Assoc')
       let listOfAssoc = String(this.previewForm.get('listOfAssoc')?.value).split(',')
       let ASSOCOM: boolean = (listOfAssoc.length === 1 && listOfAssoc[0].length!=0)|| listOfAssoc.length>1;

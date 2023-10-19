@@ -46,7 +46,7 @@ export class CheckRulesService {
       "INI", "COD", "INL", "DEC", "REG",
       "RPCD", "RPCF", "OPCD", "OPCF",
       "ONGOING_DRAFT", "FINALISED_DRAFT", "SENT_TO_TOP", "AFTER_VOTE", "TABLED",
-      "JOINTCOM",
+      "ACJOINTCOM","LCJOINTCOM",
       "ASSOCOM",
       "FIRST_READING", "SECOND_READING", "THIRD_READING", "RECAST",
       "NA","AMEND", "APPROVE_APP", "REJECT_REJ",
@@ -128,7 +128,6 @@ export class CheckRulesService {
           outputValue += this.form.listOfAssocRapporteurs[index]+ ', committee on ' + this.form.listOfAssoc[index] + "\n";
         }
         return outputValue;
-        return this.form.listOfAssocRapporteurs;
       case OutputParametersList['[LIST OF RAPPORTEURS]']:
         return this.form.listOfRapporteurs.join(", ");
       case OutputParametersList['[PE NUMBER]']:
@@ -158,17 +157,17 @@ export class CheckRulesService {
           return '';
         }
       case OutputParametersList['[COMMITTEE HAVING OPINION]']:
-        return this.form.opinions;
+        return 'Committee on '+this.form.opinions;
       case OutputParametersList['[LIST OF COMMITTEES HAVING OPINION]']:
-        return this.form.opinions.join(", ");
+        return 'Committee on '+this.form.opinions.join(", Committee on ").replace( /(.*)\,/gm, '$1 and');
       case OutputParametersList['[COMMITTEE HAVING POSITION]']:
-        return this.form.positions;
+        return 'Committee on '+this.form.positions;
       case OutputParametersList['[LIST OF COMMITTEES HAVING POSITION]']:
-        return this.form.positions.join(", ");
+        return 'Committee on '+this.form.positions.join(", Committee on ").replace( /(.*)\,/gm, '$1 and');
       case OutputParametersList['[COMMITTEE HAVING LETTER]']:
-        return this.form.letters;
+        return 'Committee on '+this.form.letters;
       case OutputParametersList['[LIST OF COMMITTEES HAVING LETTER]']:
-        return this.form.letters.join(", ");
+        return 'Committee on '+this.form.letters.join(", Committee on ").replace( /(.*)\,/gm, '$1 and');
       
     }// fin du switch
     // ajout du paramètre manquant si pas déjà dans la liste
@@ -198,8 +197,10 @@ export class CheckRulesService {
     let SENT_TO_TOP: boolean = (this.form.documentStatus == "SENT_TO_TOP");
     let AFTER_VOTE: boolean = (this.form.documentStatus == "AFTER_VOTE");
     let TABLED: boolean = (this.form.documentStatus == "TABLED");
-    let authoringCommittee = String(this.form.authoringCommittee);
-    let JOINTCOM: boolean = (authoringCommittee.startsWith('Joint'));
+    let authoringCommittee = this.form.authoringCommittee.split("Committee on");
+    let ACJOINTCOM: boolean = (authoringCommittee.length>2);
+    let leadCommittee = this.form.leadCommittee.split("Committee on");
+    let LCJOINTCOM: boolean = (leadCommittee.length>2);
     
     // Doc with Assoc (le champ docWithAssoc du formulaire ne sera plus utilisé puisque déterminé par la valeur du tableau 'List of Assoc')
     let listOfAssoc = String(this.form.listOfAssoc).split(',')
