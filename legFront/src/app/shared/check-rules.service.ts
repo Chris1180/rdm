@@ -59,7 +59,7 @@ export class CheckRulesService {
     let finalCondition: string = "";
     let param: string = "";
     // liste de paramètres input (condition) récupérée du Back End
-
+    /*
     let listOfKnownParam = [
       "||", "&&", "true", "false" , "",
       "INI", "COD", "INL", "DEC", "REG",
@@ -73,7 +73,8 @@ export class CheckRulesService {
       "BG", "ES", "CS", "DA", "DE", "ET", "EL", "EN", "FR", "GA", "HR", "IT", "LV", "LT", "HU", "MT", "NL", "PL", "PT", "RO", "SK", "SL", "FI", "SV",
       "AUTHCOM_MAN","AUTHCOM_MEN","AUTHCOM_WOMAN","AUTHCOM_WOMEN","AUTHCOM_BOTH",
       "ASSOCOM_MAN","ASSOCOM_MEN","ASSOCOM_WOMAN","ASSOCOM_WOMEN","ASSOCOM_BOTH"
-    ]
+    ]*/
+
     // on parcour la chaine caractère par caractère
     //console.log("condition initiale:")
     //console.log(condition)
@@ -100,7 +101,7 @@ export class CheckRulesService {
         var re = /[!)\s]+/g; 
         let paramTobeChecked = param.replace(re, "")
         //console.log ("param to be checked : "+paramTobeChecked)
-        if (listOfKnownParam.indexOf(paramTobeChecked) == -1) {
+        if (this.listOfKnownParam.indexOf(paramTobeChecked) == -1) {
           if(this.unknownInput.indexOf(paramTobeChecked) == -1)
           this.unknownInput.push(paramTobeChecked);
           if(this.rulesWithUnknownInput.indexOf(id) == -1)
