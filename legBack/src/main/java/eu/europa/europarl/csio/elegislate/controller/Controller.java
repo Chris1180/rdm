@@ -11,11 +11,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import eu.europa.europarl.csio.elegislate.DAO.ConditionRepository;
 import eu.europa.europarl.csio.elegislate.DAO.LanguageRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RuleRepository;
+import eu.europa.europarl.csio.elegislate.DAO.RulesRepository;
 import eu.europa.europarl.csio.elegislate.DAO.StyleRepository;
+import eu.europa.europarl.csio.elegislate.domain.Condition;
 import eu.europa.europarl.csio.elegislate.domain.Language;
 import eu.europa.europarl.csio.elegislate.domain.Rule;
+import eu.europa.europarl.csio.elegislate.domain.Rules;
 import eu.europa.europarl.csio.elegislate.domain.Style;
 
 
@@ -28,7 +32,37 @@ public class Controller {
 	private LanguageRepository languageRepository;
 	@Autowired
 	private StyleRepository styleRepository;
+	@Autowired
+	private RulesRepository rulesRepository;
+	@Autowired
+	private ConditionRepository conditionRepository;
 	
+	// new controllers
+	@GetMapping ("/getAllRules")
+	public List<Rules> getAllRules() {
+		return rulesRepository.findAll();
+		
+	}
+	
+	@GetMapping ("/getAllConditions")
+	public List<Condition> getAllConditions() {
+		return conditionRepository.findAll();	
+	}
+	@PostMapping("/newCondition")
+	public Condition addNewCondition(@RequestBody Condition condition) {
+		if (condition.getId()==0) {
+			condition.setId(null);
+		}
+		return conditionRepository.save(condition);
+	}
+	
+	@PostMapping("/deleteCondition/{id}")
+	public void deleteCondition(@PathVariable int id) {
+		conditionRepository.deleteById(id);
+		
+	}
+	
+	// end new controllers
 	
 	@GetMapping ("/rules")
 	public List<Rule> getRules() {

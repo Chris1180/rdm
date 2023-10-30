@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Rule } from '../model/rule';
 import { OutputParametersList } from '../model/outputParameters/outputParametersList';
 import { Lang } from '../model/lang';
+import { ConditionService } from './condition.service';
+import { Condition } from '../model/condition';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +16,23 @@ export class CheckRulesService {
   unknownInput: string[] = [];
   rulesWithUnknownInput: number[] = [];
   unknownOutput: string[] = [];
+  listOfKnownParam: string[] = ["||", "&&", "true", "false" , ""]
 
-  constructor() { }
+  constructor(private conditionService: ConditionService) {
+    let conditionsFromDB : Condition[];
+    this.conditionService.getConditionsFromDB().subscribe({
+      next: (data) => {conditionsFromDB = data},
+      error:(err) => {
+        console.log("Error during back end request for list od conditions")
+      },
+      complete: ()=>{
+        conditionsFromDB.forEach(c=>this.listOfKnownParam.push(c.name));
+        console.log(this.listOfKnownParam)
+      }
+    }
+      
+    )
+   }
 
   checkCondition(allRules: Rule[]) {
     this.rules = allRules;
@@ -28,7 +45,7 @@ export class CheckRulesService {
     // check des règles les unes après les autres pour formater la condition finale
     this.rules.forEach(r => {
       
-        let finalCondition: string = "";
+      let finalCondition: string = "";
       // D'abord on analyse le champ Condition et on le formate de manière à pouvoir l'évaluer 
       finalCondition = this.formatCondition(r.condition, r.id);
       r.finalCondition = finalCondition
@@ -41,6 +58,8 @@ export class CheckRulesService {
   formatCondition(condition: string, id: number) {
     let finalCondition: string = "";
     let param: string = "";
+    // liste de paramètres input (condition) récupérée du Back End
+
     let listOfKnownParam = [
       "||", "&&", "true", "false" , "",
       "INI", "COD", "INL", "DEC", "REG",
@@ -159,15 +178,15 @@ export class CheckRulesService {
       case OutputParametersList['[COMMITTEE HAVING OPINION]']:
         return 'Committee on '+this.form.opinions;
       case OutputParametersList['[LIST OF COMMITTEES HAVING OPINION]']:
-        return 'Committee on '+this.form.opinions.join(", Committee on ").replace( /(.*)\,/gm, '$1 and');
+        return 'the Committee on '+this.form.opinions.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
       case OutputParametersList['[COMMITTEE HAVING POSITION]']:
-        return 'Committee on '+this.form.positions;
+        return 'the Committee on '+this.form.positions;
       case OutputParametersList['[LIST OF COMMITTEES HAVING POSITION]']:
-        return 'Committee on '+this.form.positions.join(", Committee on ").replace( /(.*)\,/gm, '$1 and');
+        return 'the Committee on '+this.form.positions.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
       case OutputParametersList['[COMMITTEE HAVING LETTER]']:
-        return 'Committee on '+this.form.letters;
+        return 'the Committee on '+this.form.letters;
       case OutputParametersList['[LIST OF COMMITTEES HAVING LETTER]']:
-        return 'Committee on '+this.form.letters.join(", Committee on ").replace( /(.*)\,/gm, '$1 and');
+        return 'the Committee on '+this.form.letters.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
       
     }// fin du switch
     // ajout du paramètre manquant si pas déjà dans la liste

@@ -4,6 +4,7 @@ import { EditionComponent } from './pages/edition/edition.component';
 import { FormComponent } from './pages/form/form.component';
 import { PreviewComponent } from './pages/preview/preview.component';
 import { StyleComponent } from './pages/style/style.component';
+import { ConditionComponent } from './pages/condition/condition.component';
 
 
 const routes: Routes = [
@@ -11,6 +12,7 @@ const routes: Routes = [
   { path: 'Edition', component: EditionComponent },
   { path: 'Preview', component: PreviewComponent },
   { path: 'Style', component: StyleComponent },
+  { path: 'Condition', component: ConditionComponent },
   { path: '',   redirectTo: '/CSIOForm', pathMatch: 'full' }
 ];
 

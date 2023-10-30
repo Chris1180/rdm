@@ -1,0 +1,66 @@
+<!-- Toast feed back user about changes in back end -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="userFeedBack" class="toast align-items-center text-white border-0" [ngClass]="userFeedBackStyle" role="alert"
+        aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{userFeedBackMessage}}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<!--End of Modal feed back user about changes in back end -->
+
+<main id="main" >
+    <ng-container *ngIf="(conditionDataState$ | async) as result" [ngSwitch]="result.dataState">
+        
+        <ng-container *ngSwitchCase="RuleStateEnum.LOADING">
+            Loading .....
+        </ng-container>
+        
+        <ng-container *ngSwitchCase="RuleStateEnum.ERROR">
+            <div class="alert-danger">
+                {{result.errorMessage}}
+            </div>
+        </ng-container>
+        
+        <ng-container *ngSwitchCase="RuleStateEnum.LOADED">
+            <table class="table table-striped table-administration">
+                <tbody>
+                    <tr>
+                        <th>id</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Input Group
+                            <form [formGroup]="filterFormGroup">
+                                <select class="form-control-sm" formControlName="inputGroup" style="width: 100px;"
+                                    (change)="onFilterChange()">
+                                    <option value="" disabled="">Select Groups</option>
+                                    <option value="allGroups" selected>All Groups...</option>
+                                    <option *ngFor="let ig of listInputGroups" [ngValue]="ig">{{ig}} </option>
+
+                                </select>
+                            </form>
+                        </th>
+                        <th></th>
+                    </tr>
+                    <tr *ngFor="let c of filteredConditions">
+                        <td #id contentEditable (blur)="editConditionOnline(c, id.innerText.trim(), 'id')">{{c.id}}</td>
+                        <td #name contentEditable (blur)="editConditionOnline(c, name.innerText.trim(), 'name')">{{c.name}}</td>
+                        <td #description contentEditable (blur)="editConditionOnline(c, description.innerText.trim(), 'description')">{{c.description}}</td>
+                        <td #inputgroup contentEditable (blur)="editConditionOnline(c, inputgroup.innerText.trim(), 'inputGroup')">{{c.inputGroup}}</td>
+                        <td>
+                            <i class="bi bi-trash p-2" style="cursor:pointer" (click)="deleteCondition(c)" ngbTooltip="Delete this Condition" placement="right"></i>
+                            <i class="bi bi-files p-2" style="cursor:pointer" (click)="duplicateCondition(c)" ngbTooltip="Duplicate this Condition" placement="right"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </ng-container>
+    </ng-container>
+</main>
+
+
+
