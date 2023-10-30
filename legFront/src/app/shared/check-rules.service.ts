@@ -27,7 +27,7 @@ export class CheckRulesService {
       },
       complete: ()=>{
         conditionsFromDB.forEach(c=>this.listOfKnownParam.push(c.name));
-        console.log(this.listOfKnownParam)
+        //console.log(this.listOfKnownParam)
       }
     }
       

@@ -25,8 +25,23 @@
                         <div class="input-group">
                             <label class="col-3 col-form-label col-form-label-sm">Procedure Type</label>
                             <select class="form-select form-select-sm" formControlName="procedureType" (change)="checkProcNumber()">
-                                <option *ngFor="let p of procedureType | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
-                                </option>
+                                <ng-container *ngIf="(conditionDataState$ | async) as condition" [ngSwitch]="condition.dataState">
+                                    <ng-container *ngSwitchCase="RuleStateEnum.LOADING">
+                                        Loading .....
+                                    </ng-container>
+                                    
+                                    <ng-container *ngSwitchCase="RuleStateEnum.ERROR">
+                                        <div class="alert-danger">
+                                            {{result.errorMessage}}
+                                        </div>
+                                    </ng-container>
+                                    
+                                    <ng-container *ngSwitchCase="RuleStateEnum.LOADED">
+                                        <option *ngFor="let p of procedureType" [ngValue]="p.name">{{p.name}} - {{p.description}}
+                                        </option>
+                                    </ng-container>
+                                </ng-container>
+                                
                             </select>
                         </div> 
                     </div>

@@ -2,6 +2,7 @@ import { KeyValue } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
+import { Condition } from 'src/app/model/condition';
 import { DocLegSpecialization } from 'src/app/model/inputParameters/docLegSpecialization';
 import { DocumentStatus } from 'src/app/model/inputParameters/documentStatus';
 import { DocumentType } from 'src/app/model/inputParameters/documentType';
@@ -14,6 +15,7 @@ import { AuthorOfProposal } from 'src/app/model/outputParameters/authorOfProposa
 import { OutputLanguage } from 'src/app/model/outputParameters/outputLanguage';
 import { Rule } from 'src/app/model/rule';
 import { CheckRulesService } from 'src/app/shared/check-rules.service';
+import { ConditionService } from 'src/app/shared/condition.service';
 import { RulesService } from 'src/app/shared/rules.service';
 import { AppDataState, RuleStateEnum } from 'src/app/shared/rules.state';
 
@@ -28,8 +30,11 @@ export class PreviewComponent implements OnInit {
 
   rulesDataState$!: Observable<AppDataState<Rule[]>>;
   readonly RuleStateEnum=RuleStateEnum;
+  conditionDataState$!: Observable<AppDataState<Condition[]>>;
+  
   previewForm! : UntypedFormGroup;
-  procedureType = ProcedureType;
+  //procedureType = ProcedureType;
+  procedureType : Condition[] = [];
   documentType = DocumentType;
   documentStatus = DocumentStatus;
   docWithJoint = DocWithJoint;
@@ -102,7 +107,7 @@ export class PreviewComponent implements OnInit {
 
 
 
-  constructor(private checkRules: CheckRulesService, private ruleService: RulesService) { 
+  constructor(private checkRules: CheckRulesService, private ruleService: RulesService, private conditionService: ConditionService) { 
     const numRows = this.ListOfCommitteeMap.size;
     const numCols = this.headers.length;
   }
@@ -112,14 +117,23 @@ export class PreviewComponent implements OnInit {
     this.rulesDataState$ = this.ruleService.getRulesFromDB().pipe(
       map(data=>{
         this.ruleService.setRules(data);
-        this.allRules = data;
+        this.allRules = data; 
         this.partUniqueValues = this.ruleService.getPartUniqueValues();
         return ({dataState:RuleStateEnum.LOADED,data:data}) // lorsque des données sont reçues on retourne les data et le state
       }),
       startWith({dataState:RuleStateEnum.LOADING}),  // startWith est retourné dès que le pipe est executé
       catchError(err=>of({dataState:RuleStateEnum.ERROR, errorMessage:err.message}))
     )
-    
+    // pour récupérer la liste des inputs param de la base de donnée
+    this.conditionDataState$ = this.conditionService.getConditionsFromDB().pipe(
+      map(data => {
+        data.forEach(c=> {if (c.inputGroup =='Procedure Type') this.procedureType.push(c)});
+        return ({ dataState: RuleStateEnum.LOADED, data: data });
+      }),
+      startWith({ dataState: RuleStateEnum.LOADING }),
+      catchError(err => of({ dataState: RuleStateEnum.ERROR, errorMessage: err.message }))
+    )
+    this.conditionDataState$.subscribe()
     this.rulesDataState$.subscribe()
     this.previewModal = new window.bootstrap.Modal(document.getElementById('previewModal'));
     this.outputModal = new window.bootstrap.Modal(document.getElementById('outputModal'));
