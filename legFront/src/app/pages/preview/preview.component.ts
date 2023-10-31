@@ -1,16 +1,9 @@
 import { KeyValue } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
 import { Condition } from 'src/app/model/condition';
-import { DocLegSpecialization } from 'src/app/model/inputParameters/docLegSpecialization';
-import { DocumentStatus } from 'src/app/model/inputParameters/documentStatus';
-import { DocumentType } from 'src/app/model/inputParameters/documentType';
-import { DocWithAssoc } from 'src/app/model/inputParameters/docWithAssoc';
-import { DocWithJoint } from 'src/app/model/inputParameters/docWithJoint';
-import { Language } from 'src/app/model/inputParameters/language';
-import { ProcedureType } from 'src/app/model/inputParameters/procedureType';
-import { Reading } from 'src/app/model/inputParameters/reading';
+
 import { AuthorOfProposal } from 'src/app/model/outputParameters/authorOfProposal';
 import { OutputLanguage } from 'src/app/model/outputParameters/outputLanguage';
 import { Rule } from 'src/app/model/rule';
@@ -33,23 +26,29 @@ export class PreviewComponent implements OnInit {
   conditionDataState$!: Observable<AppDataState<Condition[]>>;
   
   previewForm! : UntypedFormGroup;
-  //procedureType = ProcedureType;
-  procedureType : Condition[] = [];
-  documentType = DocumentType;
-  documentStatus = DocumentStatus;
-  docWithJoint = DocWithJoint;
-  docWithAssoc = DocWithAssoc;
-  reading = Reading;
-  docLegSpecialization = DocLegSpecialization;
-  language = Language;
+  
+  procedureType : Condition[] = []
+  documentType : Condition[] | undefined;
+  documentStatus  : Condition[] | undefined;  
+  reading : Condition[] | undefined;
+  docLegSpecialization : Condition[] | undefined;
+  language : Condition[] | undefined;
+    
+  // liste des langues utilisées dans les output param
   outputLanguage = OutputLanguage; 
   authorOfProposal = AuthorOfProposal;
+  // utilisé pour l'affichage des boutons de rendu
   partUniqueValues: Array<string>= [];
   partSelectedForPreview: string = "";
+  
   // utilisé pur mettre la valeur du jour par defaut dans le datePicker
   d = new Date();
+
   allRules! : Rule[];
   rulesApplied! : Rule[];
+
+  allConditions : Array<Condition> = []
+
   errorMessage?: string;
   // modal pour demander des valeurs suplémentaires
   previewModal: any;
@@ -127,19 +126,26 @@ export class PreviewComponent implements OnInit {
     // pour récupérer la liste des inputs param de la base de donnée
     this.conditionDataState$ = this.conditionService.getConditionsFromDB().pipe(
       map(data => {
-        data.forEach(c=> {if (c.inputGroup =='Procedure Type') this.procedureType.push(c)});
         return ({ dataState: RuleStateEnum.LOADED, data: data });
       }),
       startWith({ dataState: RuleStateEnum.LOADING }),
       catchError(err => of({ dataState: RuleStateEnum.ERROR, errorMessage: err.message }))
     )
-    this.conditionDataState$.subscribe()
+    this.conditionDataState$.subscribe( data=>{
+      //on remplit les champs inputs avec le résultat de la base de donnée
+      this.procedureType = data.data?.filter(c=>c.inputGroup=='Procedure Type')!;
+      this.documentType = data.data?.filter(c=>c.inputGroup=='Document Type');
+      this.documentStatus = data.data?.filter(c=>c.inputGroup=='Document Status');
+      this.reading = data.data?.filter(c=>c.inputGroup=='Reading');
+      this.docLegSpecialization = data.data?.filter(c=>c.inputGroup=='Doc Leg Specialization');
+      this.language = data.data?.filter(c=>c.inputGroup=='Language');
+    })
     this.rulesDataState$.subscribe()
     this.previewModal = new window.bootstrap.Modal(document.getElementById('previewModal'));
     this.outputModal = new window.bootstrap.Modal(document.getElementById('outputModal'));
     this.inputModal = new window.bootstrap.Modal(document.getElementById('inputModal'));
 
-    this.previewForm = new UntypedFormGroup({
+    this.previewForm = new FormGroup({
       procedureType : new FormControl<string>('INI'),
       documentType : new FormControl<string>('OPCD'),
       documentStatus : new FormControl<string>('ONGOING_DRAFT'),
@@ -224,7 +230,6 @@ export class PreviewComponent implements OnInit {
       let leadCommittee = this.previewForm.get('leadCommittee')?.value.split("Committee on");
       let LCJOINTCOM: boolean = (leadCommittee.length>2);
 
-      // Doc with Assoc (le champ docWithAssoc du formulaire ne sera plus utilisé puisque déterminé par la valeur du tableau 'List of Assoc')
       let listOfAssoc = String(this.previewForm.get('listOfAssoc')?.value).split(',')
       let ASSOCOM: boolean = (listOfAssoc.length === 1 && listOfAssoc[0].length!=0)|| listOfAssoc.length>1;
 

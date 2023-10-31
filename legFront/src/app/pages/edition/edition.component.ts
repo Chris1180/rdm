@@ -24,6 +24,7 @@ export class EditionComponent implements OnInit {
 
   styles : Style[] = [];
 
+  // a revoir après la nouvelle structure des rules (n'est plus utilisé)
   language = Language;
 
   /*

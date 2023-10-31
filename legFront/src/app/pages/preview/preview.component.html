@@ -18,7 +18,7 @@
                 <!-- Input Parameters-->
                 <!-- 1st line Input Parameters-->
                 <div class="alert alert-primary">
-                    INPUT PARAMETERS
+                    CONDITION PARAMETERS (INPUT)
                 </div>
                 <div class="row mb-3 form-group">
                     <div class="col-sm-4">
@@ -37,8 +37,10 @@
                                     </ng-container>
                                     
                                     <ng-container *ngSwitchCase="RuleStateEnum.LOADED">
+                                    
                                         <option *ngFor="let p of procedureType" [ngValue]="p.name">{{p.name}} - {{p.description}}
                                         </option>
+                                    
                                     </ng-container>
                                 </ng-container>
                                 
@@ -49,7 +51,7 @@
                         <div class="input-group">
                             <label class="col-3 col-form-label col-form-label-sm">Document Type</label>
                             <select class="form-select form-select-sm" formControlName="documentType">
-                                <option *ngFor="let p of documentType | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                                <option *ngFor="let p of documentType" [ngValue]="p.name">{{p.name}} - {{p.description}}
                                 </option>
                              </select>
                         </div>
@@ -58,7 +60,7 @@
                         <div class="input-group">
                             <label class="col-3 col-form-label col-form-label-sm">Document Status</label>
                             <select class="form-select form-select-sm" formControlName="documentStatus">
-                                <option *ngFor="let p of documentStatus | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}}
+                                <option *ngFor="let p of documentStatus" [ngValue]="p.name">{{p.name}} - {{p.description}}
                                 </option>
                             </select>
                         </div>
@@ -71,7 +73,7 @@
                         <div class="input-group">
                             <label class="col-4 col-form-label col-form-label-sm">Reading</label>
                             <select class="form-select form-select-sm" formControlName="reading">
-                                <option *ngFor="let p of reading | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}} </option>
+                                <option *ngFor="let r of reading" [ngValue]="r.name">{{r.name}} - {{r.description}} </option>
                             </select>
                         </div>
                     </div>
@@ -80,7 +82,7 @@
                         <div class="input-group">
                             <label class="col-4 col-form-label col-form-label-sm">Doc Leg Specialization</label>
                             <select class="form-select form-select-sm" formControlName="docLegSpecialization">
-                                <option *ngFor="let d of docLegSpecialization | keyvalue: originalOrder" [ngValue]="d.key">{{d.value}} </option>
+                                <option *ngFor="let d of docLegSpecialization" [ngValue]="d.name">{{d.name}} - {{d.description}}</option>
                             </select>
                         </div>
                     </div>
@@ -88,14 +90,14 @@
                         <div class="input-group">
                             <label class="col-4 col-form-label col-form-label-sm">Language</label>
                             <select class="form-select form-select-sm" formControlName="language">
-                                <option *ngFor="let p of language | keyvalue: originalOrder" [ngValue]="p.key">{{p.value}} </option>
+                                <option *ngFor="let l of language" [ngValue]="l.name">{{l.description}}</option>
                             </select>
                         </div>
                     </div>
                 </div>
                 <!-- Output Parameters-->
                 <div class="alert alert-primary mb-2">
-                    OUTPUT PARAMETERS
+                    COMMAND PARAMETERS (OUTPUT)
                 </div>
                 <div class="row mb-3 form-group">
                     <div class="col-sm-3">
