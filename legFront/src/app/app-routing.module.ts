@@ -5,6 +5,7 @@ import { FormComponent } from './pages/form/form.component';
 import { PreviewComponent } from './pages/preview/preview.component';
 import { StyleComponent } from './pages/style/style.component';
 import { ConditionComponent } from './pages/condition/condition.component';
+import { CommandComponent } from './pages/command/command.component';
 
 
 const routes: Routes = [
@@ -12,7 +13,8 @@ const routes: Routes = [
   { path: 'Edition', component: EditionComponent },
   { path: 'Preview', component: PreviewComponent },
   { path: 'Style', component: StyleComponent },
-  { path: 'Condition', component: ConditionComponent },
+  { path: 'Conditions', component: ConditionComponent },
+  { path: 'Commands', component: CommandComponent },
   { path: '',   redirectTo: '/CSIOForm', pathMatch: 'full' }
 ];
 

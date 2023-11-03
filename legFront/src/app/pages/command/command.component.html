@@ -1,0 +1,70 @@
+<!-- Toast feed back user about changes in back end -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="userFeedBack" class="toast align-items-center text-white border-0" [ngClass]="userFeedBackStyle" role="alert"
+        aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{userFeedBackMessage}}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<!--End of Modal feed back user about changes in back end -->
+
+<main id="main" >
+    <ng-container *ngIf="(commandDataState$ | async) as result" [ngSwitch]="result.dataState">
+        
+        <ng-container *ngSwitchCase="RuleStateEnum.LOADING">
+            Loading .....
+        </ng-container>
+        
+        <ng-container *ngSwitchCase="RuleStateEnum.ERROR">
+            <div class="alert-danger">
+                {{result.errorMessage}}
+            </div>
+        </ng-container>
+        
+        <ng-container *ngSwitchCase="RuleStateEnum.LOADED">
+            <table class="table table-striped table-administration">
+                <tbody>
+                    <tr>
+                        <th>id</th>
+                        <th>Name
+                            <form [formGroup]="filterFormGroup">
+                                <input style="width: 150px;" class="form-control form-control-sm" type="text"
+                                    formControlName="name" (input)="onFilterChange()">
+                            </form>
+                        </th>
+                        <th>Description</th>
+                        <th>Mandatory</th>
+                        <th>Init Value</th>
+                        <th>Application</th>
+                        <th>Example</th>
+                        <th></th>
+                    </tr>
+                    <tr *ngFor="let c of filteredCommands">
+                        <td #id contentEditable (blur)="editConditionOnline(c, id.innerText.trim(), 'id')">{{c.id}}</td>
+                        <td #name contentEditable (blur)="editConditionOnline(c, name.innerText.trim(), 'name')">{{c.name}}</td>
+                        <td #description contentEditable (blur)="editConditionOnline(c, description.innerText.trim(), 'description')">{{c.description}}</td>
+                        <td>
+                            <input #mandatory class="form-check-input" type="checkbox" [checked]="c.mandatory" (change)="editConditionOnline(c, !c.mandatory, 'mandatory')">
+                        </td>
+                        <td #initvalue contentEditable (blur)="editConditionOnline(c, initvalue.innerText.trim(), 'initvalue')">{{c.initValue}}</td>
+                        <td #application contentEditable (blur)="editConditionOnline(c, application.innerText.trim(), 'application')">{{c.application}}</td>
+                        <td #example contentEditable (blur)="editConditionOnline(c, example.innerText.trim(), 'example')">{{c.example}}</td>
+                        <td>
+                            <i class="bi bi-trash p-2" style="cursor:pointer" (click)="deleteCommand(c)" ngbTooltip="Delete this Command" placement="right"></i>
+                            <i class="bi bi-files p-2" style="cursor:pointer" (click)="duplicateCommand(c)" ngbTooltip="Duplicate this Command" placement="right"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </ng-container>
+    </ng-container>
+</main>
+
+
+
+

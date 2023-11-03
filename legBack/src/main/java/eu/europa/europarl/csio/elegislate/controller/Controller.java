@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import eu.europa.europarl.csio.elegislate.DAO.CommandRepository;
 import eu.europa.europarl.csio.elegislate.DAO.ConditionRepository;
 import eu.europa.europarl.csio.elegislate.DAO.LanguageRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RuleRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RulesRepository;
 import eu.europa.europarl.csio.elegislate.DAO.StyleRepository;
+import eu.europa.europarl.csio.elegislate.domain.Command;
 import eu.europa.europarl.csio.elegislate.domain.Condition;
 import eu.europa.europarl.csio.elegislate.domain.Language;
 import eu.europa.europarl.csio.elegislate.domain.Rule;
@@ -36,6 +38,8 @@ public class Controller {
 	private RulesRepository rulesRepository;
 	@Autowired
 	private ConditionRepository conditionRepository;
+	@Autowired
+	private CommandRepository commandRepository;
 	
 	// new controllers
 	@GetMapping ("/getAllRules")
@@ -55,10 +59,26 @@ public class Controller {
 		}
 		return conditionRepository.save(condition);
 	}
-	
 	@PostMapping("/deleteCondition/{id}")
 	public void deleteCondition(@PathVariable int id) {
 		conditionRepository.deleteById(id);
+		
+	}
+	
+	@GetMapping ("/getAllCommands")
+	public List<Command> getAllCommands() {
+		return commandRepository.findAll();	
+	}
+	@PostMapping("/newCommand")
+	public Command addNewCommand(@RequestBody Command command) {
+		if (command.getId()==0) {
+			command.setId(null);
+		}
+		return commandRepository.save(command);
+	}
+	@PostMapping("/deleteCommand/{id}")
+	public void deleteCommand(@PathVariable int id) {
+		commandRepository.deleteById(id);
 		
 	}
 	

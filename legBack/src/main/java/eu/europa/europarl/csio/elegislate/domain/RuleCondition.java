@@ -11,7 +11,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity @NoArgsConstructor @AllArgsConstructor 
@@ -29,7 +28,7 @@ public class RuleCondition {
 	private Set<Rules> rules;
 
 	@OneToMany (mappedBy="ruleCondition")
-	private Set<Command> command;
+	private Set<RuleCommand> ruleCommand;
 	
 	public Integer getId() {
 		return id;
@@ -55,13 +54,15 @@ public class RuleCondition {
 		this.textCondition = textCondition;
 	}
 
-	public Set<Command> getCommand() {
-		return command;
+	public Set<RuleCommand> getRuleCommand() {
+		return ruleCommand;
 	}
 
-	public void setCommand(Set<Command> command) {
-		this.command = command;
+	public void setRuleCommand(Set<RuleCommand> ruleCommand) {
+		this.ruleCommand = ruleCommand;
 	}
+
+	
 
 	
 	

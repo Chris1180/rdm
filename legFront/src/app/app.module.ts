@@ -14,6 +14,7 @@ import { RulesAppliedListComponent } from './pages/preview/rules-applied-list/ru
 import { StyleComponent } from './pages/style/style.component';
 import { PreviewDisplayPageComponent } from './pages/preview/preview-display-page/preview-display-page.component';
 import { ConditionComponent } from './pages/condition/condition.component';
+import { CommandComponent } from './pages/command/command.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { ConditionComponent } from './pages/condition/condition.component';
     RulesAppliedListComponent,
     StyleComponent,
     PreviewDisplayPageComponent,
-    ConditionComponent
+    ConditionComponent,
+    CommandComponent
   ],
   imports: [
     BrowserModule,
