@@ -15,6 +15,8 @@ import { StyleComponent } from './pages/style/style.component';
 import { PreviewDisplayPageComponent } from './pages/preview/preview-display-page/preview-display-page.component';
 import { ConditionComponent } from './pages/condition/condition.component';
 import { CommandComponent } from './pages/command/command.component';
+import { RulesComponent } from './pages/rules/rules.component';
+import { EditRuleComponent } from './pages/edit-rule/edit-rule.component';
 
 
 @NgModule({
@@ -27,7 +29,9 @@ import { CommandComponent } from './pages/command/command.component';
     StyleComponent,
     PreviewDisplayPageComponent,
     ConditionComponent,
-    CommandComponent
+    CommandComponent,
+    RulesComponent,
+    EditRuleComponent
   ],
   imports: [
     BrowserModule,

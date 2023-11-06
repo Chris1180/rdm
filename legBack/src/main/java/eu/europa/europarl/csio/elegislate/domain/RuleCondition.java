@@ -19,8 +19,8 @@ public class RuleCondition {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;
-	@Column (name="id_parent")
-	Integer idParent;
+	@Column (name="id_subcondition")
+	Integer idSubCondition;
 	@Column (name="textcondition")
 	String textCondition;
 	
@@ -38,13 +38,7 @@ public class RuleCondition {
 		this.id = id;
 	}
 
-	public Integer getIdParent() {
-		return idParent;
-	}
-
-	public void setIdParent(Integer idParent) {
-		this.idParent = idParent;
-	}
+	
 
 	public String getTextCondition() {
 		return textCondition;
@@ -60,6 +54,14 @@ public class RuleCondition {
 
 	public void setRuleCommand(Set<RuleCommand> ruleCommand) {
 		this.ruleCommand = ruleCommand;
+	}
+
+	public Integer getIdSubCondition() {
+		return idSubCondition;
+	}
+
+	public void setIdSubCondition(Integer idSubCondition) {
+		this.idSubCondition = idSubCondition;
 	}
 
 	
