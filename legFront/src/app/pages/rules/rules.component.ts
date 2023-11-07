@@ -5,6 +5,8 @@ import { NewRule } from 'src/app/model/newrule';
 import { NewRulesService } from 'src/app/shared/newrules.service';
 import { AppDataState, RuleStateEnum } from 'src/app/shared/rules.state';
 
+declare var window: any;
+
 @Component({
   selector: 'app-rules',
   templateUrl: './rules.component.html',
@@ -31,7 +33,32 @@ export class RulesComponent implements OnInit {
   constructor(private newRulesService: NewRulesService, private router: Router){}
 
   ngOnInit(): void {
-    this.getAllRules()
+    let ruleToBeEdited : NewRule = this.newRulesService.getRuleToBeEdited();
+    console.log('dans la page rules')
+    console.log(ruleToBeEdited)
+    // si l'index n'est pas -1 alors il s'agit d'une modif
+    if (ruleToBeEdited.id!=-1){
+      this.newRulesService.saveRuleinDB(ruleToBeEdited).subscribe({
+        next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
+          this.openFeedBackUser("Rule changes saved Succesfully", "bg-success");
+          console.log('retour de la DB')
+          console.log(data)
+          ruleToBeEdited.id = data.id; // on récupère l'id au cas où il s'agit d'un nouvel enregistrement
+        },
+        error: (err) => {
+          this.openFeedBackUser("Error during saving process in Back-End", "bg-danger")
+          console.error("Une erreur est remontée lors de la mise à jour d'une règle");
+        },
+        complete: ()=>{
+          this.getAllRules();
+        }
+      })
+
+    }else { // pas de modif de règle
+      this.getAllRules();
+    }
+    this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
+    
   }
 
   getAllRules(){
@@ -58,5 +85,14 @@ export class RulesComponent implements OnInit {
     //this.ruleService.pageToDisplay = this.currentPage;
     //this.ruleService.filters = this.filterFormGroup;
     this.router.navigate(['/EditRule']);
+  }
+
+  openFeedBackUser(message: string, style: string) {
+    this.userFeedBackMessage = message;
+    this.userFeedBackStyle = style;
+    this.userFeedBackToast.show() ;
+  }
+  closeFeedBackUser(){
+    this.userFeedBackToast.hide();
   }
 }

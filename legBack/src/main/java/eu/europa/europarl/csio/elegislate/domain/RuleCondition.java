@@ -2,6 +2,7 @@ package eu.europa.europarl.csio.elegislate.domain;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,8 +13,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Entity @NoArgsConstructor @AllArgsConstructor 
+@Entity @NoArgsConstructor @AllArgsConstructor  @ToString
 @Table(name="RULE_CONDITION")
 public class RuleCondition {
 	@Id
@@ -27,7 +29,7 @@ public class RuleCondition {
 	@OneToMany (mappedBy="ruleCondition")
 	private Set<Rules> rules;
 
-	@OneToMany (mappedBy="ruleCondition")
+	@OneToMany (mappedBy="ruleCondition", cascade=CascadeType.PERSIST)
 	private Set<RuleCommand> ruleCommand;
 	
 	public Integer getId() {

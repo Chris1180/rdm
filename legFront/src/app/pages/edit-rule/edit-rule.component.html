@@ -93,7 +93,7 @@
             <label class="col-sm-3 col-form-label">Style</label>
             <div class="col-sm-5" *ngIf="styles">
                 <select class="form-select form-select-sm" formControlName="style" (change)="onStyleChange($event)">
-                    <option *ngFor="let s of styles" [ngValue]="s.id">{{s.name}}</option>
+                    <option *ngFor="let s of styles" [ngValue]="s.id">{{s.id}} - {{s.name}}</option>
                 </select>
             </div>
             <div class="col-sm-3">
@@ -121,7 +121,7 @@
             </div>
             <div class="col-sm-3 mx-auto">
                 <button class="btn btn-small ico-valide-cerc btn-green me-2">Submit</button>
-                <button class="btn btn-small ico-delete" routerLink="/Rules" type="button">Cancel</button>
+                <button class="btn btn-small ico-delete" (click)="onCancel()" type="button">Cancel</button>
             </div>
             <div class="col-sm-3">
                 

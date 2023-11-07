@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @NoArgsConstructor @AllArgsConstructor
@@ -21,8 +22,10 @@ public class RuleCommand {
 	String lang;
 	String command;
 	@ManyToOne
-    @JoinColumn(name="id_condition", nullable=false)
+    @JoinColumn(name="id_condition")
     private RuleCondition ruleCondition;
+	
+	
 	public Integer getId() {
 		return id;
 	}
@@ -40,6 +43,10 @@ public class RuleCommand {
 	}
 	public void setCommand(String command) {
 		this.command = command;
+	}
+	
+	public void setRuleCondition(RuleCondition ruleCondition) {
+		this.ruleCondition = ruleCondition;
 	}
 	
 	

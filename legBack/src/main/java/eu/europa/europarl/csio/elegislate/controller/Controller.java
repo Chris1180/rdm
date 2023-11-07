@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.europa.europarl.csio.elegislate.DAO.CommandRepository;
 import eu.europa.europarl.csio.elegislate.DAO.ConditionRepository;
 import eu.europa.europarl.csio.elegislate.DAO.LanguageRepository;
+import eu.europa.europarl.csio.elegislate.DAO.RuleCommandRepository;
+import eu.europa.europarl.csio.elegislate.DAO.RuleConditionRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RuleRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RulesRepository;
 import eu.europa.europarl.csio.elegislate.DAO.StyleRepository;
@@ -21,6 +23,8 @@ import eu.europa.europarl.csio.elegislate.domain.Command;
 import eu.europa.europarl.csio.elegislate.domain.Condition;
 import eu.europa.europarl.csio.elegislate.domain.Language;
 import eu.europa.europarl.csio.elegislate.domain.Rule;
+import eu.europa.europarl.csio.elegislate.domain.RuleCommand;
+import eu.europa.europarl.csio.elegislate.domain.RuleCondition;
 import eu.europa.europarl.csio.elegislate.domain.Rules;
 import eu.europa.europarl.csio.elegislate.domain.Style;
 
@@ -40,13 +44,40 @@ public class Controller {
 	private ConditionRepository conditionRepository;
 	@Autowired
 	private CommandRepository commandRepository;
+	@Autowired
+	private RuleConditionRepository ruleConditionRepository;
+	@Autowired
+	private RuleCommandRepository ruleCommandRepository;
 	
 	// new controllers
 	@GetMapping ("/getAllRules")
 	public List<Rules> getAllRules() {
 		return rulesRepository.findAll();
-		
 	}
+	
+	@PostMapping ("/saveRule")
+	public Rules saveRule (@RequestBody Rules rule ) {
+		System.out.println(rule);
+		//rulesRepository.save(rule);
+		RuleCondition rcond = rule.getRuleCondition();
+		ruleConditionRepository.save(rcond);
+		Set<RuleCommand> rcs = rcond.getRuleCommand();
+		for(RuleCommand rc : rcs) {
+			if (rc.getId()==0) {
+				// new record
+				//RuleCommand r = ruleCommandRepository.save(rc);
+				
+			}else {
+				rc.setRuleCondition(rcond);
+				System.out.println(rc);
+				ruleCommandRepository.save(rc);
+			}
+		}
+		
+		
+		return rulesRepository.save(rule);
+	}
+		
 	
 	@GetMapping ("/getAllConditions")
 	public List<Condition> getAllConditions() {
@@ -81,6 +112,8 @@ public class Controller {
 		commandRepository.deleteById(id);
 		
 	}
+	
+	
 	
 	// end new controllers
 	

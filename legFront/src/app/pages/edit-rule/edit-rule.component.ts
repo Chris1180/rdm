@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { isEmpty } from 'rxjs';
+import { Router } from '@angular/router';
 import { Language } from 'src/app/model/inputParameters/language';
 import { NewRule } from 'src/app/model/newrule';
 import { RuleCommand } from 'src/app/model/rulecommand';
@@ -22,10 +22,12 @@ export class EditRuleComponent implements OnInit {
   rule! : NewRule;
   ruleCommands! : RuleCommand[];
 
-  constructor (private newRulesService: NewRulesService, private styleService : StyleService){}
+  constructor (private newRulesService: NewRulesService, private styleService : StyleService,
+    private router: Router){}
   
   ngOnInit(): void {
     this.rule = this.newRulesService.getRuleToBeEdited();
+    // attention ici on lie les deux variables et en modifiant ruleCommands je modifie rule
     this.ruleCommands = this.rule.ruleCondition.ruleCommand;
     this.styleService.getStylesFromDB().subscribe(data => this.styles = data)
     
@@ -52,6 +54,7 @@ export class EditRuleComponent implements OnInit {
       style : new FormControl(this.rule.style!.id),
       comment : new FormControl(this.rule.comment),
     });
+    console.log(this.rule)
   }
   onSubmit() {
     // récupération des données du formulaire
@@ -59,10 +62,18 @@ export class EditRuleComponent implements OnInit {
     this.rule.part  = this.ruleForm.get('part')?.value.trim();
     this.rule.label = this.ruleForm.get('label')?.value.trim();
     this.rule.comment = this.ruleForm.get('comment')?.value.trim();
-    this.rule.ruleCondition  = this.ruleForm.get('condition')?.value.trim();
+    this.rule.ruleCondition.textCondition  = this.ruleForm.get('condition')?.value;
+    // pour mettre un objet style dans rule il faut retrouver grace à l'index l'objet dans le tab styles
+    // dans le formulaire on ne conserve que l'id du style
+    let style = this.styles.find(el => el.id == this.ruleForm.get("style")?.value)
+    this.rule.style = style;
 
     console.log('form submitted')
     console.log(this.rule)
+    // la sauvegarde se fait dans la page rules
+    this.newRulesService.setRuleToBeEdited(this.rule)
+    this.router.navigate(['/Rules']);
+    
   }
 
 
@@ -79,11 +90,8 @@ export class EditRuleComponent implements OnInit {
     }else{
       this.ruleForm.get("command")?.setValue('');
     }
-    
-    
-
-    
   }
+
   onCommandValueChange(event: any){
     // lorsque un changement est fait dans le champ command
     let newCommand = event.target.value;
@@ -105,19 +113,19 @@ export class EditRuleComponent implements OnInit {
   }
 
   onStyleChange(event: any){
-    console.log(this.styles)
     let styleId = Number(event.target.value.split(" ")[event.target.value.split(" ").length-1])
-    let style = this.styles.find(el => el.id = styleId)
-    console.log(styleId)
-    console.log(style)
-    console.log(this.styles)
-    //this.rule.style! = style
+    this.ruleForm.get("style")?.setValue(styleId);
   }
 
   knownLanguages(lang: string){
     // l'utilité de cette fonction est de faire apparaitre les langues en gras si une commande existe dans la règle
     if (this.rule.ruleCondition.ruleCommand && this.rule.ruleCondition.ruleCommand.find(el => el.lang == lang)) return {'font-weight': 'bold'} 
     else return {}
+  }
+
+  onCancel() {
+    this.newRulesService.setRuleToBeEdited({id: -1, order: 1,part: '', label: '', comment: '', ruleCondition : {id: 0, idSubCondition: 0, textCondition: '', ruleCommand: []}});
+    this.router.navigate(['/Rules']);
   }
 
 }
