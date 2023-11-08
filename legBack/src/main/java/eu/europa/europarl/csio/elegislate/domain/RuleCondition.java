@@ -29,7 +29,7 @@ public class RuleCondition {
 	@OneToMany (mappedBy="ruleCondition")
 	private Set<Rules> rules;
 
-	@OneToMany (mappedBy="ruleCondition", cascade=CascadeType.PERSIST)
+	@OneToMany (mappedBy="ruleCondition")
 	private Set<RuleCommand> ruleCommand;
 	
 	public Integer getId() {

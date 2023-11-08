@@ -1,5 +1,6 @@
 package eu.europa.europarl.csio.elegislate.controller;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -57,24 +58,29 @@ public class Controller {
 	
 	@PostMapping ("/saveRule")
 	public Rules saveRule (@RequestBody Rules rule ) {
-		System.out.println(rule);
-		//rulesRepository.save(rule);
+
 		RuleCondition rcond = rule.getRuleCondition();
-		ruleConditionRepository.save(rcond);
 		Set<RuleCommand> rcs = rcond.getRuleCommand();
 		for(RuleCommand rc : rcs) {
-			if (rc.getId()==0) {
+			rc.setRuleCondition(rcond);
+			if (rc.getId() == 0) {
 				// new record
-				//RuleCommand r = ruleCommandRepository.save(rc);
-				
+				RuleCommand r = ruleCommandRepository.save(rc);
+				rc.setId(r.getId());
 			}else {
-				rc.setRuleCondition(rcond);
-				System.out.println(rc);
-				ruleCommandRepository.save(rc);
+				//pour supprimer une commande dans une langue il faut que le champ texte soit vide
+				if (rc.getCommand().length()==0) {
+					System.out.println("Le champ est vide pour la commande "+ rc.getId() + rc.getLang());
+					//suppression de la commande
+					ruleCommandRepository.deleteById(rc.getId());
+				}else {
+					ruleCommandRepository.save(rc);
+				}
+				
 			}
 		}
-		
-		
+		rcs.removeIf(rc -> rc.getCommand().length() == 0);
+		ruleConditionRepository.save(rcond);
 		return rulesRepository.save(rule);
 	}
 		

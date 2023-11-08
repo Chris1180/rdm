@@ -27,6 +27,9 @@ export class EditRuleComponent implements OnInit {
   
   ngOnInit(): void {
     this.rule = this.newRulesService.getRuleToBeEdited();
+    // après avoir récupérr l'info de la règle à éditer on efface les info du service pour ne pas sauvegarder de fausses info dans la page rule 
+    this.newRulesService.setRuleToBeEdited({id: -1, order: 1,part: '', label: '', comment: '', ruleCondition : {id: 0, idSubCondition: 0, textCondition: '', ruleCommand: []}});
+    
     // attention ici on lie les deux variables et en modifiant ruleCommands je modifie rule
     this.ruleCommands = this.rule.ruleCondition.ruleCommand;
     this.styleService.getStylesFromDB().subscribe(data => this.styles = data)
@@ -54,7 +57,7 @@ export class EditRuleComponent implements OnInit {
       style : new FormControl(this.rule.style!.id),
       comment : new FormControl(this.rule.comment),
     });
-    console.log(this.rule)
+    
   }
   onSubmit() {
     // récupération des données du formulaire
@@ -68,8 +71,6 @@ export class EditRuleComponent implements OnInit {
     let style = this.styles.find(el => el.id == this.ruleForm.get("style")?.value)
     this.rule.style = style;
 
-    console.log('form submitted')
-    console.log(this.rule)
     // la sauvegarde se fait dans la page rules
     this.newRulesService.setRuleToBeEdited(this.rule)
     this.router.navigate(['/Rules']);
@@ -121,11 +122,6 @@ export class EditRuleComponent implements OnInit {
     // l'utilité de cette fonction est de faire apparaitre les langues en gras si une commande existe dans la règle
     if (this.rule.ruleCondition.ruleCommand && this.rule.ruleCondition.ruleCommand.find(el => el.lang == lang)) return {'font-weight': 'bold'} 
     else return {}
-  }
-
-  onCancel() {
-    this.newRulesService.setRuleToBeEdited({id: -1, order: 1,part: '', label: '', comment: '', ruleCondition : {id: 0, idSubCondition: 0, textCondition: '', ruleCommand: []}});
-    this.router.navigate(['/Rules']);
   }
 
 }
