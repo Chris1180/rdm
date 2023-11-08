@@ -114,6 +114,17 @@ export class RulesComponent implements OnInit {
     this.router.navigate(['/EditRule']);
   }
 
+  addNewRule() {
+    this.newRulesService.setRuleToBeEdited({
+      id: 0, 
+      order: 1, 
+      part: '', 
+      label: '',
+      ruleCondition: {"id" :0 , "idSubCondition": 0, "textCondition": '', "ruleCommand": [{"id":0, "lang": 'EN', "command":''}]},
+      comment: '',
+      style: {"id":0, "name": 'default', "margintop": 0, "marginleft": 0, "relatif": false, "font": 'TimesNewRoman', "size": 16, "bold": false, "italic": false}})
+    this.router.navigate(['/EditRule']);
+  }
   openFeedBackUser(message: string, style: string) {
     this.userFeedBackMessage = message;
     this.userFeedBackStyle = style;

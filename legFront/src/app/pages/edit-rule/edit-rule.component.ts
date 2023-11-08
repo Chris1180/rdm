@@ -27,9 +27,17 @@ export class EditRuleComponent implements OnInit {
   
   ngOnInit(): void {
     this.rule = this.newRulesService.getRuleToBeEdited();
-    // après avoir récupérr l'info de la règle à éditer on efface les info du service pour ne pas sauvegarder de fausses info dans la page rule 
-    this.newRulesService.setRuleToBeEdited({id: -1, order: 1,part: '', label: '', comment: '', ruleCondition : {id: 0, idSubCondition: 0, textCondition: '', ruleCommand: []}});
-    
+    // après avoir récupéré l'info de la règle à éditer on efface les infos du service pour ne pas sauvegarder de fausses info dans la page rule 
+    this.newRulesService.setRuleToBeEdited({
+      id: -1, 
+      order: 1, 
+      part: '', 
+      label: '',
+      ruleCondition: {"id" :-1 , "idSubCondition": 0, "textCondition": '', "ruleCommand": [{"id":0, "lang": 'EN', "command":''}]},
+      comment: '',
+      style: {"id":0, "name": 'default', "margintop": 0, "marginleft": 0, "relatif": false, "font": 'TimesNewRoman', "size": 16, "bold": false, "italic": false}
+    })
+
     // attention ici on lie les deux variables et en modifiant ruleCommands je modifie rule
     this.ruleCommands = this.rule.ruleCondition.ruleCommand;
     this.styleService.getStylesFromDB().subscribe(data => this.styles = data)

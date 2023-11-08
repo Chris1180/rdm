@@ -26,7 +26,14 @@ export class NewRulesService {
     if (window.location.port == '4200') {
       this.apiUrl = `http://${window.location.hostname}:8080/`
     }
-    this.setRuleToBeEdited({id: -1, order: 1,part: '', label: '', comment: '', ruleCondition : {id: 0, idSubCondition: 0, textCondition: '', ruleCommand: []}});
+    this.setRuleToBeEdited({
+      id: -1, 
+      order: 1, 
+      part: '', 
+      label: '',
+      ruleCondition: {"id" :-1 , "idSubCondition": 0, "textCondition": '', "ruleCommand": [{"id":0, "lang": 'EN', "command":''}]},
+      comment: '',
+      style: {"id":0, "name": 'default', "margintop": 0, "marginleft": 0, "relatif": false, "font": 'TimesNewRoman', "size": 16, "bold": false, "italic": false}});
   }
 
   // operations in DB
