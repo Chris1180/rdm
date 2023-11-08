@@ -1,4 +1,3 @@
-import { Condition } from "./condition";
 import { RuleCondition } from "./rulecondition";
 import { Style } from "./style";
 

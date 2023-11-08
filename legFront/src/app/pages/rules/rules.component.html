@@ -41,62 +41,89 @@
         </ng-container>
         
         <ng-container *ngSwitchCase="RuleStateEnum.LOADED">
-            <table class="table table-striped table-administration">
-                <tbody>
-                    <tr>
-                        <th>Id</th>
-                        <th>Order</th>
-                        <th>Part</th>
-                        <th>Label</th>
-                        <th>Condition</th>
-                        <th>Command (EN)</th>
-                        <th>Style</th>
-                        <th style="width: 150px;">
-                            <ng-template #Reset>
-                                <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
-                                    Reset All Filters
-                                </span>
-                            </ng-template>
-                            <i [ngClass]="filterActive? 'bi-funnel-fill': 'bi-funnel'"
-                                style="cursor:pointer; font-size: 1.5em"  [ngbTooltip]='Reset'
-                                class="bi me-3"></i>
-                            <ng-template #NewRule>
-                                <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
-                                    Add a New Rule
-                                </span>
-                            </ng-template>
-                            <i style="cursor:pointer; font-size: 1.5em"  [ngbTooltip]='NewRule'
-                                class="bi bi-plus-circle me-2"></i>
+            <form [formGroup]="filterFormGroup">
+                <table class="table table-striped table-administration">
+                    <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <th>Order</th>
+                            <th>
+                                Part <br>
+                                <select class="form-control-sm" formControlName="part" style="width: 100px;"
+                                    (change)="onFilterChange(0)">
+                                    <option value="" disabled="">Select Part</option>
+                                    <option value="allPart" selected>All Parts...</option>
+                                    <option *ngFor="let p of parts" [ngValue]="p">{{p}} </option>
+
+                                </select>
+                            </th>
+                            <th>
+                                Label <br>
+                                <select class="form-control-sm" formControlName="label" style="width: 200px;"
+                                    (change)="onFilterChange(0)">
+                                    <option value="" disabled="">Select Label</option>
+                                    <option value="allLabel">All Labels...</option>
+                                    <option *ngFor="let l of labels" [ngValue]='l'>{{l}} </option>
+                                </select>
+                            </th>
+                            <th>Condition
+                                <input style="width: 150px;" class="form-control form-control-sm" type="text"
+                                    formControlName="condition" (input)="onFilterChange(0)">
+                            </th>
+                            <th>Command (EN)
+                                <input style="width: 150px;" class="form-control form-control-sm" type="text"
+                                    formControlName="command" (input)="onFilterChange(0)">
+                            </th>
+                            <th>Style</th>
+                            <th style="width: 150px;">
+                                <ng-template #Reset>
+                                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                                        Reset All Filters
+                                    </span>
+                                </ng-template>
+                                <i [ngClass]="filterActive? 'bi-funnel-fill': 'bi-funnel'"
+                                    style="cursor:pointer; font-size: 1.5em"  
+                                    (click)="resetfilters()"
+                                    [ngbTooltip]='Reset'
+                                    class="bi me-3"></i>
+                                <ng-template #NewRule>
+                                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                                        Add a New Rule
+                                    </span>
+                                </ng-template>
+                                <i style="cursor:pointer; font-size: 1.5em"  [ngbTooltip]='NewRule'
+                                    class="bi bi-plus-circle me-2"></i>
+                                
+                            </th>
                             
-                        </th>
-                        
-                    </tr>
-                    <tr *ngFor="let r of rules">
-                        <td>{{r.id}}</td>
-                        <td>{{r.order}}</td>
-                        <td>{{r.part}}</td>
-                        <td>{{r.label}}</td>
-                        <td>{{r.ruleCondition.textCondition}}</td>
-                        <td>{{r.ruleCondition.ruleCommand[0].command}}</td>
-                        <!--<td #position contentEditable (blur)="editRuleOnline(r, position.innerText, 'position')">
-                            {{r.position}}</td>-->
-                        <!--<td #format contentEditable (blur)="editRuleOnline(r, format.innerText, 'format')">{{r.format}}
-                        </td>-->
-                        <td>{{r.style?.name}}</td>
-                        <td>
-                            <ng-template #htmlContent>
-                                <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
-                                    {{r.comment}}
-                                </span>
-                            </ng-template>
-                            <i class="bi bi-trash p-2" style="cursor:pointer"  (click)="deleteRule(r)" ngbTooltip="Delete this Rule" placement="right"></i>
-                            <i class="bi bi-pencil p-2" style="cursor:pointer" (click)="editRule(r)" ngbTooltip="Edit this Rule" placement="right"></i>
-                            <i class="bi bi-files p-2" style="cursor:pointer"  (click)="duplicateRule(r)" ngbTooltip="Duplicate this Rule" placement="right"></i>
-                            <i *ngIf="r.comment!=''" [ngbTooltip]="htmlContent" class="bi bi-info-circle p-2"></i>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        </tr>
+                        <tr *ngFor="let r of rules">
+                            <td>{{r.id}}</td>
+                            <td>{{r.order}}</td>
+                            <td>{{r.part}}</td>
+                            <td>{{r.label}}</td>
+                            <td>{{r.ruleCondition.textCondition}}</td>
+                            <td>
+                                <ng-container *ngFor="let rc of r.ruleCondition.ruleCommand">
+                                    <span *ngIf="rc.lang == 'EN'">{{rc.command}}</span>
+                                </ng-container>                                
+                            </td>
+                            <td>{{r.style?.name}}</td>
+                            <td>
+                                <ng-template #htmlContent>
+                                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                                        {{r.comment}}
+                                    </span>
+                                </ng-template>
+                                <i class="bi bi-trash p-2" style="cursor:pointer"  (click)="deleteRule(r)" ngbTooltip="Delete this Rule" placement="right"></i>
+                                <i class="bi bi-pencil p-2" style="cursor:pointer" (click)="editRule(r)" ngbTooltip="Edit this Rule" placement="right"></i>
+                                <i class="bi bi-files p-2" style="cursor:pointer"  (click)="duplicateRule(r)" ngbTooltip="Duplicate this Rule" placement="right"></i>
+                                <i *ngIf="r.comment!=''" [ngbTooltip]="htmlContent" class="bi bi-info-circle p-2"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
         </ng-container>
     </ng-container>
     <!-- End-Table-Responsive -->

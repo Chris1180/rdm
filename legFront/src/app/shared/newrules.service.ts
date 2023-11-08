@@ -13,6 +13,11 @@ export class NewRulesService {
   private rules!: Array<NewRule>;
   private ruleToBeEdited!: NewRule;
   public pageToDisplay!: number;
+  private parts! : Array<string>;
+  private labels! : Array<string>;
+  public filters!:any;
+  //private conditions! : Array<string>;
+  //private commands! : Array<string>;
 
 
 
@@ -33,9 +38,6 @@ export class NewRulesService {
   }
 
   // in local
-  public setRules(rules: NewRule[]) {
-    this.rules = rules;
-  }
   public setRuleToBeEdited(r: NewRule) {
     this.ruleToBeEdited = r;
   }
@@ -62,14 +64,13 @@ export class NewRulesService {
 
     let rulesFiltered: Array<NewRule> = this.rules;
     if(partFilter!="allPart"){
-      //rulesFiltered = rulesFiltered.filter(r=>r.part.includes(partFilter));
+      rulesFiltered = rulesFiltered.filter(r=>r.part.includes(partFilter));
     }
     if(labelFilter!="allLabel"){
-      //rulesFiltered = rulesFiltered.filter(r=>r.label.includes(labelFilter));
+      rulesFiltered = rulesFiltered.filter(r=>r.label.includes(labelFilter));
     }
     if(condition!=""){
-      //console.log(condition)
-      //rulesFiltered = rulesFiltered.filter(r=>r.condition.toLocaleUpperCase().includes(condition.toLocaleUpperCase()));
+      rulesFiltered = rulesFiltered.filter(r=>r.ruleCondition.textCondition.toLocaleUpperCase().includes(condition.toLocaleUpperCase()));
     }
     if(command!=""){
       //console.log(command)
@@ -83,7 +84,7 @@ export class NewRulesService {
     let totalResults = rulesFiltered.length;
     let rules = rulesFiltered.slice(index, index+size);
     let pageRules: PageRules = {rules: rules, page: page, size: size, totalPages: totalPages, totalResults: totalResults}
-    //this.setRulesUniqueValuesPerCategory(rulesFiltered);
+    this.setRulesUniqueValuesPerCategory(rulesFiltered);
     return of(pageRules);
   }
 
@@ -96,6 +97,22 @@ export class NewRulesService {
   }
   public setAllRules(allRules : NewRule[]){
     this.rules = allRules;
+    this.setRulesUniqueValuesPerCategory(allRules);
   }
 
+  // pour les valeurs du filtre à l'initialization
+  public setRulesUniqueValuesPerCategory(rules: NewRule[]) {
+    if(rules){
+      this.parts = [...new Set(rules.map(item => item.part))];
+      this.labels = [...new Set(rules.map(item => item.label))];
+      }  
+  }
+
+  // getter unique values of each rule category
+  public getPartUniqueValues() : Array<string>{
+    return this.parts;
+  }
+  public getLabelUniqueValues() : Array<string>{
+    return this.labels;
+  }
 }

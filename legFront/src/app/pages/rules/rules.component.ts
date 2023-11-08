@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { NewRule } from 'src/app/model/newrule';
@@ -30,20 +31,23 @@ export class RulesComponent implements OnInit {
   filterActive: boolean = false; // pour savoir si un filtre est actif ou pas
 
   errorMessage!: string;
+  filterFormGroup!: FormGroup;
+  parts!: Array<string>; // utilisé pour afficher les valeurs des filtres
+  labels!: Array<string>;
 
   constructor(private newRulesService: NewRulesService, private router: Router){}
 
   ngOnInit(): void {
     let ruleToBeEdited : NewRule = this.newRulesService.getRuleToBeEdited();
-    console.log('dans la page rules')
-    console.log(ruleToBeEdited)
+    //console.log('dans la page rules')
+    //console.log(ruleToBeEdited)
     // si l'index n'est pas -1 alors il s'agit d'une modif
     if (ruleToBeEdited.id!=-1){
       this.newRulesService.saveRuleinDB(ruleToBeEdited).subscribe({
         next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
           this.openFeedBackUser("Rule changes saved Succesfully", "bg-success");
-          console.log('retour de la DB')
-          console.log(data)
+          //console.log('retour de la DB')
+          //console.log(data)
           ruleToBeEdited.id = data.id; // on récupère l'id au cas où il s'agit d'un nouvel enregistrement
         },
         error: (err) => {
@@ -60,12 +64,27 @@ export class RulesComponent implements OnInit {
     }
     this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
     
-  }
+    // récupération des filtres du service si existants
+    if (this.newRulesService.filters) {
+      this.currentPage = this.newRulesService.pageToDisplay;
+      this.filterFormGroup = this.newRulesService.filters;
+      this.filterActive = true;
+      //this.onFilterChange(this.currentPage);
+    }else{
+      this.filterFormGroup = new FormGroup({
+        part: new FormControl("allPart"), //valeur par defaut
+        label: new FormControl("allLabel"),
+        condition: new FormControl(""),
+        command: new FormControl("")
+      });
+    } 
+
+  }// fin du ng-oninit
 
   getAllRules(){
     this.rulesDataState$ = this.newRulesService.getRulesFromDB().pipe(
       map(data=>{
-        this.newRulesService.setRules(data);
+        this.newRulesService.setAllRules(data);
         this.displayRules();
         /*
         if (this.filterActive) {
@@ -83,11 +102,9 @@ export class RulesComponent implements OnInit {
 
   displayRules() {
     this.getPageRules();
-    // récupère toutes les valeurs dans le filtre
-    /*this.parts = this.ruleService.getPartUniqueValues();
-    this.labels = this.ruleService.getLabelUniqueValues();
-    this.positions = this.ruleService.getPositionUniqueValues();
-    */
+    // récupère la liste des valeurs pour les filtres
+    this.parts = this.newRulesService.getPartUniqueValues();
+    this.labels = this.newRulesService.getLabelUniqueValues();
   }
 
   editRule(r: NewRule) {
@@ -107,26 +124,26 @@ export class RulesComponent implements OnInit {
   }
 
   onFilterChange(page: number = 0) { 
-    /*
+    
     if (!this.filterFormGroup) {
-      this.filterFormGroup = new UntypedFormGroup({
-        part: new UntypedFormControl("allPart"), //valeur par defaut
-        label: new UntypedFormControl("allLabel"),
-        position: new UntypedFormControl("allPosition"),
-        condition: new UntypedFormControl(""),
-        command: new UntypedFormControl("")
+      this.filterFormGroup = new FormGroup({
+        part: new FormControl("allPart"), //valeur par defaut
+        label: new FormControl("allLabel"),
+        condition: new FormControl(""),
+        command: new FormControl("")
       });            
     }
-    if( this.filterFormGroup.get('part')?.value=="allPart" && 
-        this.filterFormGroup.get('label')?.value == "allLabel" && 
-        this.filterFormGroup.get('position')?.value == "allPosition" && 
-        this.filterFormGroup.get('condition')?.value == "" && 
-        this.filterFormGroup.get('command')?.value == ""){
+    if(this.filterFormGroup.get('part')?.value=="allPart" && 
+       this.filterFormGroup.get('label')?.value == "allLabel" && 
+       this.filterFormGroup.get('condition')?.value == "" && 
+       this.filterFormGroup.get('command')?.value == ""){
           this.filterActive = false
-        }else {
+    }else {
           this.filterActive = true;
-        }*/
-    this.newRulesService.rulesFiltered("this.filterFormGroup.get('part')?.value", "this.filterFormGroup.get('label')?.value", "this.filterFormGroup.get('condition')?.value", "this.filterFormGroup.get('command')?.value", page, this.pageSize).subscribe({
+    }
+
+
+    this.newRulesService.rulesFiltered(this.filterFormGroup.get('part')?.value, this.filterFormGroup.get('label')?.value, this.filterFormGroup.get('condition')?.value, this.filterFormGroup.get('command')?.value, page, this.pageSize).subscribe({
       next: (data) => {
         this.rules = data.rules;
         this.currentPage = page;
@@ -142,10 +159,9 @@ export class RulesComponent implements OnInit {
         },
       complete: () => {
         // met à jour les filtres en fonction de la selection
-        //this.parts = this.ruleService.getPartUniqueValues();
-        //this.labels = this.ruleService.getLabelUniqueValues();
-        //this.positions = this.ruleService.getPositionUniqueValues();
-        //console.log(this.rules)
+        this.parts = this.newRulesService.getPartUniqueValues();
+        this.labels = this.newRulesService.getLabelUniqueValues();
+        
       }
     })      
     
@@ -153,6 +169,7 @@ export class RulesComponent implements OnInit {
   }
 
   getPageRules() {
+    // pour revenir à la même page  
     if (this.newRulesService.pageToDisplay) this.currentPage = this.newRulesService.pageToDisplay;
     
     this.newRulesService.getPageRules(this.currentPage, this.pageSize).subscribe({
@@ -206,6 +223,15 @@ export class RulesComponent implements OnInit {
         }
       } 
     })
+  }
+
+  resetfilters() {
+    this.filterFormGroup.get('part')?.setValue('allPart');
+    this.filterFormGroup.get('label')?.setValue('allLabel');
+    this.filterFormGroup.get('condition')?.setValue('');
+    this.filterFormGroup.get('command')?.setValue('');
+    this.filterActive = false;
+    this.onFilterChange(0);
   }
 
 }
