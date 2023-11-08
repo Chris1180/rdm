@@ -15,6 +15,19 @@
 
 <main id="main">
     
+    <nav *ngIf="totalPages>0">
+        <span>Pages ({{currentPage+1}} of {{totalPages}}) => rules number {{totalResults}}</span>
+        <ul class="pager" style="display: flex; justify-content: center;">
+            <li><a *ngIf="currentPage!=0" (click)="onFilterChange(currentPage-1)" title="Previous page">«</a></li>
+            <li *ngFor="let item of [].constructor(this.totalPages); let i=index"
+                [ngClass]="i==currentPage?'active':''">
+                <a (click)="onFilterChange(i)">{{i+1}}</a>
+            </li>
+            <li><a *ngIf="currentPage!=totalPages-1" (click)="onFilterChange(currentPage+1)" title="Next page">»</a>
+            </li>
+        </ul>
+    </nav>
+    <br>
     <ng-container *ngIf="(rulesDataState$ | async) as result" [ngSwitch]="result.dataState">
         
         <ng-container *ngSwitchCase="RuleStateEnum.LOADING">
@@ -78,7 +91,7 @@
                             </ng-template>
                             <i class="bi bi-trash p-2" style="cursor:pointer"  ngbTooltip="Delete this Rule" placement="right"></i>
                             <i class="bi bi-pencil p-2" style="cursor:pointer" (click)="editRule(r)" ngbTooltip="Edit this Rule" placement="right"></i>
-                            <i class="bi bi-files p-2" style="cursor:pointer"  ngbTooltip="Duplicate this Rule" placement="right"></i>
+                            <i class="bi bi-files p-2" style="cursor:pointer"  (click)="duplicateRule(r)" ngbTooltip="Duplicate this Rule" placement="right"></i>
                             <i *ngIf="r.comment!=''" [ngbTooltip]="htmlContent" class="bi bi-info-circle p-2"></i>
                         </td>
                     </tr>

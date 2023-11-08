@@ -53,7 +53,7 @@ public class Controller {
 	// new controllers
 	@GetMapping ("/getAllRules")
 	public List<Rules> getAllRules() {
-		return rulesRepository.findAll();
+		return rulesRepository.findAllByOrderByOrderAsc();
 	}
 	
 	@PostMapping ("/saveRule")
@@ -61,26 +61,41 @@ public class Controller {
 
 		RuleCondition rcond = rule.getRuleCondition();
 		Set<RuleCommand> rcs = rcond.getRuleCommand();
-		for(RuleCommand rc : rcs) {
-			rc.setRuleCondition(rcond);
-			if (rc.getId() == 0) {
-				// new record
-				RuleCommand r = ruleCommandRepository.save(rc);
-				rc.setId(r.getId());
-			}else {
-				//pour supprimer une commande dans une langue il faut que le champ texte soit vide
-				if (rc.getCommand().length()==0) {
-					System.out.println("Le champ est vide pour la commande "+ rc.getId() + rc.getLang());
-					//suppression de la commande
-					ruleCommandRepository.deleteById(rc.getId());
-				}else {
-					ruleCommandRepository.save(rc);
+		
+		if (rule.getId()==0) {
+			// il s'agit d'une nouvelle règle il faut donc mettre les id de ruleCondition et ruleCommand à 0
+			rcond.setId(null);
+			RuleCondition newrc =  ruleConditionRepository.save(rcond);
+			rcond.setId(newrc.getId());
+			for(RuleCommand rcom: rcs) {
+				if (rcom.getCommand().length()!=0) {
+					RuleCommand r = ruleCommandRepository.save(new RuleCommand(null, rcom.getLang(), rcom.getCommand(), newrc));
+					rcom.setId(r.getId());
 				}
-				
 			}
+		}else {
+			for(RuleCommand rc : rcs) {
+				rc.setRuleCondition(rcond);
+				if (rc.getId() == 0) {
+					// new record
+					RuleCommand r = ruleCommandRepository.save(rc);
+					rc.setId(r.getId());
+				}else {
+					//pour supprimer une commande dans une langue il faut que le champ texte soit vide
+					if (rc.getCommand().length()==0) {
+						System.out.println("Le champ est vide pour la commande "+ rc.getId() + rc.getLang());
+						//suppression de la commande
+						ruleCommandRepository.deleteById(rc.getId());
+					}else {
+						ruleCommandRepository.save(rc);
+					}
+					
+				}
+			}
+			rcs.removeIf(rc -> rc.getCommand().length() == 0);
+			ruleConditionRepository.save(rcond);
 		}
-		rcs.removeIf(rc -> rc.getCommand().length() == 0);
-		ruleConditionRepository.save(rcond);
+		
 		return rulesRepository.save(rule);
 	}
 		

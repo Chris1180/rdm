@@ -29,6 +29,7 @@ export class RulesComponent implements OnInit {
   totalResults: number = 0;
   filterActive: boolean = false; // pour savoir si un filtre est actif ou pas
 
+  errorMessage!: string;
 
   constructor(private newRulesService: NewRulesService, private router: Router){}
 
@@ -65,7 +66,7 @@ export class RulesComponent implements OnInit {
     this.rulesDataState$ = this.newRulesService.getRulesFromDB().pipe(
       map(data=>{
         this.newRulesService.setRules(data);
-        this.rules = data;
+        this.displayRules();
         /*
         if (this.filterActive) {
           this.onFilterChange(this.currentPage);
@@ -80,9 +81,18 @@ export class RulesComponent implements OnInit {
     this.rulesDataState$.subscribe();
   }
 
+  displayRules() {
+    this.getPageRules();
+    // récupère toutes les valeurs dans le filtre
+    /*this.parts = this.ruleService.getPartUniqueValues();
+    this.labels = this.ruleService.getLabelUniqueValues();
+    this.positions = this.ruleService.getPositionUniqueValues();
+    */
+  }
+
   editRule(r: NewRule) {
     this.newRulesService.setRuleToBeEdited(r);
-    //this.ruleService.pageToDisplay = this.currentPage;
+    this.newRulesService.pageToDisplay = this.currentPage;
     //this.ruleService.filters = this.filterFormGroup;
     this.router.navigate(['/EditRule']);
   }
@@ -95,4 +105,72 @@ export class RulesComponent implements OnInit {
   closeFeedBackUser(){
     this.userFeedBackToast.hide();
   }
+
+  onFilterChange(page: number = 0) { 
+    /*
+    if (!this.filterFormGroup) {
+      this.filterFormGroup = new UntypedFormGroup({
+        part: new UntypedFormControl("allPart"), //valeur par defaut
+        label: new UntypedFormControl("allLabel"),
+        position: new UntypedFormControl("allPosition"),
+        condition: new UntypedFormControl(""),
+        command: new UntypedFormControl("")
+      });            
+    }
+    if( this.filterFormGroup.get('part')?.value=="allPart" && 
+        this.filterFormGroup.get('label')?.value == "allLabel" && 
+        this.filterFormGroup.get('position')?.value == "allPosition" && 
+        this.filterFormGroup.get('condition')?.value == "" && 
+        this.filterFormGroup.get('command')?.value == ""){
+          this.filterActive = false
+        }else {
+          this.filterActive = true;
+        }*/
+    this.newRulesService.rulesFiltered("this.filterFormGroup.get('part')?.value", "this.filterFormGroup.get('label')?.value", "this.filterFormGroup.get('condition')?.value", "this.filterFormGroup.get('command')?.value", page, this.pageSize).subscribe({
+      next: (data) => {
+        this.rules = data.rules;
+        this.currentPage = page;
+        this.totalPages = data.totalPages;
+          this.totalResults = data.totalResults;
+          if (this.totalPages == 0) {
+            this.errorMessage = "No Result Found"
+          }
+          
+        },
+        error: (err) => {
+          this.errorMessage = err;
+        },
+      complete: () => {
+        // met à jour les filtres en fonction de la selection
+        //this.parts = this.ruleService.getPartUniqueValues();
+        //this.labels = this.ruleService.getLabelUniqueValues();
+        //this.positions = this.ruleService.getPositionUniqueValues();
+        //console.log(this.rules)
+      }
+    })      
+    
+
+  }
+
+  getPageRules() {
+    if (this.newRulesService.pageToDisplay) this.currentPage = this.newRulesService.pageToDisplay;
+    
+    this.newRulesService.getPageRules(this.currentPage, this.pageSize).subscribe({
+      next: (data) => {
+        this.rules = data.rules;
+        this.totalPages = data.totalPages;
+        this.totalResults = data.totalResults;
+      },
+      error: (err) => {
+        this.errorMessage = err;
+      }
+    })
+  }
+
+  duplicateRule(r: NewRule){
+    this.newRulesService.setRuleToBeEdited({id: 0, order: r.order, part: r.part, label: r.label, ruleCondition: r.ruleCondition, 
+    comment: r.comment, style: r.style})
+    this.router.navigate(['/EditRule']);
+  }
+
 }
