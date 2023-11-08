@@ -86,4 +86,16 @@ export class NewRulesService {
     //this.setRulesUniqueValuesPerCategory(rulesFiltered);
     return of(pageRules);
   }
+
+  public deleteRule(ruleToDelete : NewRule) : Observable<any>{
+    return this.http.post(this.apiUrl+'deleteRule', ruleToDelete);
+  }
+
+  public getAllRules() : Array<NewRule> {
+    return this.rules;
+  }
+  public setAllRules(allRules : NewRule[]){
+    this.rules = allRules;
+  }
+
 }

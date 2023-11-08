@@ -98,6 +98,14 @@ public class Controller {
 		
 		return rulesRepository.save(rule);
 	}
+	
+	@PostMapping ("/deleteRule")
+	public void deleteOneRule(@RequestBody Rules ruleToDelete) {	
+		// suppression d'une règle dans le tables rules, rule_condition et rule_command
+		rulesRepository.deleteById(ruleToDelete.getId());
+		ruleCommandRepository.deleteByIdCondition(ruleToDelete.getRuleCondition().getId());
+		ruleConditionRepository.deleteById(ruleToDelete.getRuleCondition().getId());		
+	}
 		
 	
 	@GetMapping ("/getAllConditions")

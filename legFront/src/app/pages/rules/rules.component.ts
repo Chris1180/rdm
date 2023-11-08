@@ -173,4 +173,39 @@ export class RulesComponent implements OnInit {
     this.router.navigate(['/EditRule']);
   }
 
+  deleteRule(r: NewRule) {
+    let conf = confirm("Are you sure?");
+    if (conf == false) return;
+
+    this.newRulesService.deleteRule(r).subscribe({
+      next: () => {
+        // Si tout s'est bien passé en Back End alors on met à jour la liste des règles dans le service
+        let allRules :NewRule[] = this.newRulesService.getAllRules();
+        // filter parcours le tableau et pour chaque rule on garde que les rules qui sont différentes de id
+        allRules = this.newRulesService.getAllRules().filter(rule=>rule.id!=r.id);
+        this.newRulesService.setAllRules(allRules);
+        this.openFeedBackUser("Rule number: "+r.id+" deleted succesfully", "bg-success");
+        console.log('Rule numéro : '+r.id+' supprimée');
+      },
+      error: (err) => {
+        this.openFeedBackUser("Error during deletion process in Back-End", "bg-danger")
+      },
+      complete: () => {
+        // ici on rafraichi la liste de la copie locale des rules 
+        let index = this.rules.indexOf(r);
+        this.rules.splice(index, 1); // ici on supprime l'element dans la copie locale pour le composant
+    
+        // on remet en forme la pagination
+        this.getPageRules(); 
+        if (this.totalPages==this.currentPage){
+          this.currentPage--;
+          this.getPageRules();
+        }
+        if (this.totalPages == 0){
+          this.errorMessage = "No result to display"
+        }
+      } 
+    })
+  }
+
 }
