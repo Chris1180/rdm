@@ -7,6 +7,7 @@ export interface NewRule {
     part: string;
     label: string;
     comment: string;
+    nestedCondition: boolean;
     ruleCondition: RuleCondition;
     style?: Style
 }

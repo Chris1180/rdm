@@ -22,7 +22,7 @@ public class RuleCommand {
 	String lang;
 	String command;
 	@ManyToOne
-    @JoinColumn(name="id_condition")
+    @JoinColumn(name="id_rule_condition")
     private RuleCondition ruleCondition;
 	
 	

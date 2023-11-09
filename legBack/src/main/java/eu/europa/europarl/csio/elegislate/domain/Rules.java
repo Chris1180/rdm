@@ -25,6 +25,8 @@ public class Rules {
 	String part;
 	String label;
 	String comment;
+	@Column (name="nested_condition")
+	Boolean nestedCondition;
 
 	
 	@ManyToOne

@@ -105,12 +105,7 @@
                             <td>{{r.label}}</td>
                             <td>{{r.ruleCondition.textCondition}}</td>
                             <td>
-                                <ng-container *ngIf="r.ruleCondition.idSubCondition != 0">
-                                    <input class="form-check-input" type="checkbox" disabled checked>
-                                </ng-container>
-                                <ng-container *ngIf="r.ruleCondition.idSubCondition == 0">
-                                    <input class="form-check-input" type="checkbox" disabled>
-                                </ng-container>
+                                <input class="form-check-input" type="checkbox" disabled [checked]="r.nestedCondition">
                             </td>
                             <td>
                                 <ng-container *ngFor="let rc of r.ruleCondition.ruleCommand">
