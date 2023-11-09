@@ -142,6 +142,11 @@ public class Controller {
 		
 	}
 	
+	@GetMapping("/getSubConditions/{idRulePreCondition}")
+	public List<RuleCondition> getSubConditions(@PathVariable Integer idRulePreCondition) {
+		
+		return ruleConditionRepository.findByIdPreCondition(idRulePreCondition);
+	}
 	
 	
 	// end new controllers

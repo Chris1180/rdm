@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { NewRule } from "../model/newrule";
 import { PageRules } from "../model/pageRules";
+import { RuleCondition } from "../model/rulecondition";
 
 @Injectable({
   providedIn: 'root'
@@ -26,15 +27,7 @@ export class NewRulesService {
     if (window.location.port == '4200') {
       this.apiUrl = `http://${window.location.hostname}:8080/`
     }
-    this.setRuleToBeEdited({
-      id: -1, 
-      order: 1, 
-      part: '', 
-      label: '',
-      ruleCondition: {"id" :-1 , "idPreCondition": 0, "textCondition": '', "ruleCommand": [{"id":0, "lang": 'EN', "command":''}]},
-      comment: '',
-      nestedCondition: false,
-      style: {"id":0, "name": 'default', "margintop": 0, "marginleft": 0, "relatif": false, "font": 'TimesNewRoman', "size": 16, "bold": false, "italic": false}});
+    this.initRuleToBeEdited();
   }
 
   // operations in DB
@@ -44,6 +37,9 @@ export class NewRulesService {
   public saveRuleinDB(rule: NewRule): Observable<NewRule> {
     return this.http.post<NewRule>(this.apiUrl + 'saveRule', rule)
   }
+  public getSubConditionsFromDB(idRulePreCondition: number) : Observable<RuleCondition[]> {
+    return this.http.get<RuleCondition[]>(this.apiUrl + 'getSubConditions/'+idRulePreCondition)
+  }
 
   // in local
   public setRuleToBeEdited(r: NewRule) {
@@ -51,6 +47,17 @@ export class NewRulesService {
   }
   public getRuleToBeEdited(): NewRule {
     return this.ruleToBeEdited;
+  }
+  public initRuleToBeEdited(){
+    this.setRuleToBeEdited({
+      id: -1, 
+      order: 1, 
+      part: '', 
+      label: '',
+      ruleCondition: {"id" :-1 , "idPreCondition": 0, "textCondition": '', "ruleCommand": [{"id":0, "lang": 'EN', "command":''}]},
+      comment: '',
+      nestedCondition: false,
+      style: {"id":0, "name": 'default', "margintop": 0, "marginleft": 0, "relatif": false, "font": 'TimesNewRoman', "size": 16, "bold": false, "italic": false}}); 
   }
 
   // pagination
