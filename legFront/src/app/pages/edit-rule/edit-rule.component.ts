@@ -61,7 +61,7 @@ export class EditRuleComponent implements OnInit {
       languageSelected : new FormControl(language),
       style : new FormControl(this.rule.style!.id),
       comment : new FormControl(this.rule.comment),
-      subCommands : new FormArray([])
+      subConditionForms : new FormArray([])
     });
     
     //partie sous condition
@@ -87,7 +87,7 @@ export class EditRuleComponent implements OnInit {
               subConditionForm.get('command')?.setValue(ruleCommandEN.command)
             }
             
-            this.subCommands.push(subConditionForm)
+            this.subConditionForms.push(subConditionForm)
           }
           
           },
@@ -95,7 +95,7 @@ export class EditRuleComponent implements OnInit {
           console.error("Une erreur est remontée lors de la recherche de RuleCondition");
         },
         complete: ()=>{
-          console.log(this.subCommands.value)
+          //console.log(this.subConditionForms.value)
         }
       })
     }
@@ -117,7 +117,13 @@ export class EditRuleComponent implements OnInit {
 
     // la sauvegarde se fait dans la page rules
     this.newRulesService.setRuleToBeEdited(this.rule)
-    console.log(this.subCommands.value)
+    console.log('Rule')
+    console.log(this.rule)
+    //console.log('Form')
+    //console.log(this.subConditionForms.value)
+    console.log('Object from DB after modif')
+    console.log(this.subConditions)
+    // desactivé le temps de tests (évite le back end)
     //this.router.navigate(['/Rules']);
     
   }
@@ -170,8 +176,79 @@ export class EditRuleComponent implements OnInit {
   }
 
   // getter for the FormArray
-  get subCommands(): FormArray {
-    return this.ruleForm.get('subCommands') as FormArray;
+  get subConditionForms(): FormArray {
+    return this.ruleForm.get('subConditionForms') as FormArray;
+  }
+  addSubCondition(){
+    if(this.subConditionForms.length==0)this.rule.nestedCondition=true
+    const subConditionForm = new FormGroup({
+      id: new FormControl(0),
+      condition: new FormControl(''),
+      languageSelected: new FormControl('EN'),
+      command: new FormControl(''),
+    });
+    this.subConditionForms.push(subConditionForm)
+    let subCondition : RuleCondition = { "id": 0, "idPreCondition": this.rule.id, "textCondition": '', "ruleCommand": [{"id": 0, "lang": 'EN', "command": ''}]} 
+    this.subConditions.push(subCondition)
   }
 
+  deleteSubCondition(index: number){
+    // si l'index est à 0 il faut vérifier si c'est le dernier
+    if(index==0 && this.subConditionForms.value.length==1) this.rule.nestedCondition=false;
+    this.subConditionForms.removeAt(index)
+    this.subConditions.splice(index,1);
+  }
+
+  onSubConditionValueChange(event: any, index: number){
+    // lorsque un changement est fait dans le champ condition d'une sous condition
+    let newSubCondition = event.target.value;
+    // on sauvegarde les changements dans le tableau subconditions et le formArray(subConditionForms)
+    var subConditionForm = this.subConditionForms.at(index);
+    subConditionForm.get('condition')?.setValue(newSubCondition)
+    this.subConditions[index].textCondition = newSubCondition
+  }
+
+  onSubCommandValueChange(event: any, index: number){
+    // lorsque un changement est fait dans le champ command d'une sous condition
+    let newSubCommand = event.target.value.trim();
+    // on sauvegarde les changements dans le tableau subconditions et le formArray(subConditionForms)
+    var subConditionForm = this.subConditionForms.at(index);
+    subConditionForm.get('command')?.setValue(newSubCommand)
+    let langSelected = subConditionForm.get('languageSelected')?.value
+    console.log(langSelected)
+    // en premier on vérifie si une entrée existe dans la langue selectionnée
+    let ruleCommand : RuleCommand = this.subConditions[index].ruleCommand.filter(rc => rc.lang === langSelected)[0]
+    if (ruleCommand) {
+      // soit on met à jour le tableau ruleCommands
+      ruleCommand.command = newSubCommand;
+      let i = this.subConditions[index].ruleCommand.indexOf(ruleCommand);
+      this.subConditions[index].ruleCommand[i] = ruleCommand
+      
+    }else{
+      // soit on ajoute une entrée au tableau ruleCommands
+      let newRuleCommand : RuleCommand = {id: 0, lang: langSelected, command: newSubCommand}
+      this.subConditions[index].ruleCommand.push(newRuleCommand)
+      
+    }
+  }
+
+  onSubLanguageValueChange(event: any, index: number){
+    // l'utilisateur change l'affichage de la langue
+    let langSelected = event.target.value.slice(event.target.value.length - 2);   
+    var subConditionForm = this.subConditionForms.at(index);
+    subConditionForm.get('languageSelected')?.setValue(langSelected);
+    let subCommands : RuleCommand[] = this.subConditions[index].ruleCommand
+    if (subCommands.find(el => el.lang == langSelected) != undefined) {
+      subConditionForm.get("command")?.setValue(subCommands.find(el => el.lang == langSelected)?.command);
+    }else{
+      subConditionForm.get("command")?.setValue('');
+    }
+  }
+
+  knownLanguagesSubCommand(lang: string, index: number){
+    // l'utilité de cette fonction est de faire apparaitre les langues en gras si une commande existe dans la sous condition
+    let subCommands : RuleCommand[] = this.subConditions[index].ruleCommand
+    if (subCommands && subCommands.find(el => el.lang == lang)) return {'font-weight': 'bold'} 
+    else return {}
+  }
 }
