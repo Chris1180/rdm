@@ -130,6 +130,7 @@
         
 
         <!-- Sub Conditions -->
+        {{rule.nestedCondition}}
         <ng-container *ngIf="rule.nestedCondition" formArrayName="subConditionForms">
             <ng-container *ngFor="let sc of subConditionForms.controls; let i=index;let last = last;">
                 

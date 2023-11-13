@@ -38,11 +38,11 @@ export class RulesComponent implements OnInit {
   constructor(private newRulesService: NewRulesService, private router: Router){}
 
   ngOnInit(): void {
-    let ruleToBeEdited : NewRule = this.newRulesService.getRuleToBeEdited();
+    //let ruleToBeEdited : NewRule = this.newRulesService.getRuleToBeEdited();
     //console.log('dans la page rules')
     //console.log(ruleToBeEdited)
-    // si l'index n'est pas -1 alors il s'agit d'une modif
-    if (ruleToBeEdited.id!=-1){
+    // si l'index n'est pas -1 alors il s'agit d'une modif ou d'une création
+    /*if (ruleToBeEdited.id!=-1){
       this.newRulesService.saveRuleinDB(ruleToBeEdited).subscribe({
         next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
           this.openFeedBackUser("Rule changes saved Succesfully", "bg-success");
@@ -61,7 +61,10 @@ export class RulesComponent implements OnInit {
 
     }else { // pas de modif de règle
       this.getAllRules();
-    }
+    }*/
+
+    this.getAllRules();
+
     this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
     
     // récupération des filtres du service si existants

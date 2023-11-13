@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -26,6 +28,7 @@ public class RuleCondition {
 	String textCondition;
 	
 	@OneToMany (mappedBy="ruleCondition")
+	@JsonIgnore
 	private Set<Rules> rules;
 
 	@OneToMany (mappedBy="ruleCondition")

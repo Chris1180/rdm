@@ -31,7 +31,7 @@ export class EditRuleComponent implements OnInit {
     this.rule = this.newRulesService.getRuleToBeEdited();
     // après avoir récupéré l'info de la règle à éditer on efface les infos du service pour ne pas sauvegarder de fausses info dans la page rule 
     this.newRulesService.initRuleToBeEdited()
-
+    console.log(this.rule.nestedCondition)
     // attention ici on lie les deux variables et en modifiant ruleCommands je modifie rule
     this.ruleCommands = this.rule.ruleCondition.ruleCommand;
     this.styleService.getStylesFromDB().subscribe(data => this.styles = data)
@@ -115,16 +115,60 @@ export class EditRuleComponent implements OnInit {
     let style = this.styles.find(el => el.id == this.ruleForm.get("style")?.value)
     this.rule.style = style;
 
-    // la sauvegarde se fait dans la page rules
+    // la sauvegarde se fait dans la page rules (à voir)
     this.newRulesService.setRuleToBeEdited(this.rule)
+    
     console.log('Rule')
     console.log(this.rule)
-    //console.log('Form')
-    //console.log(this.subConditionForms.value)
-    console.log('Object from DB after modif')
+    console.log('Sub Condition(s)')
     console.log(this.subConditions)
-    // desactivé le temps de tests (évite le back end)
-    //this.router.navigate(['/Rules']);
+    if (this.subConditions.length>0) {
+      this.rule.nestedCondition = true;
+    }else {
+      this.rule.nestedCondition = false
+    }
+    this.newRulesService.saveRuleinDB(this.rule).subscribe({
+      next : (data)=>{
+        // on récupère les id au cas où il s'agit d'un nouvel enregistrement
+        if(this.rule.id == 0){
+          this.rule = data;
+        }
+         
+        console.log('rule après sauvegarde en BDD')
+        console.log(this.rule)
+      },
+      error: (err) => {
+        //this.openFeedBackUser("Error during saving process in Back-End", "bg-danger")
+        console.error("Une erreur est remontée lors de la mise à jour d'une règle");
+      },
+      complete: ()=>{
+        console.log('OK du complete de Rule')
+        // si la régle contient des sous-conditions alors on les sauvegarde en Back-End
+        if (this.rule.nestedCondition) {
+          this.subConditions.forEach(element => {
+            element.idPreCondition = this.rule.ruleCondition.id
+          });
+          console.log('avant l\'envoi en back End')
+          console.log(this.subConditions);
+          this.newRulesService.saveSubConditionsinDB(this.subConditions).subscribe({
+            next : (data)=>{
+              
+              this.subConditions = data; // on récupère l'id au cas où il s'agit d'un nouvel enregistrement
+              console.log('sub conditions retour de la DB')
+              console.log(data)
+            },
+            error: (err) => {
+              //this.openFeedBackUser("Error during saving process in Back-End", "bg-danger")
+              console.error("Une erreur est remontée lors de la mise à jour des sous-conditions");
+            },
+            complete: ()=>{
+              console.log('OK du complete de SubCondition')
+              //this.router.navigate(['/Rules']);
+            }
+          })
+        }
+      }
+    })
     
   }
 

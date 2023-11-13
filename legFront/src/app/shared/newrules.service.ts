@@ -4,6 +4,7 @@ import { Observable, of } from "rxjs";
 import { NewRule } from "../model/newrule";
 import { PageRules } from "../model/pageRules";
 import { RuleCondition } from "../model/rulecondition";
+import { RuleCommand } from "../model/rulecommand";
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +41,10 @@ export class NewRulesService {
   public getSubConditionsFromDB(idRulePreCondition: number) : Observable<RuleCondition[]> {
     return this.http.get<RuleCondition[]>(this.apiUrl + 'getSubConditions/'+idRulePreCondition)
   }
+  public saveSubConditionsinDB(subconditions: RuleCondition[]) : Observable<RuleCondition[]>{
+    return this.http.post<RuleCondition[]>(this.apiUrl + 'saveSubConditionsinDB', subconditions)
+  }
+
 
   // in local
   public setRuleToBeEdited(r: NewRule) {

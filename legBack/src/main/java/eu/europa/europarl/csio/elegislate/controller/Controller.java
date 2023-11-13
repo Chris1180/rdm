@@ -1,6 +1,6 @@
 package eu.europa.europarl.csio.elegislate.controller;
 
-import java.util.Iterator;
+
 import java.util.List;
 import java.util.Set;
 
@@ -63,7 +63,7 @@ public class Controller {
 		Set<RuleCommand> rcs = rcond.getRuleCommand();
 		
 		if (rule.getId()==0) {
-			// il s'agit d'une nouvelle règle il faut donc mettre les id de ruleCondition et ruleCommand à 0
+			// il s'agit d'une nouvelle règle il faut donc mettre les id de ruleCondition et ruleCommand à null puis récupérer les nouveaux Id
 			rcond.setId(null);
 			RuleCondition newrc =  ruleConditionRepository.save(rcond);
 			rcond.setId(newrc.getId());
@@ -96,6 +96,20 @@ public class Controller {
 			ruleConditionRepository.save(rcond);
 		}
 		
+		//suppression des sous-conditions si besoin
+		if (!rule.getNestedCondition()) {
+			//on récupère toutes les sous-conditions
+			List<RuleCondition> ruleConds = ruleConditionRepository.findByIdPreCondition(rule.getRuleCondition().getId());
+			// si une ou plusieurs sous-condition(s) sont dispo alors il faut pour chacune d'entre elles effacer les ruleCommand
+			if (ruleConds.size()!=0) {
+				for (RuleCondition ruleCondition : ruleConds) {
+					// on récupère toute les commandes
+					ruleCommandRepository.deleteByIdCondition(ruleCondition.getId());
+					ruleConditionRepository.deleteById(ruleCondition.getId());
+				}
+			}
+		} 
+		
 		return rulesRepository.save(rule);
 	}
 	
@@ -103,8 +117,17 @@ public class Controller {
 	public void deleteOneRule(@RequestBody Rules ruleToDelete) {	
 		// suppression d'une règle dans le tables rules, rule_condition et rule_command
 		rulesRepository.deleteById(ruleToDelete.getId());
+		ruleConditionRepository.deleteById(ruleToDelete.getRuleCondition().getId());
 		ruleCommandRepository.deleteByIdCondition(ruleToDelete.getRuleCondition().getId());
-		ruleConditionRepository.deleteById(ruleToDelete.getRuleCondition().getId());		
+		// il faut vérifier si la règle possède des sous conditions pour les supprimer avec également les sous commandes
+		if (ruleToDelete.getNestedCondition()) {
+			List<RuleCondition> rcs = this.ruleConditionRepository.findByIdPreCondition(ruleToDelete.getRuleCondition().getId());
+			for (RuleCondition rc : rcs) {
+				ruleCommandRepository.deleteByIdCondition(rc.getId());
+				ruleConditionRepository.deleteById(rc.getId());
+			}
+		}
+				
 	}
 		
 	
@@ -148,7 +171,38 @@ public class Controller {
 		return ruleConditionRepository.findByIdPreCondition(idRulePreCondition);
 	}
 	
-	
+	@PostMapping ("/saveSubConditionsinDB")
+	public List<RuleCondition> saveSubConditionsinDB(@RequestBody List<RuleCondition> subConditions ){
+		//Pour ne pas devoir vérifier les sous-conditions à supprimer on les supprime toutes
+		// pour ce faire on récupère l'id de la première entrée du tableau
+		//Integer idPrecondition = subConditions.get(0).getIdPreCondition();
+		//this.ruleConditionRepository.deleteById(idPrecondition);
+		
+		for (RuleCondition ruleCondition : subConditions) {
+			if(ruleCondition.getId()==0) ruleCondition.setId(null);
+			
+			RuleCondition rc = this.ruleConditionRepository.save(new RuleCondition(ruleCondition.getId(), ruleCondition.getIdPreCondition(), ruleCondition.getTextCondition(), null, null));
+			ruleCondition.setId(rc.getId());
+			System.out.println(ruleCondition);
+			for (RuleCommand ruleCommand : ruleCondition.getRuleCommand()) {
+				ruleCommand.setRuleCondition(ruleCondition);
+				// il faut vérifier si la commande est un champ texte vide ou non
+				if(ruleCommand.getCommand().length()>0) {
+					if(ruleCommand.getId()==0) ruleCommand.setId(null);
+					this.ruleCommandRepository.save(ruleCommand);
+				}else {
+					// la commande est vide et donc il faut supprimer l'entrée en BDD si déjà existant en BDD
+					if(ruleCommand.getId()!=0) {
+						this.ruleCommandRepository.deleteById(ruleCommand.getId());
+					}
+				}
+				
+				//System.out.println(ruleCommand.getId());
+				
+			}
+		}
+		return subConditions;
+	}
 	// end new controllers
 	
 	@GetMapping ("/rules")
