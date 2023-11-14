@@ -8,6 +8,7 @@ import { ConditionComponent } from './pages/condition/condition.component';
 import { CommandComponent } from './pages/command/command.component';
 import { RulesComponent } from './pages/rules/rules.component';
 import { EditRuleComponent } from './pages/edit-rule/edit-rule.component';
+import { DisplayComponent } from './pages/display/display.component';
 
 
 const routes: Routes = [
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'CSIOForm', component: FormComponent },
   { path: 'Edition', component: EditionComponent },
   { path: 'Preview', component: PreviewComponent },
+  { path: 'Display', component: DisplayComponent },
   { path: 'Style', component: StyleComponent },
   { path: 'Conditions', component: ConditionComponent },
   { path: 'Commands', component: CommandComponent },

@@ -160,10 +160,10 @@ export class EditRuleComponent implements OnInit {
             },
             complete: ()=>{
               console.log('OK du complete de SubCondition')
-              //this.router.navigate(['/Rules']);
+              this.router.navigate(['/Rules']);
             }
           })
-        }
+        }else this.router.navigate(['/Rules']);
       }
     })
     

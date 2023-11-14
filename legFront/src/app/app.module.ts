@@ -17,6 +17,7 @@ import { ConditionComponent } from './pages/condition/condition.component';
 import { CommandComponent } from './pages/command/command.component';
 import { RulesComponent } from './pages/rules/rules.component';
 import { EditRuleComponent } from './pages/edit-rule/edit-rule.component';
+import { DisplayComponent } from './pages/display/display.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { EditRuleComponent } from './pages/edit-rule/edit-rule.component';
     ConditionComponent,
     CommandComponent,
     RulesComponent,
-    EditRuleComponent
+    EditRuleComponent,
+    DisplayComponent
   ],
   imports: [
     BrowserModule,
