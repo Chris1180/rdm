@@ -31,7 +31,6 @@ export class EditRuleComponent implements OnInit {
     this.rule = this.newRulesService.getRuleToBeEdited();
     // après avoir récupéré l'info de la règle à éditer on efface les infos du service pour ne pas sauvegarder de fausses info dans la page rule 
     this.newRulesService.initRuleToBeEdited()
-    console.log(this.rule.nestedCondition)
     // attention ici on lie les deux variables et en modifiant ruleCommands je modifie rule
     this.ruleCommands = this.rule.ruleCondition.ruleCommand;
     this.styleService.getStylesFromDB().subscribe(data => this.styles = data)
@@ -57,7 +56,7 @@ export class EditRuleComponent implements OnInit {
       part : new FormControl(this.rule.part),
       label : new FormControl(this.rule.label),
       condition : new FormControl(this.rule.ruleCondition.textCondition),
-      command : new FormControl(command),
+      command : new FormControl({value: command, disabled: this.rule.nestedCondition}),
       languageSelected : new FormControl(language),
       style : new FormControl(this.rule.style!.id),
       comment : new FormControl(this.rule.comment),
@@ -117,11 +116,12 @@ export class EditRuleComponent implements OnInit {
 
     // la sauvegarde se fait dans la page rules (à voir)
     this.newRulesService.setRuleToBeEdited(this.rule)
-    
+    /*
     console.log('Rule')
     console.log(this.rule)
     console.log('Sub Condition(s)')
-    console.log(this.subConditions)
+    console.log(this.subConditions)*/
+    
     if (this.subConditions.length>0) {
       this.rule.nestedCondition = true;
     }else {
@@ -133,9 +133,6 @@ export class EditRuleComponent implements OnInit {
         if(this.rule.id == 0){
           this.rule = data;
         }
-         
-        console.log('rule après sauvegarde en BDD')
-        console.log(this.rule)
       },
       error: (err) => {
         //this.openFeedBackUser("Error during saving process in Back-End", "bg-danger")
@@ -259,7 +256,6 @@ export class EditRuleComponent implements OnInit {
     var subConditionForm = this.subConditionForms.at(index);
     subConditionForm.get('command')?.setValue(newSubCommand)
     let langSelected = subConditionForm.get('languageSelected')?.value
-    console.log(langSelected)
     // en premier on vérifie si une entrée existe dans la langue selectionnée
     let ruleCommand : RuleCommand = this.subConditions[index].ruleCommand.filter(rc => rc.lang === langSelected)[0]
     if (ruleCommand) {

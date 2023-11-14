@@ -168,14 +168,25 @@ public class Controller {
 	@GetMapping("/getSubConditions/{idRulePreCondition}")
 	public List<RuleCondition> getSubConditions(@PathVariable Integer idRulePreCondition) {
 		
-		return ruleConditionRepository.findByIdPreCondition(idRulePreCondition);
+		return ruleConditionRepository.findByIdPreConditionOrderByIdAsc(idRulePreCondition);
 	}
 	
 	@PostMapping ("/saveSubConditionsinDB")
 	public List<RuleCondition> saveSubConditionsinDB(@RequestBody List<RuleCondition> subConditions ){
 		//Pour ne pas devoir vérifier les sous-conditions à supprimer on les supprime toutes
-		// pour ce faire on récupère l'id de la première entrée du tableau
-		//Integer idPrecondition = subConditions.get(0).getIdPreCondition();
+		//pour ce faire on récupère l'id de la condition principale avec la première entrée du tableau
+		if (subConditions.size()>0) {
+			Integer idPrecondition = subConditions.get(0).getIdPreCondition();
+			// une fois que l'on connait l'id de la précondition on récupère toutes les sous conditions dans la BDD
+			List<RuleCondition> rcs = ruleConditionRepository.findByIdPreCondition(idPrecondition);
+			for (RuleCondition ruleCondition : rcs) {
+				// pour chaque sous-condition on supprime les commandes
+				ruleCommandRepository.deleteByIdCondition(ruleCondition.getId());
+				// et la sous-condition
+				ruleConditionRepository.deleteById(ruleCondition.getId());
+			}
+		}
+		
 		//this.ruleConditionRepository.deleteById(idPrecondition);
 		
 		for (RuleCondition ruleCondition : subConditions) {
@@ -183,20 +194,16 @@ public class Controller {
 			
 			RuleCondition rc = this.ruleConditionRepository.save(new RuleCondition(ruleCondition.getId(), ruleCondition.getIdPreCondition(), ruleCondition.getTextCondition(), null, null));
 			ruleCondition.setId(rc.getId());
+			
 			System.out.println(ruleCondition);
 			for (RuleCommand ruleCommand : ruleCondition.getRuleCommand()) {
 				ruleCommand.setRuleCondition(ruleCondition);
 				// il faut vérifier si la commande est un champ texte vide ou non
+				// parce que s'il est vide on ne sauvegarde pas en BDD et il est inutile de le supprimer puisque déjà supprimé au début
 				if(ruleCommand.getCommand().length()>0) {
 					if(ruleCommand.getId()==0) ruleCommand.setId(null);
 					this.ruleCommandRepository.save(ruleCommand);
-				}else {
-					// la commande est vide et donc il faut supprimer l'entrée en BDD si déjà existant en BDD
-					if(ruleCommand.getId()!=0) {
-						this.ruleCommandRepository.deleteById(ruleCommand.getId());
-					}
 				}
-				
 				//System.out.println(ruleCommand.getId());
 				
 			}
