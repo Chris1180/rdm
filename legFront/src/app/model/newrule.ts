@@ -9,5 +9,7 @@ export interface NewRule {
     comment: string;
     nestedCondition: boolean;
     ruleCondition: RuleCondition;
+    finalCondition: string;
+    outputValue : string;
     style?: Style
 }

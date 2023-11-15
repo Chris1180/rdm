@@ -62,6 +62,8 @@ export class NewRulesService {
       ruleCondition: {"id" :-1 , "idPreCondition": 0, "textCondition": '', "ruleCommand": [{"id":0, "lang": 'EN', "command":''}]},
       comment: '',
       nestedCondition: false,
+      finalCondition: '',
+      outputValue : '',
       style: {"id":0, "name": 'default', "margintop": 0, "marginleft": 0, "relatif": false, "font": 'TimesNewRoman', "size": 16, "bold": false, "italic": false}}); 
   }
 

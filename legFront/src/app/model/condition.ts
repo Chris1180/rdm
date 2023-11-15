@@ -3,4 +3,5 @@ export interface Condition {
     name : string;
     description : string;
     inputGroup : string;
+    formname : string;
 }

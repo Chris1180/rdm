@@ -126,6 +126,8 @@ export class RulesComponent implements OnInit {
       ruleCondition: {"id" :0 , "idPreCondition": 0, "textCondition": '', "ruleCommand": [{"id":0, "lang": 'EN', "command":''}]},
       comment: '',
       nestedCondition: false,
+      finalCondition: '',
+      outputValue : '',
       style: {"id":0, "name": 'default', "margintop": 0, "marginleft": 0, "relatif": false, "font": 'TimesNewRoman', "size": 16, "bold": false, "italic": false}})
     this.router.navigate(['/EditRule']);
   }
@@ -201,7 +203,7 @@ export class RulesComponent implements OnInit {
 
   duplicateRule(r: NewRule){
     this.newRulesService.setRuleToBeEdited({id: 0, order: r.order, part: r.part, label: r.label, ruleCondition: r.ruleCondition, 
-    comment: r.comment, nestedCondition: false, style: r.style})
+    comment: r.comment, nestedCondition: false, finalCondition: '',outputValue : '',style: r.style})
     this.router.navigate(['/EditRule']);
   }
 
