@@ -1,0 +1,31 @@
+#box {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: rgb(233, 248, 248);
+    height: 1609px;
+    width:1138px;
+}
+.eplogo{
+    position: absolute;
+    display: block;
+    height: 115px;
+    width: 150px;
+    background-image: url(../../../../assets/img/ep-logo-mute.png);
+	background-repeat: no-repeat;
+    background-size:contain;
+}
+.headingtitle{
+    width: 80%;
+    font-weight: bold;
+    border-style: solid none solid none;
+    text-align: center;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    margin-left: 60px;
+    margin-right: 60px;
+    white-space: pre-line
+}
+.united{
+    color:rgb(121, 121, 121);
+}
