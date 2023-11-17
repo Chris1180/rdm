@@ -290,17 +290,9 @@ export class DisplayComponent implements OnInit{
         
         // Pour chaque final condition des règles ayant un condition avec un input manquant on fait une eval
         for (let [key, value] of this.inputParamMap) {
-          //rule!.finalCondition = rule!.finalCondition.replace(" "+key+" ", " "+value.toString()+" ");
-          // au milieu
-          r.finalCondition = r.finalCondition.replace(' '+key+' ' , ' '+value.toString()+' ');
-          r.finalCondition = r.finalCondition.replace(' !'+key+' ' , ' !'+value.toString()+' ');
-          // au début
-          r.finalCondition = r.finalCondition.replace( key+' ' , ' '+value.toString()+' ');
-          r.finalCondition = r.finalCondition.replace( '!'+key+' ' , '!'+value.toString()+' ');
-          // à la fin  
-          r.finalCondition = r.finalCondition.replace(' '+key , ' '+value.toString());
-          r.finalCondition = r.finalCondition.replace(' !'+key , ' !'+value.toString());             
-          }
+          var re = new RegExp("\\b" + key + "\\b", "gi"); // /\bkey\b/gi;
+          r.finalCondition = r.finalCondition.replace(re , value.toString());             
+        }
         //eval
         try {
           eval(r.finalCondition);

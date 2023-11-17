@@ -116,32 +116,12 @@ export class NewCheckRulesService {
     rulesSelectedForPreview.forEach(r=>{
       // Pour chaque final condition des règles ayant un condition avec un input manquant on fait une eval
       for (let [key, value] of inputParamMap) {
-        //rule!.finalCondition = rule!.finalCondition.replace(" "+key+" ", " "+value.toString()+" ");
-        // au milieu
-        r.finalCondition = r.finalCondition.replace(' '+key+' ' , ' '+value.toString()+' ');
-        r.finalCondition = r.finalCondition.replace(' !'+key+' ' , ' !'+value.toString()+' ');
-        // au début
-        r.finalCondition = r.finalCondition.replace( key+' ' , ' '+value.toString()+' ');
-        r.finalCondition = r.finalCondition.replace( '!'+key+' ' , '!'+value.toString()+' ');
-        // à la fin  
-        r.finalCondition = r.finalCondition.replace(' '+key , ' '+value.toString());
-        r.finalCondition = r.finalCondition.replace(' !'+key , ' !'+value.toString()); 
-        // commande unique
-        if(r.finalCondition==key) r.finalCondition = r.finalCondition.replace(key , value.toString()); 
-        // récupération de la version linguistique du formulaire           
+        var re = new RegExp("\\b" + key + "\\b", "gi"); // /\bkey\b/gi;
+        r.finalCondition = r.finalCondition.replace(re , value.toString());
       }
       for (let [key, value] of inputMissingParamMap) {
-        // au milieu
-        r.finalCondition = r.finalCondition.replace(' '+key+' ' , ' '+value.toString()+' ');
-        r.finalCondition = r.finalCondition.replace(' !'+key+' ' , ' !'+value.toString()+' ');
-        // au début
-        r.finalCondition = r.finalCondition.replace( key+' ' , ' '+value.toString()+' ');
-        r.finalCondition = r.finalCondition.replace( '!'+key+' ' , '!'+value.toString()+' ');
-        // à la fin  
-        r.finalCondition = r.finalCondition.replace(' '+key , ' '+value.toString());
-        r.finalCondition = r.finalCondition.replace(' !'+key , ' !'+value.toString());
-        // commande unique
-        if(r.finalCondition==key) r.finalCondition = r.finalCondition.replace(key , value.toString());             
+        var re = new RegExp("\\b" + key + "\\b", "gi"); // /\bkey\b/gi;
+        r.finalCondition = r.finalCondition.replace(re , value.toString());            
       }
     })
     
@@ -188,6 +168,7 @@ export class NewCheckRulesService {
             console.warn("Rule :" + r.id + " False => " + r.finalCondition);
           } // fin du try
         } catch (e) {
+          console.log(e)
           console.error('SyntaxError on rule number : ' + r.id + "\nrule code is : " + r.ruleCondition.textCondition + "\nfinal condition is : " + r.finalCondition) // It is a SyntaxError
         }
       
