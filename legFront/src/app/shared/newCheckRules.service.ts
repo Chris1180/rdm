@@ -3,6 +3,9 @@ import { NewRule } from "../model/newrule";
 import { ConditionService } from "./condition.service";
 import { Condition } from "../model/condition";
 import { RuleCommand } from "../model/rulecommand";
+import { Command } from "../model/command";
+import { CommandService } from "./command.service";
+import { outputParametersListFromTheForm } from "../model/outputParameters/outputParametersListFromTheForm";
 
 @Injectable({
   providedIn: 'root'
@@ -16,28 +19,30 @@ export class NewCheckRulesService {
   commandsWithUnknownInput: number[] = [];
   unknownOutput: string[] = [];
   listOfKnownParam: string[] = ["||", "&&", "true", "false", ""]
+  listOfOutputParamFromDB: Command[] = [];
 
-
-  //inputParamMap: Map<string, boolean> = new Map(); // pour l'éval (à voir)
-  //newRuleFinalConditionMap: Map<string, boolean> = new Map();
-
-  constructor(private conditionService: ConditionService) {
-    let conditionsFromDB: Condition[];
+  constructor(private conditionService: ConditionService, private commandService: CommandService) {
+    // récupération des conditions (input param) de la Base de donnée dans le tableau listOfKnownParam
     this.conditionService.getConditionsFromDB().subscribe({
-      next: (data) => { conditionsFromDB = data },
+      next: (conditionsFromDB: Condition[]) => { 
+        conditionsFromDB.forEach(c => {
+        this.listOfKnownParam.push(c.name)
+        }); 
+      },
       error: (err) => {
         console.log("Error during back end request for list od conditions")
-      },
-      complete: () => {
-        conditionsFromDB.forEach(c => {
-          this.listOfKnownParam.push(c.name)
-          //this.inputParamMap.set(c.name, false)
-        });
-
       }
-    }
-
-    )
+    })
+    // récupération des commandes (output param) de la Base de donnée dans le tableau listOfOutputParamFromDB
+    this.commandService.getCommandsFromDB().subscribe({
+      next: (commandsFromDB: Command[]) => { 
+        this.listOfOutputParamFromDB = commandsFromDB; 
+      },
+      error: (err) => {
+        console.log("Error during back end request for list of commands (output param)")
+      }
+    })
+    
   }
 
   checkCondition(allRulestoBeCheckedBySelectedPart: NewRule[]): { unknownInput: string[], rulesWithUnknownInput: number[] } {
@@ -187,79 +192,100 @@ export class NewCheckRulesService {
   } // fin du eval rule
 
   getOutputParameter(outputParam: string){
-    /*
-    switch (outputParam.toLocaleUpperCase()){
-      case OutputParametersList['[AUTHOR OF PROPOSAL]']:
-        return this.form.authorOfProposal.join(", ");
-      case OutputParametersList['[AUTHORING COMMITTEE]']:
-        return this.form.authoringCommittee;
-      case OutputParametersList['[DOC LANGUAGE]']:
-        return this.form.docLanguage;
-      case OutputParametersList['[AXX NUMBER]']:
-        return this.form.axxNumber.trim()==""? initialValue : this.form.axxNumber;
-      case OutputParametersList['[EPADES REF]']:
-        return this.form.epadesRef;
-      case OutputParametersList['[GENERATING DATE]']:
-        return  this.form.generatingDate.day + "." + this.form.generatingDate.month + "." + this.form.generatingDate.year;
-      case OutputParametersList['[ITER TITLE]']:
-        return this.form.iterTitle.trim()==""? initialValue : this.form.iterTitle ;
-      case OutputParametersList['[LEAD COMMITTEE]']:
+    let outputParamToBeChecked = outputParam.replace(/\[|\]/g,'').toLocaleUpperCase();
+
+    // on regarde dans la liste des commandes si le paramètre existe
+    let outputCommand = this.listOfOutputParamFromDB.filter(op=> op.name == outputParamToBeChecked)
+    let initialValue = ''
+    //console.log(outputCommand)
+    
+    if(outputCommand.length > 0) {
+      //console.log('commande trouvée'+ outputCommand);
+      initialValue = outputCommand[0].initValue;
+    }//else console.log('pas trouvée')
+    
+    //console.log(this.form.generatingDate.day)
+    // on regarde si le paramètre est dans le formulaire et sinon (default) on le met dans le tableau des unknownOutput
+    // pour le demandé à l'utilisateur
+    switch (outputParamToBeChecked){
+      case outputParametersListFromTheForm['PROCEDURE NUMBER']:
+        return this.form.get('procedureNumber').value.trim()==""? initialValue : this.form.get('procedureNumber').value;
+      // not working
+      case outputParametersListFromTheForm['GENERATING DATE']:
+        return  this.form.get('generatingDate.day').value + "." + this.form.get('generatingDate.month').value + "." + this.form.get('generatingDate.year');
+      case outputParametersListFromTheForm['SEND TO TOP DATE']:
+        return this.form.sendToTopDate.day + "." + this.form.sendToTopDate.month + "." + this.form.sendToTopDate.year;
+      case outputParametersListFromTheForm['TABLING DATE']:
+        return this.form.tablingDate.day + "." + this.form.tablingDate.month + "." + this.form.tablingDate.year;
+      // end of not working
+      case outputParametersListFromTheForm['PE NUMBER']:
+        return this.form.get('peNumber').value;
+      case outputParametersListFromTheForm['AXX NUMBER']:
+        return this.form.get('axxNumber').value.trim()==""? initialValue : this.form.get('axxNumber').value;
+      case outputParametersListFromTheForm['EPADES REF']:
+        return this.form.get('epadesRef').value;
+      case outputParametersListFromTheForm['DOC LANGUAGE']:
+        return this.form.get('docLanguage').value;
+      case outputParametersListFromTheForm['PREFIX TITLE']:
+        return this.form.get('prefixTitle').value;
+      case outputParametersListFromTheForm['ITER TITLE']:
+        return this.form.get('iterTitle').value.trim()==""? initialValue : this.form.get('iterTitle').value;
+      case outputParametersListFromTheForm['DOC COM REF']:
+        return this.form.get('docComRef').value.trim()==""? initialValue : this.form.get('docComRef').value;
+      case outputParametersListFromTheForm['DOC COUNCIL REF']:
+        return this.form.get('docCouncilRef').value.trim()==""? initialValue : this.form.get('docCouncilRef').value;
+      case outputParametersListFromTheForm['AUTHOR OF PROPOSAL']:
+        return this.form.get('authorOfProposal').value.join(", ");
+
+      // valeur du tableau  
+      case outputParametersListFromTheForm['AUTHORING COMMITTEE']:
+        return this.form.get('authoringCommittee').value;
+      case outputParametersListFromTheForm['LEAD COMMITTEE']:
         // le "for the" est ajouté dans l'enum pour les comités simples
-        return this.form.leadCommittee;
-      case OutputParametersList['[RAPPORTEURS / LIST OF ASSOC]']:
+        return this.form.get('leadCommittee').value;
+      case outputParametersListFromTheForm['RAPPORTEURS / LIST OF ASSOC']:
         // formattage de la sortie ecran: 'noms des rapporteurs' , committe on 'le nom du committee'
         let outputValue: string = '';
-        for (let index = 0; index < this.form.listOfAssoc.length; index++) {
-          outputValue += this.form.listOfAssocRapporteurs[index]+ ', committee on ' + this.form.listOfAssoc[index] + "\n";
+        for (let index = 0; index < this.form.get('listOfAssoc').value.length; index++) {
+          outputValue += this.form.get('listOfAssocRapporteurs').value[index]+ ', committee on ' + this.form.get('listOfAssoc').value[index] + "\n";
         }
         return outputValue;
-      case OutputParametersList['[LIST OF RAPPORTEURS]']:
-        return this.form.listOfRapporteurs.join(", ");
-      case OutputParametersList['[PE NUMBER]']:
-        return this.form.peNumber;
-      case OutputParametersList['[PREFIX TITLE]']:
-        return this.form.prefixTitle;
-      case OutputParametersList['[DOC COM REF]']:
-        return this.form.docComRef.trim()==""? initialValue : this.form.docComRef;
-      case OutputParametersList['[DOC COUNCIL REF]']:
-        return this.form.procedureNumber.trim()==""? initialValue : this.form.docCouncilRef;
-      case OutputParametersList['[PROCEDURE NUMBER]']:
-        return this.form.procedureNumber.trim()==""? initialValue : this.form.procedureNumber;
-      case OutputParametersList['[SEND TO TOP DATE]']:
-        return this.form.sendToTopDate.day + "." + this.form.sendToTopDate.month + "." + this.form.sendToTopDate.year;
-      case OutputParametersList['[TABLING DATE]']:
-        return this.form.tablingDate.day + "." + this.form.tablingDate.month + "." + this.form.tablingDate.year;
-      case OutputParametersList['[PREFIX LIST OF RAPPORTEURS]']:
+      case outputParametersListFromTheForm['LIST OF RAPPORTEURS']:
+        return this.form.get('listOfRapporteurs').value.join(", ");
+      
+      // to be checked if used
+      case outputParametersListFromTheForm['PREFIX LIST OF RAPPORTEURS']:
         if (initialValue=='') return this.form.prefixListOfRapporteurs;
         else {
           this.form.prefixListOfRapporteurs = initialValue;
           return '';
         }
-      case OutputParametersList['[SUFFIX LIST OF RAPPORTEURS]']:
+      case outputParametersListFromTheForm['SUFFIX LIST OF RAPPORTEURS']:
         if (initialValue=='') return this.form.suffixListOfRapporteurs;
         else {
           this.form.suffixListOfRapporteurs = initialValue;
           return '';
         }
-      case OutputParametersList['[COMMITTEE HAVING OPINION]']:
-        return 'Committee on '+this.form.opinions;
-      case OutputParametersList['[LIST OF COMMITTEES HAVING OPINION]']:
-        return 'the Committee on '+this.form.opinions.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
-      case OutputParametersList['[COMMITTEE HAVING POSITION]']:
-        return 'the Committee on '+this.form.positions;
-      case OutputParametersList['[LIST OF COMMITTEES HAVING POSITION]']:
-        return 'the Committee on '+this.form.positions.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
-      case OutputParametersList['[COMMITTEE HAVING LETTER]']:
-        return 'the Committee on '+this.form.letters;
-      case OutputParametersList['[LIST OF COMMITTEES HAVING LETTER]']:
-        return 'the Committee on '+this.form.letters.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
+      // end of to be checked
       
+      case outputParametersListFromTheForm['COMMITTEE HAVING OPINION']:
+        return 'Committee on '+this.form.get('opinions').value;
+      case outputParametersListFromTheForm['LIST OF COMMITTEES HAVING OPINION']:
+        return 'the Committee on '+this.form.get('opinions').value.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
+      case outputParametersListFromTheForm['COMMITTEE HAVING POSITION']:
+        return 'the Committee on '+this.form.get('positions').value;
+      case outputParametersListFromTheForm['LIST OF COMMITTEES HAVING POSITION']:
+        return 'the Committee on '+this.form.get('positions').value.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
+      case outputParametersListFromTheForm['COMMITTEE HAVING LETTER']:
+        return 'the Committee on '+this.form.get('letters').value;
+      case outputParametersListFromTheForm['LIST OF COMMITTEES HAVING LETTER']:
+        return 'the Committee on '+this.form.get('letters').value.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
+      default:
+        // ajout du paramètre manquant si pas déjà dans la liste
+        if (this.unknownOutput.indexOf(outputParam)==-1){
+          this.unknownOutput.push(outputParam)
+        }
+        return (outputParam)
     }// fin du switch*/
-    
-    // ajout du paramètre manquant si pas déjà dans la liste
-    if (this.unknownOutput.indexOf(outputParam)==-1){
-      this.unknownOutput.push(outputParam)
-    }
-    return (outputParam)
   }
 }
