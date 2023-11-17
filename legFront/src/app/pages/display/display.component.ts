@@ -476,12 +476,12 @@ export class DisplayComponent implements OnInit{
     // il faut maintenant passer en revue les commandes du tableau rulesApplied pour modifier les outputvalues
     for (let map of this.outputMissingParamMap.entries()){
       this.rulesApplied.forEach(ruleApplied => {
-        /*
+        
         if (ruleApplied.outputValue.includes(map[0])){
           ruleApplied.outputValue = ruleApplied.outputValue.replace(map[0], map[1] )
           //console.log(map[0] + "--->" + map[1] )
           //console.log(ruleApplied)
-        }*/
+        }
       })
     }
     this.outputModal.hide();
@@ -506,10 +506,14 @@ export class DisplayComponent implements OnInit{
 
   evalCondition(){
     let resultEval : {unknownOutput : string[], rulesApllied : NewRule[]}
-    
-    resultEval = this.newCheckRulesService.evalRules(this.inputParamMap, this.inputMissingParamMap, this.NewRuleService.getAllRules().filter(r => r.part == this.partSelectedForPreview), this.previewForm.get('language')?.value);
+    // la fonction evalRules reçoit les valeurs du formulaire dans inputMap et dans inputMissingMap (via le modal)
+    // et retourne la liste des règles appliquées et des output manquants
+    resultEval = this.newCheckRulesService.evalRules(this.inputParamMap, this.inputMissingParamMap, this.NewRuleService.getAllRules().filter(r => r.part == this.partSelectedForPreview), this.previewForm);
     let outputMissingParam: string[] = resultEval.unknownOutput;
     this.rulesApplied = resultEval.rulesApllied;
+
+    //console.log( outputMissingParam)
+    //console.log(this.rulesApplied)
     // initialisation de la liste des paramètres output manquants si pas déjà fait (si déjà fait alors on garde les anciennes valeurs) 
     if (this.outputMissingParamMap.size==0 && outputMissingParam.length > 0){
       outputMissingParam.forEach(unknownOutput => {
