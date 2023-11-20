@@ -137,7 +137,7 @@ export class NewCheckRulesService {
       
         try {
           if (eval(r.finalCondition)) {
-            console.log("Rule :" + r.id + " True => " + r.finalCondition);
+            //console.log("Rule :" + r.id + " True => " + r.finalCondition);
             // avant de mettre la règle dans le tableau des règles appliquées il faut vérifier si il y a des sous conditions
             if (r.nestedCondition) {
               // to be done
@@ -146,7 +146,7 @@ export class NewCheckRulesService {
               // vérification de la version linguistique de la commande
               let ruleCommands: RuleCommand[] = r.ruleCondition.ruleCommand.filter(rc=>rc.lang==LinguisticVersion)
               let commandWithLinguisticVersion: string  = ruleCommands[0].command
-              console.log(commandWithLinguisticVersion)
+              //console.log(commandWithLinguisticVersion)
               let commandOutputParam : string ="";
               let outputCommand : boolean = false;
               r.outputValue = "";
@@ -177,7 +177,7 @@ export class NewCheckRulesService {
             }
             
           } else {
-            console.warn("Rule :" + r.id + " False => " + r.finalCondition);
+            //console.warn("Rule :" + r.id + " False => " + r.finalCondition);
           } // fin du try
         } catch (e) {
           console.log(e)

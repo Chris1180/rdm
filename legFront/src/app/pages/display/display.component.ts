@@ -199,89 +199,18 @@ export class DisplayComponent implements OnInit{
     checkCondition = this.newCheckRulesService.checkCondition(filteredRulesByPart);
     this.rulesWithUnknownInput = checkCondition.rulesWithUnknownInput;
     
-    
-    // On ne veut pas demander la valeur d'inputs qui ne seront pas utilisés
-    // ex: COD && AAAA => pas besoin de demander la valeur de AAAA si ce n'est pas un COD
-    // il faut donc mettre à jour le tableau unknownInput et retirer les valeurs dont l'éval est fausse
-    if (checkCondition.unknownInput.length > 0){  
-      
-      // avec les informations du formulaire on met à jour une map des input connus et de leur valeur
-      this.allConditions.forEach(condition=>{
-        // gestion des cas particuliers issus du tableau ou autre
-        let letters = String(this.previewForm.get('letters')?.value).split(',')
-        let opinions = String(this.previewForm.get('opinions')?.value).split(',')
-        let positions = String(this.previewForm.get('positions')?.value).split(',')
-        switch (condition.name) {
-          case 'ACJOINTCOM':
-            this.inputParamMap.set(condition.name, this.previewForm.get('authoringCommittee')?.value.split("Committee on").length>2)
-            break;
-          case 'LCJOINTCOM':
-            this.inputParamMap.set(condition.name, this.previewForm.get('leadCommittee')?.value.split("Committee on").length>2)
-            break;
-          case 'ASSOCOM':
-            let listOfAssoc = String(this.previewForm.get('listOfAssoc')?.value).split(',')
-            this.inputParamMap.set(condition.name, (listOfAssoc.length === 1 && listOfAssoc[0].length!=0) || listOfAssoc.length>1)
-            break;
-          case 'LETTER':
-            this.inputParamMap.set(condition.name, (letters.length === 1 && letters[0].length!=0))
-            break;
-          case 'LETTERS':
-            this.inputParamMap.set(condition.name, letters.length > 1)
-            break;
-          case 'OPINION':
-            this.inputParamMap.set(condition.name, (opinions.length === 1 && opinions[0].length!=0))
-            break;
-          case 'OPINIONS':
-            this.inputParamMap.set(condition.name, opinions.length > 1)
-            break;
-          case 'POSITION':
-            this.inputParamMap.set(condition.name, (positions.length === 1 && positions[0].length!=0))
-            break;
-          case 'POSITIONS':
-            this.inputParamMap.set(condition.name, positions.length > 1)
-            break;
-          case 'AUTHCOM_MAN':
-            this.inputParamMap.set(condition.name, this.previewForm.get('listOfRapporteursTitle')?.value == 'M')
-            break;
-          case 'AUTHCOM_MEN':
-            this.inputParamMap.set(condition.name, this.previewForm.get('listOfRapporteursTitle')?.value == 'MM')
-            break;
-          case 'AUTHCOM_WOMAN':
-            this.inputParamMap.set(condition.name, this.previewForm.get('listOfRapporteursTitle')?.value == 'F')
-            break;
-          case 'AUTHCOM_WOMEN':
-            this.inputParamMap.set(condition.name, this.previewForm.get('listOfRapporteursTitle')?.value == 'FF')
-            break;
-          case 'AUTHCOM_BOTH':
-            this.inputParamMap.set(condition.name, this.previewForm.get('listOfRapporteursTitle')?.value == 'MF')
-            break;
-          case 'ASSOCOM_MAN':
-            this.inputParamMap.set(condition.name, this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'M')
-            break;
-          case 'ASSOCOM_MEN':
-            this.inputParamMap.set(condition.name, this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'MM')
-            break;
-          case 'ASSOCOM_WOMAN':
-            this.inputParamMap.set(condition.name, this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'F')
-            break;
-          case 'ASSOCOM_WOMEN':
-            this.inputParamMap.set(condition.name, this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'FF')
-            break;
-          case 'ASSOCOM_BOTH':
-            this.inputParamMap.set(condition.name, this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'MF')
-            break;
-          default:
-            this.inputParamMap.set(condition.name, this.previewForm.get(condition.formname)?.value == condition.name)
-            break;
-        }
-      })// fin du foreach
-
-      // pour afficher les valeurs du map
+    this.mapInputValueFromTheForm();
+    // pour afficher les valeurs du map
       /*
       for (const [key, value] of this.inputParamMap) {
         console.log(key+' '+value);
       }*/
-       
+
+    // On ne veut pas demander la valeur d'inputs qui ne seront pas utilisés
+    // ex: COD && AAAA => pas besoin de demander la valeur de AAAA si ce n'est pas un COD
+    // il faut donc mettre à jour le tableau unknownInput et retirer les valeurs dont l'éval est fausse
+    if (checkCondition.unknownInput.length > 0){  
+  
       //remplacement de la final condition de la règle par les valeurs du map
       // dans ce tableau on ne mettra que les règles dont on a besoin des inputs pour l'éval
       let filteredRulesByPartEvaluated: NewRule[] = [];
@@ -527,5 +456,78 @@ export class DisplayComponent implements OnInit{
       // pas de valeur Output inconnue alors on affiche la preview dans le modal
       this.previewModal.show();     
     }
+  }
+
+  mapInputValueFromTheForm(){
+    // avec les informations du formulaire on met à jour une map des input connus et de leur valeur dans inputParamMap
+    this.allConditions.forEach(condition=>{
+      // gestion des cas particuliers issus du tableau ou autre
+      let letters = String(this.previewForm.get('letters')?.value).split(',')
+      let opinions = String(this.previewForm.get('opinions')?.value).split(',')
+      let positions = String(this.previewForm.get('positions')?.value).split(',')
+      switch (condition.name) {
+        case 'ACJOINTCOM':
+          this.inputParamMap.set(condition.name, this.previewForm.get('authoringCommittee')?.value.split("Committee on").length>2)
+          break;
+        case 'LCJOINTCOM':
+          this.inputParamMap.set(condition.name, this.previewForm.get('leadCommittee')?.value.split("Committee on").length>2)
+          break;
+        case 'ASSOCOM':
+          let listOfAssoc = String(this.previewForm.get('listOfAssoc')?.value).split(',')
+          this.inputParamMap.set(condition.name, (listOfAssoc.length === 1 && listOfAssoc[0].length!=0) || listOfAssoc.length>1)
+          break;
+        case 'LETTER':
+          this.inputParamMap.set(condition.name, (letters.length === 1 && letters[0].length!=0))
+          break;
+        case 'LETTERS':
+          this.inputParamMap.set(condition.name, letters.length > 1)
+          break;
+        case 'OPINION':
+          this.inputParamMap.set(condition.name, (opinions.length === 1 && opinions[0].length!=0))
+          break;
+        case 'OPINIONS':
+          this.inputParamMap.set(condition.name, opinions.length > 1)
+          break;
+        case 'POSITION':
+          this.inputParamMap.set(condition.name, (positions.length === 1 && positions[0].length!=0))
+          break;
+        case 'POSITIONS':
+          this.inputParamMap.set(condition.name, positions.length > 1)
+          break;
+        case 'AUTHCOM_MAN':
+          this.inputParamMap.set(condition.name, this.previewForm.get('listOfRapporteursTitle')?.value == 'M')
+          break;
+        case 'AUTHCOM_MEN':
+          this.inputParamMap.set(condition.name, this.previewForm.get('listOfRapporteursTitle')?.value == 'MM')
+          break;
+        case 'AUTHCOM_WOMAN':
+          this.inputParamMap.set(condition.name, this.previewForm.get('listOfRapporteursTitle')?.value == 'F')
+          break;
+        case 'AUTHCOM_WOMEN':
+          this.inputParamMap.set(condition.name, this.previewForm.get('listOfRapporteursTitle')?.value == 'FF')
+          break;
+        case 'AUTHCOM_BOTH':
+          this.inputParamMap.set(condition.name, this.previewForm.get('listOfRapporteursTitle')?.value == 'MF')
+          break;
+        case 'ASSOCOM_MAN':
+          this.inputParamMap.set(condition.name, this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'M')
+          break;
+        case 'ASSOCOM_MEN':
+          this.inputParamMap.set(condition.name, this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'MM')
+          break;
+        case 'ASSOCOM_WOMAN':
+          this.inputParamMap.set(condition.name, this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'F')
+          break;
+        case 'ASSOCOM_WOMEN':
+          this.inputParamMap.set(condition.name, this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'FF')
+          break;
+        case 'ASSOCOM_BOTH':
+          this.inputParamMap.set(condition.name, this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'MF')
+          break;
+        default:
+          this.inputParamMap.set(condition.name, this.previewForm.get(condition.formname)?.value == condition.name)
+          break;
+      }
+    })// fin du foreach
   }
 }
