@@ -19,6 +19,7 @@ import { RulesComponent } from './pages/rules/rules.component';
 import { EditRuleComponent } from './pages/edit-rule/edit-rule.component';
 import { DisplayComponent } from './pages/display/display.component';
 import { DisplayPreviewComponent } from './pages/display/display-preview/display-preview.component';
+import { DisplayRulesAppliedComponent } from './pages/display/display-rules-applied/display-rules-applied.component';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import { DisplayPreviewComponent } from './pages/display/display-preview/display
     RulesComponent,
     EditRuleComponent,
     DisplayComponent,
-    DisplayPreviewComponent
+    DisplayPreviewComponent,
+    DisplayRulesAppliedComponent
   ],
   imports: [
     BrowserModule,
