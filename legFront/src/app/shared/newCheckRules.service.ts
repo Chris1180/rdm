@@ -210,14 +210,12 @@ export class NewCheckRulesService {
     switch (outputParamToBeChecked){
       case outputParametersListFromTheForm['PROCEDURE NUMBER']:
         return this.form.get('procedureNumber').value.trim()==""? initialValue : this.form.get('procedureNumber').value;
-      // not working
       case outputParametersListFromTheForm['GENERATING DATE']:
-        return  this.form.get('generatingDate.day').value + "." + this.form.get('generatingDate.month').value + "." + this.form.get('generatingDate.year');
+        return  this.form.get('generatingDate').value.day + "." + this.form.get('generatingDate').value.month + "." + this.form.get('generatingDate').value.year;
       case outputParametersListFromTheForm['SEND TO TOP DATE']:
-        return this.form.sendToTopDate.day + "." + this.form.sendToTopDate.month + "." + this.form.sendToTopDate.year;
+        return this.form.get('sendToTopDate').value.day + "." + this.form.get('sendToTopDate').value.month + "." + this.form.get('sendToTopDate').value.year
       case outputParametersListFromTheForm['TABLING DATE']:
-        return this.form.tablingDate.day + "." + this.form.tablingDate.month + "." + this.form.tablingDate.year;
-      // end of not working
+        return this.form.get('tablingDate').value.day + "." + this.form.get('tablingDate').value.month + "." + this.form.get('tablingDate').value.year
       case outputParametersListFromTheForm['PE NUMBER']:
         return this.form.get('peNumber').value;
       case outputParametersListFromTheForm['AXX NUMBER']:
