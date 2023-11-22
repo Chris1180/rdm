@@ -25,7 +25,7 @@ export class DisplayComponent implements OnInit{
   
   previewForm! : FormGroup;
   
-  allConditions : Condition[] = [];
+  allConditions : Condition[] = []; // toutes les conditions (input) de la DB
   procedureType : Condition[] = [];
   documentType : Condition[] = [];
   documentStatus  : Condition[] = [];  
@@ -194,37 +194,93 @@ export class DisplayComponent implements OnInit{
     // on selectionne les règles concernées par l'affichage 
     let filteredRulesByPart : NewRule[] = this.NewRuleService.getAllRules().filter(r => r.part == this.partSelectedForPreview);
     
+    let nestedRulesevaluatedTrue : NewRule[] = [];
+    // on mappe les valeurs du formulaire pour l'eval
+    this.mapInputValueFromTheForm();
+    // on passe en revue toutes les règles de la partie selectionnée pour trouvé les input value manquantes
+    filteredRulesByPart.forEach(r => {
+      //console.log('avant le formattage de la condition')
+      //console.log(r.ruleCondition.textCondition)
+      // pour chaque condition  on formatte la condition
+      let formattedCondition: string = this.newCheckRulesService.formatCondition(r.ruleCondition.textCondition).trim()
+      //console.log('apres formatage')
+      //console.log(formattedCondition)
+      // On ne veut pas demander la valeur d'inputs qui ne seront pas utilisés
+      // ex: COD && AAAA => pas besoin de demander la valeur de AAAA si ce n'est pas un COD
+      // il faut donc évaluer chaque condition et lorsqu'une erreur est relevé alors il y a une input manquante
+      
+      // pour afficher les valeurs du map
+      /*
+      for (const [key, value] of this.inputParamMap) {
+        console.log(key+' '+value);
+      }*/
+
+      for (let [key, value] of this.inputParamMap) {
+        var re = new RegExp("\\b" + key + "\\b", "gi"); 
+        formattedCondition = formattedCondition.replace(re , value.toString());             
+      }
+      //console.log('apres remplacement des valeurs du formulaire')
+      //console.log(formattedCondition)
+      //eval
+      try {
+        
+        //console.log( 'pas de pb avec : '+formattedCondition)
+        // si la condition possède des sous-conditions il faut aussi vérifier les inputs manquants des sous-conditions
+        if (eval(formattedCondition) && r.nestedCondition){
+          this.getMissingInputFromSubCond(r)
+        } 
+      } catch (e) { // It is a SyntaxError
+        // il faut récupérer les input value manquante pour les demander à l'utilisateur
+        let missingInputValues = this.getMissingInput(formattedCondition)
+        // On ajoute la valeur dans le tableau des valeurs Input manquantes
+        missingInputValues.forEach(iv=> this.inputMissingParamMap.set(iv, false))
+        // Une condition non évaluée peut également avoir des sous-conditions
+        if (r.nestedCondition){
+          this.getMissingInputFromSubCond(r)
+        }
+      } // fin du try Catch
+    }) 
+    
+    for (const [key, value] of this.inputMissingParamMap) {
+      console.log(key+' '+value);
+    }
+    /*
     // la méthode checkCondition formate la condition avant l'eval et fait une liste des Input manquants
     let checkCondition : {unknownInput: string[], rulesWithUnknownInput: number[]};
     checkCondition = this.newCheckRulesService.checkCondition(filteredRulesByPart);
+    // la variable rulesWithUnknownInput contient la liste des id des ruleCommand pour faire une première eval
     this.rulesWithUnknownInput = checkCondition.rulesWithUnknownInput;
+    console.log('après le premier passage de checkCondition')
+    console.log(checkCondition.unknownInput)
+    */
     
-    this.mapInputValueFromTheForm();
     // pour afficher les valeurs du map
       /*
       for (const [key, value] of this.inputParamMap) {
         console.log(key+' '+value);
       }*/
 
-    // On ne veut pas demander la valeur d'inputs qui ne seront pas utilisés
-    // ex: COD && AAAA => pas besoin de demander la valeur de AAAA si ce n'est pas un COD
-    // il faut donc mettre à jour le tableau unknownInput et retirer les valeurs dont l'éval est fausse
+    /*
     if (checkCondition.unknownInput.length > 0){  
   
       //remplacement de la final condition de la règle par les valeurs du map
       // dans ce tableau on ne mettra que les règles dont on a besoin des inputs pour l'éval
       let filteredRulesByPartEvaluated: NewRule[] = [];
+      let filteredRulesByPartEvaluatedAndNested : NewRule[] = [];
       //faire l'éval et récup des erreur pour le tab missing input
-      filteredRulesByPart.filter(r => this.rulesWithUnknownInput.includes(r.ruleCondition.id)).forEach(r => {
+      filteredRulesByPart.forEach(r => {
         
         // Pour chaque final condition des règles ayant un condition avec un input manquant on fait une eval
         for (let [key, value] of this.inputParamMap) {
           var re = new RegExp("\\b" + key + "\\b", "gi"); // /\bkey\b/gi;
           r.finalCondition = r.finalCondition.replace(re , value.toString());             
         }
+        console.log(r.finalCondition)
         //eval
         try {
-          eval(r.finalCondition);
+          if (eval(r.finalCondition) && r.nestedCondition){
+            filteredRulesByPartEvaluatedAndNested.push(r)
+          }
         } catch (e) {
           filteredRulesByPartEvaluated.push(r)
           // It is a SyntaxError
@@ -233,33 +289,44 @@ export class DisplayComponent implements OnInit{
       
       checkCondition = this.newCheckRulesService.checkCondition(filteredRulesByPartEvaluated);
       this.rulesWithUnknownInput = checkCondition.rulesWithUnknownInput;
+      console.log('après le deuxième check')
+      console.log(checkCondition.unknownInput)
+      //à ce stade on a éliminé les règles ayant une condition principale fausse 
+      // inutile donc de vérifier si les sous conditions eventuelles ont une input value non connue.
+      // Avec les règles qui reste il faut vérifier si il y a des sous-condition et mettre à jour le tabelau unknowInput
       
-      // on refait le test de savoir si on a besoin de demander à l'utilisateur des inputs manquants après le premier passage
-      if (checkCondition.unknownInput.length > 0) {
-        // comme on veut conserver les valeurs précédentes des inputs on copie les valeurs avant de les effacer
-        let inputMissingParamMapTemp = new Map(this.inputMissingParamMap); // clone le Map
-        this.inputMissingParamMap.clear();
-        // initialise les valeurs manquantes
-        checkCondition.unknownInput.forEach(unknownInput => {
-          if (inputMissingParamMapTemp.has(unknownInput)){
-            //on remet la valeur de l'input param précédente
-            this.inputMissingParamMap.set(unknownInput, inputMissingParamMapTemp.get(unknownInput)||false)
+      //méthode qui met à jour la liste finale des missing input (y compris ceux des sous conditions)
+      this.newCheckRulesService.checkSubCondition(filteredRulesByPartEvaluatedAndNested).subscribe(
+        data=> {
+          console.log('suscribe')
+          console.log(data)
+          
+          if (data.length > 0) {
+            // comme on veut conserver les valeurs précédentes des inputs on copie les valeurs avant de les effacer
+            let inputMissingParamMapTemp = new Map(this.inputMissingParamMap); // clone le Map
+            this.inputMissingParamMap.clear();
+            // initialise les valeurs manquantes
+            checkCondition.unknownInput.forEach(unknownInput => {
+              if (inputMissingParamMapTemp.has(unknownInput)){
+                //on remet la valeur de l'input param précédente
+                this.inputMissingParamMap.set(unknownInput, inputMissingParamMapTemp.get(unknownInput)||false)
+              }else{
+                // par défaut la valeur de l'input param est fausse
+                this.inputMissingParamMap.set(unknownInput, false)
+              }
+            });
+            //demande à l'utilisateur de les saisir via vrai/faux
+            this.inputModal.show();
           }else{
-            // par défaut la valeur de l'input param est fausse
-            this.inputMissingParamMap.set(unknownInput, false)
+            // pas de Input param manquant on peut directement évaluer les conditions
+            this.evalCondition();
           }
-        });
-        //demande à l'utilisateur de les saisir via vrai/faux
-        this.inputModal.show();
-      }else{
-        // pas de Input param manquant on peut directement évaluer les conditions
-        this.evalCondition();
-      }
-      
+        }
+      )
     }else{
       // pas de Input param manquant on peut directement évaluer les conditions    
       this.evalCondition();
-    }
+    }*/
 
   }
 
@@ -525,9 +592,48 @@ export class DisplayComponent implements OnInit{
           this.inputParamMap.set(condition.name, this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'MF')
           break;
         default:
+          if(condition.inputGroup == 'Procedure Type' || condition.inputGroup == 'Document Type' || condition.inputGroup == 'Reading' 
+            || condition.inputGroup == 'Doc Leg Specialization' || condition.inputGroup == 'Language' )
           this.inputParamMap.set(condition.name, this.previewForm.get(condition.formname)?.value == condition.name)
           break;
       }
     })// fin du foreach
+  }
+
+  getMissingInput(formattedCondition: string): string[] {
+    //on supprime d'abord les caractères ( ) ! avec une expression régulière
+    const regex = /[()!]/g;
+    // et on découpe formattedCondition en input values
+    let inputValue = formattedCondition.replace(regex,'').split(" ")
+    console.log('erreur avec : ' + formattedCondition)
+    console.log(inputValue)
+    
+    // Supprimer plusieurs éléments de la liste
+    let elementsASupprimer: string[] = ["&&", "||" , "true", "false"];
+    inputValue = inputValue.filter(item => !elementsASupprimer.includes(item));
+    console.log('après suppression des valeurs')
+    console.log(inputValue)
+    return inputValue
+  }
+
+  getMissingInputFromSubCond(r:NewRule){
+    // on interroge la BDD pour connaitre la liste des sous-conditions
+    this.NewRuleService.getSubConditionsFromDB(r.ruleCondition.id).subscribe({
+      next: (subconds) => {
+        subconds.forEach(sc=>{
+          // formattage de la condition
+          let scFormattedCondition: string = this.newCheckRulesService.formatCondition(sc.textCondition)
+          console.log('sous-condition formatée')
+          console.log(scFormattedCondition)
+          
+        })
+      },
+      error:(err) => {
+        console.log("Error during back end request for list od conditions")
+      },
+      complete: ()=>{
+        
+      }
+    }) 
   }
 }

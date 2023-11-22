@@ -56,7 +56,7 @@ export class EditRuleComponent implements OnInit {
       part : new FormControl(this.rule.part),
       label : new FormControl(this.rule.label),
       condition : new FormControl(this.rule.ruleCondition.textCondition),
-      command : new FormControl({value: command, disabled: this.rule.nestedCondition}),
+      command : new FormControl(command),//({value: command, disabled: this.rule.nestedCondition}),
       languageSelected : new FormControl(language),
       style : new FormControl(this.rule.style!.id),
       comment : new FormControl(this.rule.comment),
