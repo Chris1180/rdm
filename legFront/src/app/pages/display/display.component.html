@@ -344,11 +344,12 @@
                 </div>
                     <div class="modal-body" >
                         <div class="pb-3">Some Input Parameters are missing, check boxes if they are true:</div>
-                        <div class="form-check form-check-inline" *ngFor="let p of inputMissingParamMap | keyvalue">
+                        <div class="form-check " *ngFor="let p of inputMissingParamMap | keyvalue">
                             <label class="form-check-label pe-2">
                                 <input class="form-check-input" type="checkbox" [(ngModel)]="p.value" (change)="changeValueInput(p.key, $event.target)" />
                                 {{p.key}}
                             </label>
+                            <label>{{ findDescription(p.key)?.description }}</label>
                         </div>
                     </div>
                 <div class="modal-footer">

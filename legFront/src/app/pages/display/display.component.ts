@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Observable, catchError, map, of, startWith } from 'rxjs';
+import { Observable, catchError, forkJoin, map, of, startWith } from 'rxjs';
 import { Condition } from 'src/app/model/condition';
 import { NewRule } from 'src/app/model/newrule';
 import { AuthorOfProposal } from 'src/app/model/outputParameters/authorOfProposal';
@@ -227,7 +227,11 @@ export class DisplayComponent implements OnInit{
         //console.log( 'pas de pb avec : '+formattedCondition)
         // si la condition possède des sous-conditions il faut aussi vérifier les inputs manquants des sous-conditions
         if (eval(formattedCondition) && r.nestedCondition){
-          this.getMissingInputFromSubCond(r)
+          this.getMissingInputFromSubCond(r).subscribe(inputValues => {
+            inputValues.forEach(iv=>{
+              if (!this.inputMissingParamMap.get(iv)) this.inputMissingParamMap.set(iv, false)
+            })
+          })
         } 
       } catch (e) { // It is a SyntaxError
         // il faut récupérer les input value manquante pour les demander à l'utilisateur
@@ -236,14 +240,26 @@ export class DisplayComponent implements OnInit{
         missingInputValues.forEach(iv=> this.inputMissingParamMap.set(iv, false))
         // Une condition non évaluée peut également avoir des sous-conditions
         if (r.nestedCondition){
-          this.getMissingInputFromSubCond(r)
+          this.getMissingInputFromSubCond(r).subscribe(inputValues => {
+            inputValues.forEach(iv=>{
+              if (!this.inputMissingParamMap.get(iv)) this.inputMissingParamMap.set(iv, false)
+            })
+          })
         }
       } // fin du try Catch
     }) 
     
+    // affiche les valeurs du map pour le debug
+    /*
     for (const [key, value] of this.inputMissingParamMap) {
       console.log(key+' '+value);
+    }*/
+    if(this.inputMissingParamMap.size == 0) {
+      this.evalCondition()
+    }else{
+      this.inputModal.show();
     }
+    
     /*
     // la méthode checkCondition formate la condition avant l'eval et fait une liste des Input manquants
     let checkCondition : {unknownInput: string[], rulesWithUnknownInput: number[]};
@@ -593,7 +609,7 @@ export class DisplayComponent implements OnInit{
           break;
         default:
           if(condition.inputGroup == 'Procedure Type' || condition.inputGroup == 'Document Type' || condition.inputGroup == 'Reading' 
-            || condition.inputGroup == 'Doc Leg Specialization' || condition.inputGroup == 'Language' )
+            || condition.inputGroup == 'Doc Leg Specialization' || condition.inputGroup == 'Language' || condition.inputGroup == 'Document Status' )
           this.inputParamMap.set(condition.name, this.previewForm.get(condition.formname)?.value == condition.name)
           break;
       }
@@ -616,24 +632,54 @@ export class DisplayComponent implements OnInit{
     return inputValue
   }
 
-  getMissingInputFromSubCond(r:NewRule){
-    // on interroge la BDD pour connaitre la liste des sous-conditions
-    this.NewRuleService.getSubConditionsFromDB(r.ruleCondition.id).subscribe({
-      next: (subconds) => {
-        subconds.forEach(sc=>{
-          // formattage de la condition
-          let scFormattedCondition: string = this.newCheckRulesService.formatCondition(sc.textCondition)
-          console.log('sous-condition formatée')
-          console.log(scFormattedCondition)
-          
-        })
-      },
-      error:(err) => {
-        console.log("Error during back end request for list od conditions")
-      },
-      complete: ()=>{
-        
-      }
-    }) 
+  getMissingInputFromSubCond(r: NewRule): Observable<string[]> {
+    let missingInputs: string[] = [];
+  
+    // Créer un observable pour la requête à la BDD
+    const subConditionsObservable = this.NewRuleService.getSubConditionsFromDB(r.ruleCondition.id);
+  
+    return new Observable<string[]>(observer => {
+      // Souscrire à l'observable de la BDD
+      subConditionsObservable.subscribe({
+        next: (subconds) => {
+          const observables = subconds.map(sc => {
+            let scFormattedCondition: string = this.newCheckRulesService.formatCondition(sc.textCondition);
+  
+            return new Observable<string>(innerObserver => {
+              scFormattedCondition.split(" ").forEach(input => {
+                var re = /[(!)\s]+/g;
+                let paramTobeChecked = input.replace(re, "");
+                if (paramTobeChecked != "&&" && paramTobeChecked != "||") {
+                  if (this.allConditions.filter(sc => (sc.name == paramTobeChecked && (sc.inputGroup == 'Procedure Type' || sc.inputGroup == 'Document Type' || sc.inputGroup == 'Reading'
+                    || sc.inputGroup == 'Doc Leg Specialization' || sc.inputGroup == 'Document Status' || sc.inputGroup == 'Language'))).length == 0) {
+                    if (missingInputs.indexOf(paramTobeChecked) == -1) missingInputs.push(paramTobeChecked);
+                  }
+                }
+              });
+              innerObserver.next();
+              innerObserver.complete();
+            });
+          });
+  
+          // Utiliser forkJoin pour attendre la fin de tous les observables internes
+          forkJoin(observables).subscribe({
+            complete: () => {
+              observer.next(missingInputs);
+              observer.complete();
+            }
+          });
+        },
+        error: (err) => {
+          console.log("Error during back end request for list of conditions");
+          observer.error(err);
+        }
+      });
+    });
   }
+
+  findDescription(key: string){
+    return this.allConditions.find(c => c.name === key)
+  }
+
+
 }
