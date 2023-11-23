@@ -8,6 +8,7 @@ import { CommandService } from "./command.service";
 import { outputParametersListFromTheForm } from "../model/outputParameters/outputParametersListFromTheForm";
 import { NewRulesService } from "./newrules.service";
 import { Observable, forkJoin, map, of } from "rxjs";
+import { RuleToEvaluate } from "../model/ruleToEvaluate";
 
 @Injectable({
   providedIn: 'root'
@@ -85,7 +86,7 @@ export class NewCheckRulesService {
         var re = /[(!)\s]+/g;
         let paramTobeChecked = input.replace(re, "")
         
-        //si l'input param n'est pas dans la liste des KnownParam fu form alors on met à jour les tableaux de suivi
+        //si l'input param n'est pas dans la liste des KnownParam du form alors on met à jour les tableaux de suivi
         if (this.listOfKnownParamFromTheForm.indexOf(paramTobeChecked) == -1 ) {
           console.log('ajout de  '+ paramTobeChecked)
           if (this.unknownInput.indexOf(paramTobeChecked) == -1) this.unknownInput.push(paramTobeChecked);
@@ -138,6 +139,8 @@ export class NewCheckRulesService {
     let LinguisticVersion = this.form.get('language')?.value
     console.log('rules selected for preview')
     console.log(rulesSelectedForPreview)
+    
+    
     // avant de faire l'éval il faut changer les valeurs des inputs dans la finalcondition avec les infos des Map input
     rulesSelectedForPreview.forEach(r=>{
       // Pour chaque final condition des règles ayant un condition avec un input manquant on fait une eval
@@ -306,7 +309,58 @@ export class NewCheckRulesService {
     }// fin du switch*/
   }
 
+  formatConditionsBeforeEval(rules: NewRule[], languageSelected: string): RuleToEvaluate[]{
+    let rulesToEvaluate : RuleToEvaluate[] = [];
+    //console.log(languageSelected)
+    rules.forEach(rule=>{
+      // pour chaque règle transmise il faut créer un objet RuleToEvaluate qui sera évalué plus tard
+      let ruleToEvaluate : RuleToEvaluate = {
+        idRule : rule.id,
+        order: rule.order,
+        part: rule.part,
+        condition: '',
+        conditionFormated: '',
+        command: '',
+        outputValue: ''
+      }
+      if (rule.nestedCondition){
+        // la condition principale vient en prérequis des sous-conditions
+        ruleToEvaluate.condition = this.formatCondition(rule.ruleCondition.textCondition)+ ' and '
+        // la commande principale vient en préfixe de la commande de la sous-condition
+        ruleToEvaluate.command = rule.ruleCondition.ruleCommand.filter(rc=>rc.lang==languageSelected).length == 0? '' : rule.ruleCondition.ruleCommand.filter(rc=>rc.lang==languageSelected)[0].command
+        // il faut maintenant rechercher les sous-conditions
+        this.newRuleService.getSubConditionsFromDB(rule.ruleCondition.id).subscribe({
+          next: (subConditions) => {subConditions.forEach(
+            sc=> {
+              //clone de ruleToEvaluate
+              var subConditionToEvaluate = { ...ruleToEvaluate };
+              subConditionToEvaluate.condition += sc.textCondition
+              subConditionToEvaluate.conditionFormated = this.formatCondition(subConditionToEvaluate.condition)
+              // si pas de commande dans la langue selectionnée alors on prend l'EN
+              subConditionToEvaluate.command += sc.ruleCommand.filter(rc=>rc.lang==languageSelected).length == 0? sc.ruleCommand.filter(rc=>rc.lang=='EN').length == 0? 'No '+languageSelected+' or EN command':sc.ruleCommand.filter(rc=>rc.lang=='EN')[0].command : sc.ruleCommand.filter(rc=>rc.lang==languageSelected)[0].command
+              rulesToEvaluate.push(subConditionToEvaluate)
+            })
+          },
+          error:(err) => {
+            console.log("Error during back end request for list od conditions")
+          },
+          complete: ()=>{
+          }
+        })
+      }else{
+        // dans le cas d'une règle sans sous-condition 
+        ruleToEvaluate.condition = rule.ruleCondition.textCondition
+        ruleToEvaluate.conditionFormated = this.formatCondition(rule.ruleCondition.textCondition)
+        ruleToEvaluate.command = rule.ruleCondition.ruleCommand.filter(rc=>rc.lang==languageSelected).length == 0? 'No command found for '+languageSelected : rule.ruleCondition.ruleCommand.filter(rc=>rc.lang==languageSelected)[0].command
+        rulesToEvaluate.push(ruleToEvaluate)
+      }
+    })
+    
+    return rulesToEvaluate
+  }
+  
   //Méthode qui regarde dans les sous-conditions les Input manquants
+  /*
   checkSubCondition(rules: NewRule[]): Observable<string[]> {
     const observables: Observable<void>[] = [];
   
@@ -338,6 +392,6 @@ export class NewCheckRulesService {
     return forkJoin(observables).pipe(
       map(() => this.unknownInput)
     );
-  }
+  }*/
 
 }
