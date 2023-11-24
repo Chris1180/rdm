@@ -6,6 +6,7 @@ import { Condition } from 'src/app/model/condition';
 import { NewRule } from 'src/app/model/newrule';
 import { AuthorOfProposal } from 'src/app/model/outputParameters/authorOfProposal';
 import { OutputLanguage } from 'src/app/model/outputParameters/outputLanguage';
+import { RuleToEvaluate } from 'src/app/model/ruleToEvaluate';
 import { ConditionService } from 'src/app/shared/condition.service';
 import { NewCheckRulesService } from 'src/app/shared/newCheckRules.service';
 import { NewRulesService } from 'src/app/shared/newrules.service';
@@ -208,22 +209,13 @@ export class DisplayComponent implements OnInit{
       // On ne veut pas demander la valeur d'inputs qui ne seront pas utilisés
       // ex: COD && AAAA => pas besoin de demander la valeur de AAAA si ce n'est pas un COD
       // il faut donc évaluer chaque condition et lorsqu'une erreur est relevé alors il y a une input manquante
-      
-      // pour afficher les valeurs du map
-      /*
-      for (const [key, value] of this.inputParamMap) {
-        console.log(key+' '+value);
-      }*/
-
       for (let [key, value] of this.inputParamMap) {
         var re = new RegExp("\\b" + key + "\\b", "gi"); 
         formattedCondition = formattedCondition.replace(re , value.toString());             
       }
       //console.log('apres remplacement des valeurs du formulaire')
       //console.log(formattedCondition)
-      //eval
-      try {
-        
+      try {   
         //console.log( 'pas de pb avec : '+formattedCondition)
         // si la condition possède des sous-conditions il faut aussi vérifier les inputs manquants des sous-conditions
         if (eval(formattedCondition) && r.nestedCondition){
@@ -262,10 +254,10 @@ export class DisplayComponent implements OnInit{
 
 
     if(this.inputMissingParamMap.size == 0) {
-      let rulesToEvaluate = this.newCheckRulesService.formatConditionsBeforeEval(this.rulesToBeEvaluated, this.previewForm.get('language')?.value)
-      console.log('liste des règles à évaluer')
-      console.log(rulesToEvaluate)
-      //this.evalCondition()
+      // la méthde formatConditionBeforeEval retourne un tableau d'objets  contenant la liste des conditions à évaluer
+      this.newCheckRulesService.formatConditionsBeforeEval(this.rulesToBeEvaluated, this.previewForm.get('language')?.value).subscribe(
+        (rulesToEvaluate: RuleToEvaluate[]) => this.evalCondition(rulesToEvaluate)
+      )
     }else{
       this.inputModal.show();
     }
@@ -440,12 +432,14 @@ export class DisplayComponent implements OnInit{
     //  this.inputParamMap.set(key, value)
     //}
     this.inputModal.hide();
-    let rulesToEvaluate = this.newCheckRulesService.formatConditionsBeforeEval(this.rulesToBeEvaluated, this.previewForm.get('language')?.value)
-      console.log('liste des règles à évaluer')
-      console.log(rulesToEvaluate)
+    
+    this.newCheckRulesService.formatConditionsBeforeEval(this.rulesToBeEvaluated, this.previewForm.get('language')?.value).subscribe(
+      (rulesToEvaluate: RuleToEvaluate[]) => this.evalCondition(rulesToEvaluate)
+    )
+    
   }
 
-  evalCondition(){
+  evalCondition(rulesToEvaluate: RuleToEvaluate[]){
     /* debug
     for (const [key, value] of this.inputMissingParamMap) {
       console.log(key+' '+value);
@@ -455,17 +449,22 @@ export class DisplayComponent implements OnInit{
     }
     // fin debug*/
 
-    let resultEval : {unknownOutput : string[], rulesApllied : NewRule[]}
+    //let resultEval : {unknownOutput : string[], rulesApllied : NewRule[]}
     // la fonction evalRules reçoit les valeurs du formulaire dans inputMap et dans inputMissingMap (via le modal)
-    // et retourne la liste des règles appliquées et des output manquants
-    resultEval = this.newCheckRulesService.evalRules(this.inputParamMap, this.inputMissingParamMap, this.rulesToBeEvaluated, this.previewForm);
+    // et retourne la liste des règles appliquées (sous la forme d'un objet RuleToEvaluate)
+    let rulesToBeApplied : RuleToEvaluate[]
+    rulesToBeApplied = this.newCheckRulesService.evalRules(this.inputParamMap, this.inputMissingParamMap, rulesToEvaluate);
+    console.log('liste finale des règles')
+    console.log(rulesToBeApplied)
     
-    let outputMissingParam: string[] = resultEval.unknownOutput;
-    this.rulesApplied = resultEval.rulesApllied;
+    
+    //let outputMissingParam: string[] = resultEval.unknownOutput;
+    //this.rulesApplied = resultEval.rulesApllied;
 
     //console.log( outputMissingParam)
     //console.log(this.rulesApplied)
     // initialisation de la liste des paramètres output manquants si pas déjà fait (si déjà fait alors on garde les anciennes valeurs) 
+    /*
     if (this.outputMissingParamMap.size==0 && outputMissingParam.length > 0){
       outputMissingParam.forEach(unknownOutput => {
         this.outputMissingParamMap.set(unknownOutput,"")
@@ -477,7 +476,7 @@ export class DisplayComponent implements OnInit{
     }else{
       // pas de valeur Output inconnue alors on affiche la preview dans le modal
       this.previewModal.show();     
-    }
+    }*/
   }
 
   mapInputValueFromTheForm(){

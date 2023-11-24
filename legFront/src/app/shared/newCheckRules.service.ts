@@ -133,84 +133,76 @@ export class NewCheckRulesService {
     //console.log (finalCondition)
     return finalCondition
   }
-  evalRules(inputParamMap: Map<string, boolean>, inputMissingParamMap: Map<string, boolean>, rulesSelectedForPreview: NewRule[], previewForm: any){
-    // met les valeurs du formulaire dans form
-    this.form = previewForm;
-    let LinguisticVersion = this.form.get('language')?.value
-    console.log('rules selected for preview')
+  evalRules(inputParamMap: Map<string, boolean>, inputMissingParamMap: Map<string, boolean>,
+            rulesSelectedForPreview: RuleToEvaluate[]): RuleToEvaluate[] {
+
+    let rulesToBeApplied : RuleToEvaluate[] = []  
+    
     console.log(rulesSelectedForPreview)
-    
-    
-    // avant de faire l'éval il faut changer les valeurs des inputs dans la finalcondition avec les infos des Map input
+    console.log(rulesSelectedForPreview.length)
+    // On passe en revue chaque règle pour les évaluer
     rulesSelectedForPreview.forEach(r=>{
-      // Pour chaque final condition des règles ayant un condition avec un input manquant on fait une eval
+      console.log(r)
+      /*
+      // Pour chaque conditionFormatted de la règle on remplace les valeurs des inputs par true or false
+      // puis on met le résultat dans un variable conditionToBeEvaluated que l'on évalue
+      let conditionToBeEvaluated: string = r.conditionFormated 
       for (let [key, value] of inputParamMap) {
         var re = new RegExp("\\b" + key + "\\b", "gi"); // /\bkey\b/gi;
-        r.finalCondition = r.finalCondition.replace(re , value.toString());
+        conditionToBeEvaluated = conditionToBeEvaluated.replace(re , value.toString());
       }
       for (let [key, value] of inputMissingParamMap) {
         var re = new RegExp("\\b" + key + "\\b", "gi"); // /\bkey\b/gi;
-        r.finalCondition = r.finalCondition.replace(re , value.toString());            
+        conditionToBeEvaluated = conditionToBeEvaluated.replace(re , value.toString());            
       }
-    })
-    
-    // on évalue les conditions en remplissant rulesApllied et unknowoutput
-    rulesSelectedForPreview.forEach(r => {
-      
-        try {
-          if (eval(r.finalCondition)) {
-            //console.log("Rule :" + r.id + " True => " + r.finalCondition);
-            // avant de mettre la règle dans le tableau des règles appliquées il faut vérifier si il y a des sous conditions
-            if (r.nestedCondition) {
-              // to be done
-            }else {
-              this.rulesApplied.push(r);
-              // vérification de la version linguistique de la commande
-              let ruleCommands: RuleCommand[] = r.ruleCondition.ruleCommand.filter(rc=>rc.lang==LinguisticVersion)
-              let commandWithLinguisticVersion: string  = ruleCommands[0].command
-              //console.log(commandWithLinguisticVersion)
-              let commandOutputParam : string ="";
-              let outputCommand : boolean = false;
-              r.outputValue = "";
-              // parcour de la chaine de caratère command pour en extraire les infos
-              for (let index = 0; index < commandWithLinguisticVersion.length; index++) {
-                const char = commandWithLinguisticVersion[index];
-                if (char=='['){
-                  // debut d'un paramètre => on enregistre la commande dans commandOutputParam
-                  commandOutputParam = char;
-                  outputCommand = true;
-                  continue;
-                }
-                if (char==']'){
-                  // fin d'un paramètre
-                  commandOutputParam += char;
-                  outputCommand = false;
-                  r.outputValue += this.getOutputParameter(commandOutputParam);
-                  continue;
-                }
-                if (outputCommand) {
-                  commandOutputParam += char;
-                }else{
-                  // le char est directement repris dans le outputValue
-                  //console.log(char)
-                  r.outputValue += char;
-                }
-              } // fin du for
-            }
-            
-          } else {
-            //console.warn("Rule :" + r.id + " False => " + r.finalCondition);
-          } // fin du try
-        } catch (e) {
-          console.log(e)
-          console.error('SyntaxError on rule number : ' + r.id + "\nrule code is : " + r.ruleCondition.textCondition + "\nfinal condition is : " + r.finalCondition) // It is a SyntaxError
-        }
-      
-      
-  
-    }); // fin du foreach
+      console.log('condition de la règle : '+r.idRule+ ' avec la conditionFormatted : '+r.conditionFormated)
+      console.log('valeur de la condition finale à évaluer')
+      console.log(conditionToBeEvaluated)
+      */
+      /*
+      try {
+        if (eval(conditionToBeEvaluated)) {
+          console.log("Rule :" + r.idRule + " True => " + r.conditionFormated);
 
-    return {unknownOutput : this.unknownOutput, rulesApllied: this.rulesApplied};
+          let commandOutputParam : string ="";
+          let outputCommand : boolean = false;
+          r.outputValue = "";
+          // parcour de la chaine de caratère command pour en extraire les infos
+          for (let index = 0; index < r.command.length; index++) {
+            const char = r.command[index];
+            if (char=='['){
+              // debut d'un paramètre => on enregistre la commande dans commandOutputParam
+              commandOutputParam = char;
+              outputCommand = true;
+              continue;
+            }
+            if (char==']'){
+              // fin d'un paramètre
+              commandOutputParam += char;
+              outputCommand = false;
+              r.outputValue += this.getOutputParameter(commandOutputParam);
+              continue;
+            }
+            if (outputCommand) {
+              commandOutputParam += char;
+            }else{
+              // le char est directement repris dans le outputValue
+              //console.log(char)
+              r.outputValue += char;
+            }
+          } // fin du for
+          rulesToBeApplied.push(r);
+          
+        } else {
+          console.warn("Rule :" + r.idRule + " False => " + r.conditionFormated);
+        } // fin du try
+      } catch (e) {
+        console.log(e)
+        console.error('SyntaxError on rule number : ' + r.idRule + "\nrule condition is : " + r.condition + "\n condition formatted is : " + r.conditionFormated) // It is a SyntaxError
+      }*/
+
+    })// fin du foreach
+    return rulesToBeApplied
   } // fin du eval rule
 
   getOutputParameter(outputParam: string){
@@ -309,8 +301,9 @@ export class NewCheckRulesService {
     }// fin du switch*/
   }
 
-  formatConditionsBeforeEval(rules: NewRule[], languageSelected: string): RuleToEvaluate[]{
+  formatConditionsBeforeEval(rules: NewRule[], languageSelected: string): Observable<RuleToEvaluate[]> {
     let rulesToEvaluate : RuleToEvaluate[] = [];
+    const observables: Observable<void>[] = [];
     //console.log(languageSelected)
     rules.forEach(rule=>{
       // pour chaque règle transmise il faut créer un objet RuleToEvaluate qui sera évalué plus tard
@@ -329,8 +322,8 @@ export class NewCheckRulesService {
         // la commande principale vient en préfixe de la commande de la sous-condition
         ruleToEvaluate.command = rule.ruleCondition.ruleCommand.filter(rc=>rc.lang==languageSelected).length == 0? '' : rule.ruleCondition.ruleCommand.filter(rc=>rc.lang==languageSelected)[0].command
         // il faut maintenant rechercher les sous-conditions
-        this.newRuleService.getSubConditionsFromDB(rule.ruleCondition.id).subscribe({
-          next: (subConditions) => {subConditions.forEach(
+        const observable = this.newRuleService.getSubConditionsFromDB(rule.ruleCondition.id).pipe(
+          map((subConditions) => {subConditions.forEach(
             sc=> {
               //clone de ruleToEvaluate
               var subConditionToEvaluate = { ...ruleToEvaluate };
@@ -340,13 +333,10 @@ export class NewCheckRulesService {
               subConditionToEvaluate.command += sc.ruleCommand.filter(rc=>rc.lang==languageSelected).length == 0? sc.ruleCommand.filter(rc=>rc.lang=='EN').length == 0? 'No '+languageSelected+' or EN command':sc.ruleCommand.filter(rc=>rc.lang=='EN')[0].command : sc.ruleCommand.filter(rc=>rc.lang==languageSelected)[0].command
               rulesToEvaluate.push(subConditionToEvaluate)
             })
-          },
-          error:(err) => {
-            console.log("Error during back end request for list od conditions")
-          },
-          complete: ()=>{
-          }
-        })
+          })
+        );
+    
+        observables.push(observable);
       }else{
         // dans le cas d'une règle sans sous-condition 
         ruleToEvaluate.condition = rule.ruleCondition.textCondition
@@ -355,8 +345,11 @@ export class NewCheckRulesService {
         rulesToEvaluate.push(ruleToEvaluate)
       }
     })
-    
-    return rulesToEvaluate
+    // permet d'attendre que l'ensemble des requêtes en BDD soient finies
+    return forkJoin(observables).pipe(
+      map(() => rulesToEvaluate)
+    );
+    //return rulesToEvaluate
   }
   
   //Méthode qui regarde dans les sous-conditions les Input manquants
