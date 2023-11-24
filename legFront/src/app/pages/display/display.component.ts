@@ -191,11 +191,14 @@ export class DisplayComponent implements OnInit{
     });
   }
   onSubmit(){
-    // console.log(this.partSelectedForPreview);
+    //console.log(this.partSelectedForPreview);
 
     // on selectionne les règles concernées par l'affichage 
     let filteredRulesByPart : NewRule[] = this.NewRuleService.getAllRules().filter(r => r.part == this.partSelectedForPreview);
-    
+    // on réinitialize la liste des inputMissingParamMap
+    this.inputMissingParamMap.clear();
+    //console.log(filteredRulesByPart)
+    this.rulesToBeEvaluated = []
     // on mappe les valeurs du formulaire pour l'eval
     this.mapInputValueFromTheForm();
     // on passe en revue toutes les règles de la partie selectionnée pour trouvé les input value manquantes
@@ -245,18 +248,24 @@ export class DisplayComponent implements OnInit{
     
     // affiche les valeurs du map pour le debug
     /*
+    console.log('Valeurs de inputMissingParamMap')
     for (const [key, value] of this.inputMissingParamMap) {
       console.log(key+' '+value);
     }
+    console.log('fin de l\'affichage des valeurs de inputMissingParamMap')
+    
     for (const [key, value] of this.inputParamMap) {
       console.log(key+' '+value);
     }*/
 
-
+    
     if(this.inputMissingParamMap.size == 0) {
+       
       // la méthde formatConditionBeforeEval retourne un tableau d'objets  contenant la liste des conditions à évaluer
-      this.newCheckRulesService.formatConditionsBeforeEval(this.rulesToBeEvaluated, this.previewForm.get('language')?.value).subscribe(
-        (rulesToEvaluate: RuleToEvaluate[]) => this.evalCondition(rulesToEvaluate)
+      this.newCheckRulesService.formatConditionsBeforeEval(filteredRulesByPart, this.previewForm.get('language')?.value).subscribe(
+        (rulesToEvaluate: RuleToEvaluate[]) => {
+          this.evalCondition(rulesToEvaluate)
+        }
       )
     }else{
       this.inputModal.show();
@@ -434,7 +443,9 @@ export class DisplayComponent implements OnInit{
     this.inputModal.hide();
     
     this.newCheckRulesService.formatConditionsBeforeEval(this.rulesToBeEvaluated, this.previewForm.get('language')?.value).subscribe(
-      (rulesToEvaluate: RuleToEvaluate[]) => this.evalCondition(rulesToEvaluate)
+      (rulesToEvaluate: RuleToEvaluate[]) => {
+        this.evalCondition(rulesToEvaluate)
+      }
     )
     
   }
@@ -449,14 +460,51 @@ export class DisplayComponent implements OnInit{
     }
     // fin debug*/
 
-    //let resultEval : {unknownOutput : string[], rulesApllied : NewRule[]}
     // la fonction evalRules reçoit les valeurs du formulaire dans inputMap et dans inputMissingMap (via le modal)
     // et retourne la liste des règles appliquées (sous la forme d'un objet RuleToEvaluate)
     let rulesToBeApplied : RuleToEvaluate[]
     rulesToBeApplied = this.newCheckRulesService.evalRules(this.inputParamMap, this.inputMissingParamMap, rulesToEvaluate);
-    console.log('liste finale des règles')
+    
+    // avec la liste finale des règles à appliquer il faut determiner les outputValue de chaque commande
+    // une règle peut avoir plusieurs conditions vraies et donc plusieurs commandes
+    rulesToBeApplied.forEach(
+      r => {
+        let commandOutputParam : string ="";
+        let outputCommand : boolean = false;
+        r.outputValue = "";
+        // parcours de la chaine de caratère command pour en extraire les infos
+        for (let index = 0; index < r.command.length; index++) {
+          const char = r.command[index];
+          if (char=='['){
+            // debut d'un paramètre => on enregistre la commande dans commandOutputParam
+            commandOutputParam = char;
+            outputCommand = true;
+            continue;
+          }
+          if (char==']'){
+            // fin d'un paramètre
+            commandOutputParam += char;
+            outputCommand = false;
+            r.outputValue += this.newCheckRulesService.getOutputParameter(commandOutputParam, this.previewForm);
+            continue;
+          }
+          if (outputCommand) {
+            commandOutputParam += char;
+          }else{
+            // le char est directement repris dans le outputValue
+            //console.log(char)
+            r.outputValue += char;
+          }
+        } // fin du for 
+      }
+    )// fin du foreach
+
+    console.log('liste finale des règles avant le preview')
     console.log(rulesToBeApplied)
     
+
+    
+    //console.log(this.newCheckRulesService.unknownOutput)
     
     //let outputMissingParam: string[] = resultEval.unknownOutput;
     //this.rulesApplied = resultEval.rulesApllied;

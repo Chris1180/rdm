@@ -137,13 +137,13 @@ export class NewCheckRulesService {
             rulesSelectedForPreview: RuleToEvaluate[]): RuleToEvaluate[] {
 
     let rulesToBeApplied : RuleToEvaluate[] = []  
+    //console.log(rulesSelectedForPreview)
+    //console.log(rulesSelectedForPreview.length)
     
-    console.log(rulesSelectedForPreview)
-    console.log(rulesSelectedForPreview.length)
     // On passe en revue chaque règle pour les évaluer
     rulesSelectedForPreview.forEach(r=>{
-      console.log(r)
-      /*
+      //console.log(r)
+      
       // Pour chaque conditionFormatted de la règle on remplace les valeurs des inputs par true or false
       // puis on met le résultat dans un variable conditionToBeEvaluated que l'on évalue
       let conditionToBeEvaluated: string = r.conditionFormated 
@@ -155,15 +155,15 @@ export class NewCheckRulesService {
         var re = new RegExp("\\b" + key + "\\b", "gi"); // /\bkey\b/gi;
         conditionToBeEvaluated = conditionToBeEvaluated.replace(re , value.toString());            
       }
-      console.log('condition de la règle : '+r.idRule+ ' avec la conditionFormatted : '+r.conditionFormated)
-      console.log('valeur de la condition finale à évaluer')
-      console.log(conditionToBeEvaluated)
-      */
-      /*
+      //console.log('condition de la règle : '+r.idRule+ ' avec la conditionFormatted : '+r.conditionFormated)
+      //console.log('valeur de la condition finale à évaluer')
+      //console.log(conditionToBeEvaluated)
+      
+      
       try {
         if (eval(conditionToBeEvaluated)) {
           console.log("Rule :" + r.idRule + " True => " + r.conditionFormated);
-
+/*
           let commandOutputParam : string ="";
           let outputCommand : boolean = false;
           r.outputValue = "";
@@ -190,7 +190,7 @@ export class NewCheckRulesService {
               //console.log(char)
               r.outputValue += char;
             }
-          } // fin du for
+          } // fin du for */
           rulesToBeApplied.push(r);
           
         } else {
@@ -199,13 +199,13 @@ export class NewCheckRulesService {
       } catch (e) {
         console.log(e)
         console.error('SyntaxError on rule number : ' + r.idRule + "\nrule condition is : " + r.condition + "\n condition formatted is : " + r.conditionFormated) // It is a SyntaxError
-      }*/
+      }
 
     })// fin du foreach
     return rulesToBeApplied
   } // fin du eval rule
 
-  getOutputParameter(outputParam: string){
+  getOutputParameter(outputParam: string, previewForm: any){
     let outputParamToBeChecked = outputParam.replace(/\[|\]/g,'').toLocaleUpperCase();
 
     // on regarde dans la liste des commandes si le paramètre existe
@@ -218,80 +218,79 @@ export class NewCheckRulesService {
       initialValue = outputCommand[0].initValue;
     }//else console.log('pas trouvée')
     
-    //console.log(this.form.generatingDate.day)
     // on regarde si le paramètre est dans le formulaire et sinon (default) on le met dans le tableau des unknownOutput
     // pour le demandé à l'utilisateur
     switch (outputParamToBeChecked){
       case outputParametersListFromTheForm['PROCEDURE NUMBER']:
-        return this.form.get('procedureNumber').value.trim()==""? initialValue : this.form.get('procedureNumber').value;
+        return previewForm.get('procedureNumber').value.trim()==""? initialValue : previewForm.get('procedureNumber').value;
       case outputParametersListFromTheForm['GENERATING DATE']:
-        return  this.form.get('generatingDate').value.day + "." + this.form.get('generatingDate').value.month + "." + this.form.get('generatingDate').value.year;
+        return  previewForm.get('generatingDate').value.day + "." + previewForm.get('generatingDate').value.month + "." + previewForm.get('generatingDate').value.year;
       case outputParametersListFromTheForm['SEND TO TOP DATE']:
-        return this.form.get('sendToTopDate').value.day + "." + this.form.get('sendToTopDate').value.month + "." + this.form.get('sendToTopDate').value.year
+        return previewForm.get('sendToTopDate').value.day + "." + previewForm.get('sendToTopDate').value.month + "." + previewForm.get('sendToTopDate').value.year
       case outputParametersListFromTheForm['TABLING DATE']:
-        return this.form.get('tablingDate').value.day + "." + this.form.get('tablingDate').value.month + "." + this.form.get('tablingDate').value.year
+        return previewForm.get('tablingDate').value.day + "." + previewForm.get('tablingDate').value.month + "." + previewForm.get('tablingDate').value.year
       case outputParametersListFromTheForm['PE NUMBER']:
-        return this.form.get('peNumber').value;
+        return previewForm.get('peNumber').value;
       case outputParametersListFromTheForm['AXX NUMBER']:
-        return this.form.get('axxNumber').value.trim()==""? initialValue : this.form.get('axxNumber').value;
+        return previewForm.get('axxNumber').value.trim()==""? initialValue : previewForm.get('axxNumber').value;
       case outputParametersListFromTheForm['EPADES REF']:
-        return this.form.get('epadesRef').value;
+        return previewForm.get('epadesRef').value;
       case outputParametersListFromTheForm['DOC LANGUAGE']:
-        return this.form.get('docLanguage').value;
+        return previewForm.get('docLanguage').value;
       case outputParametersListFromTheForm['PREFIX TITLE']:
-        return this.form.get('prefixTitle').value;
+        return previewForm.get('prefixTitle').value;
       case outputParametersListFromTheForm['ITER TITLE']:
-        return this.form.get('iterTitle').value.trim()==""? initialValue : this.form.get('iterTitle').value;
+        return previewForm.get('iterTitle').value.trim()==""? initialValue : previewForm.get('iterTitle').value;
       case outputParametersListFromTheForm['DOC COM REF']:
-        return this.form.get('docComRef').value.trim()==""? initialValue : this.form.get('docComRef').value;
+        return previewForm.get('docComRef').value.trim()==""? initialValue : previewForm.get('docComRef').value;
       case outputParametersListFromTheForm['DOC COUNCIL REF']:
-        return this.form.get('docCouncilRef').value.trim()==""? initialValue : this.form.get('docCouncilRef').value;
+        return previewForm.get('docCouncilRef').value.trim()==""? initialValue : previewForm.get('docCouncilRef').value;
       case outputParametersListFromTheForm['AUTHOR OF PROPOSAL']:
-        return this.form.get('authorOfProposal').value.join(", ");
+        return previewForm.get('authorOfProposal').value.join(", ");
 
       // valeur du tableau  
       case outputParametersListFromTheForm['AUTHORING COMMITTEE']:
-        return this.form.get('authoringCommittee').value;
+        return previewForm.get('authoringCommittee').value;
       case outputParametersListFromTheForm['LEAD COMMITTEE']:
         // le "for the" est ajouté dans l'enum pour les comités simples
-        return this.form.get('leadCommittee').value;
+        return previewForm.get('leadCommittee').value;
       case outputParametersListFromTheForm['RAPPORTEURS / LIST OF ASSOC']:
         // formattage de la sortie ecran: 'noms des rapporteurs' , committe on 'le nom du committee'
         let outputValue: string = '';
-        for (let index = 0; index < this.form.get('listOfAssoc').value.length; index++) {
-          outputValue += this.form.get('listOfAssocRapporteurs').value[index]+ ', committee on ' + this.form.get('listOfAssoc').value[index] + "\n";
+        for (let index = 0; index < previewForm.get('listOfAssoc').value.length; index++) {
+          outputValue += previewForm.get('listOfAssocRapporteurs').value[index]+ ', committee on ' + previewForm.get('listOfAssoc').value[index] + "\n";
         }
         return outputValue;
       case outputParametersListFromTheForm['LIST OF RAPPORTEURS']:
-        return this.form.get('listOfRapporteurs').value.join(", ");
+        return previewForm.get('listOfRapporteurs').value.join(", ");
       
       // to be checked if used
       case outputParametersListFromTheForm['PREFIX LIST OF RAPPORTEURS']:
-        if (initialValue=='') return this.form.prefixListOfRapporteurs;
+        if (initialValue=='') return previewForm.prefixListOfRapporteurs;
         else {
-          this.form.prefixListOfRapporteurs = initialValue;
+          previewForm.prefixListOfRapporteurs = initialValue;
           return '';
         }
       case outputParametersListFromTheForm['SUFFIX LIST OF RAPPORTEURS']:
-        if (initialValue=='') return this.form.suffixListOfRapporteurs;
+        if (initialValue=='') return previewForm.suffixListOfRapporteurs;
         else {
-          this.form.suffixListOfRapporteurs = initialValue;
+          previewForm.suffixListOfRapporteurs = initialValue;
           return '';
         }
       // end of to be checked
       
       case outputParametersListFromTheForm['COMMITTEE HAVING OPINION']:
-        return 'Committee on '+this.form.get('opinions').value;
+        return 'Committee on '+previewForm.get('opinions').value;
       case outputParametersListFromTheForm['LIST OF COMMITTEES HAVING OPINION']:
-        return 'the Committee on '+this.form.get('opinions').value.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
+        return 'the Committee on '+previewForm.get('opinions').value.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
       case outputParametersListFromTheForm['COMMITTEE HAVING POSITION']:
-        return 'the Committee on '+this.form.get('positions').value;
+        return 'the Committee on '+previewForm.get('positions').value;
       case outputParametersListFromTheForm['LIST OF COMMITTEES HAVING POSITION']:
-        return 'the Committee on '+this.form.get('positions').value.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
+        return 'the Committee on '+previewForm.get('positions').value.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
       case outputParametersListFromTheForm['COMMITTEE HAVING LETTER']:
-        return 'the Committee on '+this.form.get('letters').value;
+        return 'the Committee on '+previewForm.get('letters').value;
       case outputParametersListFromTheForm['LIST OF COMMITTEES HAVING LETTER']:
-        return 'the Committee on '+this.form.get('letters').value.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
+        return 'the Committee on '+previewForm.get('letters').value.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
       default:
         // ajout du paramètre manquant si pas déjà dans la liste
         if (this.unknownOutput.indexOf(outputParam)==-1){
@@ -330,7 +329,7 @@ export class NewCheckRulesService {
               subConditionToEvaluate.condition += sc.textCondition
               subConditionToEvaluate.conditionFormated = this.formatCondition(subConditionToEvaluate.condition)
               // si pas de commande dans la langue selectionnée alors on prend l'EN
-              subConditionToEvaluate.command += sc.ruleCommand.filter(rc=>rc.lang==languageSelected).length == 0? sc.ruleCommand.filter(rc=>rc.lang=='EN').length == 0? 'No '+languageSelected+' or EN command':sc.ruleCommand.filter(rc=>rc.lang=='EN')[0].command : sc.ruleCommand.filter(rc=>rc.lang==languageSelected)[0].command
+              subConditionToEvaluate.command += sc.ruleCommand.filter(rc=>rc.lang==languageSelected).length == 0? sc.ruleCommand.filter(rc=>rc.lang=='EN').length == 0? 'No '+languageSelected+' or EN command found':sc.ruleCommand.filter(rc=>rc.lang=='EN')[0].command : sc.ruleCommand.filter(rc=>rc.lang==languageSelected)[0].command
               rulesToEvaluate.push(subConditionToEvaluate)
             })
           })
@@ -338,14 +337,16 @@ export class NewCheckRulesService {
     
         observables.push(observable);
       }else{
-        // dans le cas d'une règle sans sous-condition 
+        // dans le cas d'une règle sans sous-condition
         ruleToEvaluate.condition = rule.ruleCondition.textCondition
         ruleToEvaluate.conditionFormated = this.formatCondition(rule.ruleCondition.textCondition)
         ruleToEvaluate.command = rule.ruleCondition.ruleCommand.filter(rc=>rc.lang==languageSelected).length == 0? 'No command found for '+languageSelected : rule.ruleCondition.ruleCommand.filter(rc=>rc.lang==languageSelected)[0].command
         rulesToEvaluate.push(ruleToEvaluate)
+        //console.log(rulesToEvaluate)
       }
     })
     // permet d'attendre que l'ensemble des requêtes en BDD soient finies
+    if (observables.length==0) return of(rulesToEvaluate)
     return forkJoin(observables).pipe(
       map(() => rulesToEvaluate)
     );
