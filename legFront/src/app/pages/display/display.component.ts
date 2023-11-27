@@ -413,17 +413,38 @@ export class DisplayComponent implements OnInit{
   }
 
   onSubmitOutputParam(){
-    // il faut maintenant passer en revue les commandes du tableau rulesApplied pour modifier les outputvalues
+    for (const [key, value] of this.outputMissingParamMap) {
+      console.log(key+' '+value);
+    }
+
+    // il faut maintenant passer en revue les commandes du tableau rulesToBeEvaluated pour modifier les outputvalues
+    this.rulesToBeApplied.forEach(rule => {
+      console.log('avant remplacement')
+      console.log(rule.outputValue)
+      
+      for (const [key, value] of this.outputMissingParamMap) {
+        if (rule.outputValue.includes(key)){
+          console.log('dans le if')
+          console.log(rule.outputValue.includes(key))
+          rule.outputValue = rule.outputValue.replace(key, value)
+        }
+      }
+      console.log('après remplacement')
+      console.log(rule.outputValue)
+      
+    });
+    
+    /*
     for (let map of this.outputMissingParamMap.entries()){
-      this.rulesApplied.forEach(ruleApplied => {
+      this.rulesToBeEvaluated.forEach(rules => {
         
-        if (ruleApplied.outputValue.includes(map[0])){
-          ruleApplied.outputValue = ruleApplied.outputValue.replace(map[0], map[1] )
+        if (rules.outputValue.includes(map[0])){
+          rules.outputValue = rules.outputValue.replace(map[0], map[1] )
           //console.log(map[0] + "--->" + map[1] )
           //console.log(ruleApplied)
         }
       })
-    }
+    }*/
     this.outputModal.hide();
     this.previewModal.show();
     
@@ -501,7 +522,7 @@ export class DisplayComponent implements OnInit{
       }
     )// fin du foreach
 
-    console.log('liste finale des règles avant le preview')
+    console.log('liste finale des règles DTO avant le preview')
     console.log(this.rulesToBeApplied)
     
     console.log(this.newCheckRulesService.unknownOutput)
@@ -514,11 +535,10 @@ export class DisplayComponent implements OnInit{
         this.outputMissingParamMap.set(unknownOutput,"")
       });
     }
+    // si des valeurs Output ne sont pas connues alors on affiche le modal pour mapper les valeurs dasn outputMissingParamMap 
     if(outputMissingParam.length>0){
-      // des valeurs de Output Param sont manquantes alors on les demande dans le modal
       this.outputModal.show();
     }else{
-      // pas de valeur Output inconnue alors on affiche la preview dans le modal
       this.previewModal.show();     
     }
   }
