@@ -1,78 +1,78 @@
-<div id="box" *ngIf="rules">
+<div id="box" *ngIf="rulesToBeApplied">
     
-    <div *ngFor="let r of rules">
+    <div *ngFor="let r of rulesToBeApplied">
         <!-- Tool Tip to show rule number-->
         <ng-template #RuleNumber>
             <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
-                Rule:&nbsp;{{r.id}}&nbsp;Order:&nbsp;{{r.order}}
+                Rule:&nbsp;{{r.idRule}}&nbsp;Order:&nbsp;{{r.order}}
             </span>
         </ng-template>
         <!-- Cover page -->
         <div *ngIf="partSelectedForPreview=='Cover Page' && r.part=='Cover Page'">
             <!-- cas particulier du logo, du titre avec les barres noires et du United in diversity (pas définies dans le style)-->
-            <div *ngIf="r.style?.name=='eplogo'" class = "eplogo" [ngStyle]="{'top': r.style?.margintop+'%', 'left': r.style?.marginleft+'%'}" [ngbTooltip]='RuleNumber'></div>
-            <div *ngIf="r.style?.name=='headingtitle'" class = "headingtitle"
-                [ngStyle]="{'margin-top': r.style?.margintop+'%', 'left': r.style?.marginleft+'%', 
-                'position': r.style?.relatif? 'relative':'absolute', 'font-family': r.style?.font, 
-                'font-weight': r.style?.bold? 'bold':'', 'font-size': r.style?.size+'px', 
-                'font-style': r.style?.italic ? 'italic':''}"
+            <div *ngIf="r.style.name=='eplogo'" class = "eplogo" [ngStyle]="{'top': r.style.margintop+'%', 'left': r.style.marginleft+'%'}" [ngbTooltip]='RuleNumber'></div>
+            <div *ngIf="r.style.name=='headingtitle'" class = "headingtitle"
+                [ngStyle]="{'margin-top': r.style.margintop+'%', 'left': r.style.marginleft+'%', 
+                'position': r.style.relatif? 'relative':'absolute', 'font-family': r.style.font, 
+                'font-weight': r.style.bold? 'bold':'', 'font-size': r.style.size+'px', 
+                'font-style': r.style.italic ? 'italic':''}"
                 [ngbTooltip]='RuleNumber'>{{r.outputValue}}
             </div>
-            <div *ngIf="r.style?.name=='united'" class = "united"
-                [ngStyle]="{'top': r.style?.margintop+'%', 'left': r.style?.marginleft+'%', 
-                'position':'absolute', 'font-family': r.style?.font, 
-                'font-weight': r.style?.bold? 'bold':'', 'font-size': r.style?.size+'px', 
-                'font-style': r.style?.italic ? 'italic':''}" 
+            <div *ngIf="r.style.name=='united'" class = "united"
+                [ngStyle]="{'top': r.style.margintop+'%', 'left': r.style.marginleft+'%', 
+                'position':'absolute', 'font-family': r.style.font, 
+                'font-weight': r.style.bold? 'bold':'', 'font-size': r.style.size+'px', 
+                'font-style': r.style.italic ? 'italic':''}" 
                 [ngbTooltip]='RuleNumber'>{{r.outputValue}}
             </div>
             <!-- fin des cas particulier-->
                         
             <!-- position: relative -->
-            <div *ngIf="r.style?.name!='headingtitle' && r.style?.relatif"
-                [ngStyle]="{'margin-top': r.style?.margintop+'%', 'left': r.style?.marginleft+'%', 
-                        'position':'relative', 'font-family': r.style?.font, 
-                        'font-weight': r.style?.bold? 'bold':'', 'font-size': r.style?.size+'px', 
-                        'font-style': r.style?.italic ? 'italic':'', 'white-space': 'pre-line', 'max-width': '750px'}" 
+            <div *ngIf="r.style.name!='headingtitle' && r.style.relatif"
+                [ngStyle]="{'margin-top': r.style.margintop+'%', 'left': r.style.marginleft+'%', 
+                        'position':'relative', 'font-family': r.style.font, 
+                        'font-weight': r.style.bold? 'bold':'', 'font-size': r.style.size+'px', 
+                        'font-style': r.style.italic ? 'italic':'', 'white-space': 'pre-line', 'max-width': '750px'}" 
                 [ngbTooltip]='RuleNumber'
                 placement="left">
                     {{r.outputValue}}
             </div>
             <!-- position: absolute -->
-            <div *ngIf="r.style?.name!='headingtitle'  && r.style?.name !='united' && !r.style?.relatif"
-                [ngStyle]="{'top': r.style?.margintop+'%', 'left': r.style?.marginleft+'%', 
-                        'position':'absolute', 'font-family': r.style?.font, 
-                        'font-weight': r.style?.bold? 'bold':'', 'font-size': r.style?.size+'px', 
-                        'font-style': r.style?.italic ? 'italic':'', 'white-space': 'pre-line',  'max-width': '750px'}" 
+            <div *ngIf="r.style.name!='headingtitle'  && r.style.name !='united' && !r.style.relatif"
+                [ngStyle]="{'top': r.style.margintop+'%', 'left': r.style.marginleft+'%', 
+                        'position':'absolute', 'font-family': r.style.font, 
+                        'font-weight': r.style.bold? 'bold':'', 'font-size': r.style.size+'px', 
+                        'font-style': r.style.italic ? 'italic':'', 'white-space': 'pre-line',  'max-width': '750px'}" 
                 [ngbTooltip]='RuleNumber'>
                     {{r.outputValue}}
             </div>
             <!-- Cas particulier pour la langue affichée à deux endroits-->
-            <div *ngIf="r.style?.name=='doclanguage'" 
-                [ngStyle]="{'top': r.style?.margintop+'%', 'left': '92%', 
-                'position':'absolute', 'font-family': r.style?.font, 
-                'font-weight': r.style?.bold? 'bold':'', 'font-size': r.style?.size+'px', 
-                'font-style': r.style?.italic ? 'italic':''}" 
+            <div *ngIf="r.style.name=='doclanguage'" 
+                [ngStyle]="{'top': r.style.margintop+'%', 'left': '92%', 
+                'position':'absolute', 'font-family': r.style.font, 
+                'font-weight': r.style.bold? 'bold':'', 'font-size': r.style.size+'px', 
+                'font-style': r.style.italic ? 'italic':''}" 
                 [ngbTooltip]='RuleNumber'>{{r.outputValue}}
             </div>
             <!-- fin du cas particulier-->
         </div>
         <div *ngIf="partSelectedForPreview!='Cover Page' && r.part!='Cover Page' && r.part==partSelectedForPreview">
             <!-- position: relative -->
-            <div *ngIf="r.style?.relatif"
-                [ngStyle]="{'margin-top': r.style?.margintop+'%', 'left': r.style?.marginleft+'%', 
-                        'position':'relative', 'font-family': r.style?.font, 
-                        'font-weight': r.style?.bold? 'bold':'', 'font-size': r.style?.size+'px', 
-                        'font-style': r.style?.italic ? 'italic':'', 'white-space': 'pre-line', 'max-width': '750px'}" 
+            <div *ngIf="r.style.relatif"
+                [ngStyle]="{'margin-top': r.style.margintop+'%', 'left': r.style.marginleft+'%', 
+                        'position':'relative', 'font-family': r.style.font, 
+                        'font-weight': r.style.bold? 'bold':'', 'font-size': r.style.size+'px', 
+                        'font-style': r.style.italic ? 'italic':'', 'white-space': 'pre-line', 'max-width': '750px'}" 
                 [ngbTooltip]='RuleNumber'
                 placement="left">
                     {{r.outputValue}}
             </div>
             <!-- position: absolute -->
-            <div *ngIf="!r.style?.relatif"
-                [ngStyle]="{'top': r.style?.margintop+'%', 'left': r.style?.marginleft+'%', 
-                        'position':'absolute', 'font-family': r.style?.font, 
-                        'font-weight': r.style?.bold? 'bold':'', 'font-size': r.style?.size+'px', 
-                        'font-style': r.style?.italic ? 'italic':'', 'white-space': 'pre-line',  'max-width': '750px'}" 
+            <div *ngIf="!r.style.relatif"
+                [ngStyle]="{'top': r.style.margintop+'%', 'left': r.style.marginleft+'%', 
+                        'position':'absolute', 'font-family': r.style.font, 
+                        'font-weight': r.style.bold? 'bold':'', 'font-size': r.style.size+'px', 
+                        'font-style': r.style.italic ? 'italic':'', 'white-space': 'pre-line',  'max-width': '750px'}" 
                 [ngbTooltip]='RuleNumber'>
                     {{r.outputValue}}
             </div>

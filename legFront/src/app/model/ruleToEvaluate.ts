@@ -1,3 +1,5 @@
+import { Style } from "./style";
+
 export interface RuleToEvaluate {
     idRule: number;
     order: number;
@@ -6,4 +8,5 @@ export interface RuleToEvaluate {
     conditionFormated: string;
     command: string;
     outputValue: string
+    style: Style
 }

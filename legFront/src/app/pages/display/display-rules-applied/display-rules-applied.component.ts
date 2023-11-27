@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { NewRule } from 'src/app/model/newrule';
+import { RuleToEvaluate } from 'src/app/model/ruleToEvaluate';
 
 @Component({
   selector: 'app-display-rules-applied',
@@ -7,5 +8,5 @@ import { NewRule } from 'src/app/model/newrule';
   styleUrls: ['./display-rules-applied.component.css']
 })
 export class DisplayRulesAppliedComponent {
-  @Input() rulesApplied: NewRule[] | null=null;
+  @Input() rulesToBeApplied: RuleToEvaluate[] | null=null;
 }

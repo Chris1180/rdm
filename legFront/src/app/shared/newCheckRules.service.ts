@@ -313,7 +313,8 @@ export class NewCheckRulesService {
         condition: '',
         conditionFormated: '',
         command: '',
-        outputValue: ''
+        outputValue: '',
+        style: rule.style!
       }
       if (rule.nestedCondition){
         // la condition principale vient en prérequis des sous-conditions

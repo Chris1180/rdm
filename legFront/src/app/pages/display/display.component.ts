@@ -49,7 +49,7 @@ export class DisplayComponent implements OnInit{
   allRules! : NewRule[];
   rulesToBeEvaluated : NewRule[] = [];
   rulesApplied! : NewRule[]; 
-
+  rulesToBeApplied! : RuleToEvaluate[];
   errorMessage?: string;
   
   // modal pour demander des valeurs suplémentaires
@@ -462,12 +462,14 @@ export class DisplayComponent implements OnInit{
 
     // la fonction evalRules reçoit les valeurs du formulaire dans inputMap et dans inputMissingMap (via le modal)
     // et retourne la liste des règles appliquées (sous la forme d'un objet RuleToEvaluate)
-    let rulesToBeApplied : RuleToEvaluate[]
-    rulesToBeApplied = this.newCheckRulesService.evalRules(this.inputParamMap, this.inputMissingParamMap, rulesToEvaluate);
+    
+    this.rulesToBeApplied = this.newCheckRulesService.evalRules(this.inputParamMap, this.inputMissingParamMap, rulesToEvaluate);
     
     // avec la liste finale des règles à appliquer il faut determiner les outputValue de chaque commande
-    // une règle peut avoir plusieurs conditions vraies et donc plusieurs commandes
-    rulesToBeApplied.forEach(
+    // avant cela on vide le tableau des outputValue dans le service 
+    this.newCheckRulesService.unknownOutput = [];
+    // pour rappel une règle peut avoir plusieurs conditions vraies et donc plusieurs commandes
+    this.rulesToBeApplied.forEach(
       r => {
         let commandOutputParam : string ="";
         let outputCommand : boolean = false;
@@ -500,19 +502,13 @@ export class DisplayComponent implements OnInit{
     )// fin du foreach
 
     console.log('liste finale des règles avant le preview')
-    console.log(rulesToBeApplied)
+    console.log(this.rulesToBeApplied)
     
-
+    console.log(this.newCheckRulesService.unknownOutput)
     
-    //console.log(this.newCheckRulesService.unknownOutput)
-    
-    //let outputMissingParam: string[] = resultEval.unknownOutput;
-    //this.rulesApplied = resultEval.rulesApllied;
-
-    //console.log( outputMissingParam)
-    //console.log(this.rulesApplied)
+    let outputMissingParam: string[] = this.newCheckRulesService.unknownOutput;
+   
     // initialisation de la liste des paramètres output manquants si pas déjà fait (si déjà fait alors on garde les anciennes valeurs) 
-    /*
     if (this.outputMissingParamMap.size==0 && outputMissingParam.length > 0){
       outputMissingParam.forEach(unknownOutput => {
         this.outputMissingParamMap.set(unknownOutput,"")
@@ -524,7 +520,7 @@ export class DisplayComponent implements OnInit{
     }else{
       // pas de valeur Output inconnue alors on affiche la preview dans le modal
       this.previewModal.show();     
-    }*/
+    }
   }
 
   mapInputValueFromTheForm(){

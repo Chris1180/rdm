@@ -306,7 +306,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                        <app-display-preview [rules]="rulesApplied" [partSelectedForPreview]="partSelectedForPreview"></app-display-preview>
+                        <app-display-preview [rulesToBeApplied]="rulesToBeApplied" [partSelectedForPreview]="partSelectedForPreview"></app-display-preview>
                 </div>
                 
             </div>
@@ -364,6 +364,6 @@
 
     <br>
     <!--tab of rules part-->
-    <app-display-rules-applied [rulesApplied]="rulesApplied"></app-display-rules-applied>
+    <app-display-rules-applied [rulesToBeApplied]="rulesToBeApplied"></app-display-rules-applied>
 
 </main>
