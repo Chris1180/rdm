@@ -320,13 +320,16 @@
                 <h5 class="modal-title" id="exampleModalLabel">Preview of the {{partSelectedForPreview}}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                    <div class="modal-body" >
-                        <div class="pb-3">Some Output Parameters are missing:</div>
-                        <div class="input-group pb-3" *ngFor="let p of outputMissingParamMap | keyvalue">
-                            <label class="col-form-label col-form-label-sm pe-2">{{p.key}}</label>
-                        <input class="form-control form-control-sm" type="text" [(ngModel)]="p.value" (change)="changeValueOutput(p.key, $event.target)" />
-                        </div>
+
+                <div class="modal-body" >
+                    <div class="pb-3">Some Output Parameters are missing:</div>
+                    <div class="row input-group pb-3 align-items-center" *ngFor="let p of outputMissingParamMap | keyvalue">
+                        <label class="col-2 col-form-label col-form-label-sm pe-2">{{p.key}}</label>
+                        <input class="col-5 form-control form-control-sm" type="text" [(ngModel)]="p.value" (change)="changeValueOutput(p.key, $event.target)" />
+                        <label class="col-3 align-middle">{{ findOutputDescription(p.key)?.description }}</label>
                     </div>
+                </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-small ico-delete" (click)="onIgnoreOutputParam()">Ignore</button>
                     <button type="button" class="btn btn-small ico-valide-cerc btn-green me-2" (click)="onSubmitOutputParam()">Submit Values</button>

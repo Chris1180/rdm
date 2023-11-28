@@ -65,8 +65,7 @@ export class CommandComponent {
     if(command[field]!=newValue){
       
       command[field] = newValue;
-      console.log("Changement détecté pour la commande numéro: "+command.id)
-
+      
       this.commandService.modifyCommand(command).subscribe({
         next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
           this.openFeedBackUser("Change saved Succesfully", "bg-success");

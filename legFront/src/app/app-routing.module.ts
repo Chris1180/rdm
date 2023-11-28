@@ -17,9 +17,9 @@ const routes: Routes = [
   { path: 'Edition', component: EditionComponent },
   { path: 'Preview', component: PreviewComponent },
   { path: 'Display', component: DisplayComponent },
-  { path: 'Style', component: StyleComponent },
-  { path: 'Conditions', component: ConditionComponent },
-  { path: 'Commands', component: CommandComponent },
+  { path: 'Styles', component: StyleComponent },
+  { path: 'Inputs', component: ConditionComponent },
+  { path: 'Outputs', component: CommandComponent },
   { path: 'EditRule', component: EditRuleComponent },
   { path: '',   redirectTo: '/Rules', pathMatch: 'full' }
 ];

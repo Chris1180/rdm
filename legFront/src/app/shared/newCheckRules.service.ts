@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { NewRule } from "../model/newrule";
 import { ConditionService } from "./condition.service";
 import { Condition } from "../model/condition";
-import { RuleCommand } from "../model/rulecommand";
 import { Command } from "../model/command";
 import { CommandService } from "./command.service";
 import { outputParametersListFromTheForm } from "../model/outputParameters/outputParametersListFromTheForm";
@@ -162,7 +161,7 @@ export class NewCheckRulesService {
       
       try {
         if (eval(conditionToBeEvaluated)) {
-          console.log("Rule :" + r.idRule + " True => " + r.conditionFormated);
+          //console.log("Rule :" + r.idRule + " True => " + r.conditionFormated);
 /*
           let commandOutputParam : string ="";
           let outputCommand : boolean = false;
@@ -209,8 +208,9 @@ export class NewCheckRulesService {
     let outputParamToBeChecked = outputParam.replace(/\[|\]/g,'').toLocaleUpperCase();
 
     // on regarde dans la liste des commandes si le paramètre existe
-    let outputCommand = this.listOfOutputParamFromDB.filter(op=> op.name == outputParamToBeChecked)
+    let outputCommand = this.listOfOutputParamFromDB.filter(op=> op.name.toLocaleUpperCase() == outputParamToBeChecked)
     let initialValue = ''
+    //console.log('output récupérée de la db')
     //console.log(outputCommand)
     
     if(outputCommand.length > 0) {

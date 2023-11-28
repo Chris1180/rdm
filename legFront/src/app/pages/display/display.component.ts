@@ -48,7 +48,7 @@ export class DisplayComponent implements OnInit{
 
   allRules! : NewRule[];
   rulesToBeEvaluated : NewRule[] = [];
-  rulesApplied! : NewRule[]; 
+  //rulesApplied! : NewRule[]; 
   rulesToBeApplied! : RuleToEvaluate[];
   errorMessage?: string;
   
@@ -413,24 +413,31 @@ export class DisplayComponent implements OnInit{
   }
 
   onSubmitOutputParam(){
+    /*
     for (const [key, value] of this.outputMissingParamMap) {
       console.log(key+' '+value);
-    }
+    }*/
 
     // il faut maintenant passer en revue les commandes du tableau rulesToBeEvaluated pour modifier les outputvalues
     this.rulesToBeApplied.forEach(rule => {
-      console.log('avant remplacement')
-      console.log(rule.outputValue)
+      //console.log('avant remplacement')
+      //console.log(rule.outputValue)
       
       for (const [key, value] of this.outputMissingParamMap) {
         if (rule.outputValue.includes(key)){
-          console.log('dans le if')
-          console.log(rule.outputValue.includes(key))
-          rule.outputValue = rule.outputValue.replace(key, value)
+          //console.log(rule.outputValue.includes(key))
+          if (value==''){
+            // il faut vérifier si une valeur par défaut existe dans la liste des output value connue de la DB
+            let outputDB = this.newCheckRulesService.listOfOutputParamFromDB.filter(output => '['+output.name.toLocaleUpperCase()+']' == key.toLocaleUpperCase())
+            //console.log(outputDB)
+            if (outputDB.length>0) rule.outputValue = rule.outputValue.replace(key, outputDB[0].initValue)
+            else rule.outputValue = rule.outputValue.replace(key, value)
+          }else rule.outputValue = rule.outputValue.replace(key, value)
+          
         }
       }
-      console.log('après remplacement')
-      console.log(rule.outputValue)
+      //console.log('après remplacement')
+      //console.log(rule.outputValue)
       
     });
     
@@ -523,18 +530,21 @@ export class DisplayComponent implements OnInit{
     )// fin du foreach
 
     console.log('liste finale des règles DTO avant le preview')
-    console.log(this.rulesToBeApplied)
-    
+    console.log(this.rulesToBeApplied) 
     console.log(this.newCheckRulesService.unknownOutput)
     
     let outputMissingParam: string[] = this.newCheckRulesService.unknownOutput;
-   
+    this.outputMissingParamMap.clear()
+    outputMissingParam.forEach(unknownOutput => {
+      this.outputMissingParamMap.set(unknownOutput,"")
+    });
     // initialisation de la liste des paramètres output manquants si pas déjà fait (si déjà fait alors on garde les anciennes valeurs) 
+    /*
     if (this.outputMissingParamMap.size==0 && outputMissingParam.length > 0){
       outputMissingParam.forEach(unknownOutput => {
         this.outputMissingParamMap.set(unknownOutput,"")
       });
-    }
+    }*/
     // si des valeurs Output ne sont pas connues alors on affiche le modal pour mapper les valeurs dasn outputMissingParamMap 
     if(outputMissingParam.length>0){
       this.outputModal.show();
@@ -684,5 +694,9 @@ export class DisplayComponent implements OnInit{
     return this.allConditions.find(c => c.name === key)
   }
 
-
+  findOutputDescription(key: string){
+    key = key.replace(/\[|\]/g, '')
+    //console.log(this.newCheckRulesService.listOfOutputParamFromDB.find(o => o.name.toLowerCase() === key.toLowerCase()))
+    return this.newCheckRulesService.listOfOutputParamFromDB.find(o => o.name.toLowerCase() === key.toLowerCase())
+  }
 }

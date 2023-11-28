@@ -51,7 +51,7 @@
                         <td>
                             <input #mandatory class="form-check-input" type="checkbox" [checked]="c.mandatory" (change)="editConditionOnline(c, !c.mandatory, 'mandatory')">
                         </td>
-                        <td #initvalue contentEditable (blur)="editConditionOnline(c, initvalue.innerText.trim(), 'initvalue')">{{c.initValue}}</td>
+                        <td #initvalue contentEditable (blur)="editConditionOnline(c, initvalue.innerText.trim(), 'initValue')">{{c.initValue}}</td>
                         <td #application contentEditable (blur)="editConditionOnline(c, application.innerText.trim(), 'application')">{{c.application}}</td>
                         <td #example contentEditable (blur)="editConditionOnline(c, example.innerText.trim(), 'example')">{{c.example}}</td>
                         <td>
