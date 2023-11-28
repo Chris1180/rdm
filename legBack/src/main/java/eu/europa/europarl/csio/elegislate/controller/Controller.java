@@ -148,18 +148,18 @@ public class Controller {
 		
 	}
 	
-	@GetMapping ("/getAllCommands")
+	@GetMapping ("/getAllOutputs")
 	public List<Command> getAllCommands() {
 		return commandRepository.findAll();	
 	}
-	@PostMapping("/newCommand")
+	@PostMapping("/newOutput")
 	public Command addNewCommand(@RequestBody Command command) {
 		if (command.getId()==0) {
 			command.setId(null);
 		}
 		return commandRepository.save(command);
 	}
-	@PostMapping("/deleteCommand/{id}")
+	@PostMapping("/deleteOutput/{id}")
 	public void deleteCommand(@PathVariable int id) {
 		commandRepository.deleteById(id);
 		

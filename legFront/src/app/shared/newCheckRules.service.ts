@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import { NewRule } from "../model/newrule";
 import { ConditionService } from "./condition.service";
 import { Condition } from "../model/condition";
-import { Command } from "../model/command";
-import { CommandService } from "./command.service";
+import { Output } from "../model/output";
+import { OutputService } from "./output.service";
 import { outputParametersListFromTheForm } from "../model/outputParameters/outputParametersListFromTheForm";
 import { NewRulesService } from "./newrules.service";
 import { Observable, forkJoin, map, of } from "rxjs";
@@ -16,29 +16,15 @@ import { RuleToEvaluate } from "../model/ruleToEvaluate";
 export class NewCheckRulesService {
   rules!: Array<NewRule>;
   rulesApplied: NewRule[] = [];
-  form!: any;
+  //form!: any;
   unknownInput: string[] = [];
-  commandsWithUnknownInput: number[] = [];
+  //commandsWithUnknownInput: number[] = [];
   unknownOutput: string[] = [];
   listOfKnownParam: string[] = ["||", "&&", "true", "false", ""]
-  listOfKnownParamFromTheForm = [
-    "||", "&&", "true", "false" , "",
-    "INI", "COD", "INL", "DEC", "REG",
-    "RPCD", "RPCF", "OPCD", "OPCF",
-    "ONGOING_DRAFT", "FINALISED_DRAFT", "SENT_TO_TOP", "AFTER_VOTE", "TABLED",
-    "ACJOINTCOM","LCJOINTCOM",
-    "ASSOCOM",
-    "FIRST_READING", "SECOND_READING", "THIRD_READING", "RECAST",
-    "NA","AMEND", "APPROVE_APP", "REJECT_REJ",
-    "LETTERS", "LETTER", "POSITION", "POSITIONS", "OPINION", "OPINIONS",
-    "BG", "ES", "CS", "DA", "DE", "ET", "EL", "EN", "FR", "GA", "HR", "IT", "LV", "LT", "HU", "MT", "NL", "PL", "PT", "RO", "SK", "SL", "FI", "SV",
-    "AUTHCOM_MAN","AUTHCOM_MEN","AUTHCOM_WOMAN","AUTHCOM_WOMEN","AUTHCOM_BOTH",
-    "ASSOCOM_MAN","ASSOCOM_MEN","ASSOCOM_WOMAN","ASSOCOM_WOMEN","ASSOCOM_BOTH"
-  ]
-  listOfOutputParamFromDB: Command[] = [];
+  listOfOutputParamFromDB: Output[] = [];
   
 
-  constructor(private conditionService: ConditionService, private commandService: CommandService, private newRuleService: NewRulesService) {
+  constructor(private conditionService: ConditionService, private outputService: OutputService, private newRuleService: NewRulesService) {
     // récupération des conditions (input param) de la Base de donnée dans le tableau listOfKnownParam
     this.conditionService.getConditionsFromDB().subscribe({
       next: (conditionsFromDB: Condition[]) => { 
@@ -51,9 +37,9 @@ export class NewCheckRulesService {
       }
     })
     // récupération des commandes (output param) de la Base de donnée dans le tableau listOfOutputParamFromDB
-    this.commandService.getCommandsFromDB().subscribe({
-      next: (commandsFromDB: Command[]) => { 
-        this.listOfOutputParamFromDB = commandsFromDB; 
+    this.outputService.getOutputsFromDB().subscribe({
+      next: (outputsFromDB: Output[]) => { 
+        this.listOfOutputParamFromDB = outputsFromDB; 
       },
       error: (err) => {
         console.log("Error during back end request for list of commands (output param)")
@@ -61,43 +47,6 @@ export class NewCheckRulesService {
     })
     
   }
-
-  checkCondition(allRulestoBeCheckedBySelectedPart: NewRule[]): { unknownInput: string[], rulesWithUnknownInput: number[] } {
-    this.rules = allRulestoBeCheckedBySelectedPart;
-    // reinitialise la liste des règles
-    this.rulesApplied = [];
-    this.unknownInput = [];
-    this.commandsWithUnknownInput = [];
-    this.unknownOutput = [];
-    
-    // check des règles les unes après les autres 
-    this.rules.forEach(r => {
-      let finalCondition: string = "";
-      // D'abord on analyse le champ Condition et on le formate de manière à pouvoir l'évaluer 
-      finalCondition = this.formatCondition(r.ruleCondition.textCondition);
-      // on le sauvegarde dans la règle
-      r.finalCondition = finalCondition
-      // ensuite on vérifie si dans la condition finale il y a des Input Param manquants
-      let splittedFinalCondition = finalCondition.split(" ")
-
-      splittedFinalCondition.forEach(input => {
-        // supprime les ! de l'input
-        var re = /[(!)\s]+/g;
-        let paramTobeChecked = input.replace(re, "")
-        
-        //si l'input param n'est pas dans la liste des KnownParam du form alors on met à jour les tableaux de suivi
-        if (this.listOfKnownParamFromTheForm.indexOf(paramTobeChecked) == -1 ) {
-          console.log('ajout de  '+ paramTobeChecked)
-          if (this.unknownInput.indexOf(paramTobeChecked) == -1) this.unknownInput.push(paramTobeChecked);
-          if (this.commandsWithUnknownInput.indexOf(r.ruleCondition.id) == -1) this.commandsWithUnknownInput.push(r.ruleCondition.id)
-        }
-      })
-      
-    }); // fin du foreach 
-
-    return { unknownInput: this.unknownInput, rulesWithUnknownInput: this.commandsWithUnknownInput };
-  }
-
 
   formatCondition(condition: string) {
     let finalCondition: string = "";
@@ -162,34 +111,6 @@ export class NewCheckRulesService {
       try {
         if (eval(conditionToBeEvaluated)) {
           //console.log("Rule :" + r.idRule + " True => " + r.conditionFormated);
-/*
-          let commandOutputParam : string ="";
-          let outputCommand : boolean = false;
-          r.outputValue = "";
-          // parcour de la chaine de caratère command pour en extraire les infos
-          for (let index = 0; index < r.command.length; index++) {
-            const char = r.command[index];
-            if (char=='['){
-              // debut d'un paramètre => on enregistre la commande dans commandOutputParam
-              commandOutputParam = char;
-              outputCommand = true;
-              continue;
-            }
-            if (char==']'){
-              // fin d'un paramètre
-              commandOutputParam += char;
-              outputCommand = false;
-              r.outputValue += this.getOutputParameter(commandOutputParam);
-              continue;
-            }
-            if (outputCommand) {
-              commandOutputParam += char;
-            }else{
-              // le char est directement repris dans le outputValue
-              //console.log(char)
-              r.outputValue += char;
-            }
-          } // fin du for */
           rulesToBeApplied.push(r);
           
         } else {
@@ -354,39 +275,5 @@ export class NewCheckRulesService {
     //return rulesToEvaluate
   }
   
-  //Méthode qui regarde dans les sous-conditions les Input manquants
-  /*
-  checkSubCondition(rules: NewRule[]): Observable<string[]> {
-    const observables: Observable<void>[] = [];
-  
-    rules.forEach(r => {
-      const observable = this.newRuleService.getSubConditionsFromDB(r.ruleCondition.id).pipe(
-        map(subCond => {
-          subCond.forEach(sc => {
-            let scformated = this.formatCondition(sc.textCondition);
-            let scformatedSplitted = scformated.split(" ");
-  
-            scformatedSplitted.forEach(input => {
-              var re = /[(!)\s]+/g;
-              let paramTobeChecked = input.replace(re, "");
-  
-              if (this.listOfKnownParam.indexOf(paramTobeChecked) == -1) {
-                if (this.unknownInput.indexOf(paramTobeChecked) == -1) {
-                  this.unknownInput.push(paramTobeChecked);
-                }
-              }
-            });
-          });
-        })
-      );
-  
-      observables.push(observable);
-    });
-  
-    // permet d'attendre que l'ensemble des requêtes en BDD soient finies
-    return forkJoin(observables).pipe(
-      map(() => this.unknownInput)
-    );
-  }*/
 
 }

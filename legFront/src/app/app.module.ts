@@ -14,7 +14,7 @@ import { RulesAppliedListComponent } from './pages/preview/rules-applied-list/ru
 import { StyleComponent } from './pages/style/style.component';
 import { PreviewDisplayPageComponent } from './pages/preview/preview-display-page/preview-display-page.component';
 import { ConditionComponent } from './pages/condition/condition.component';
-import { CommandComponent } from './pages/command/command.component';
+import { OutputComponent } from './pages/output/output.component';
 import { RulesComponent } from './pages/rules/rules.component';
 import { EditRuleComponent } from './pages/edit-rule/edit-rule.component';
 import { DisplayComponent } from './pages/display/display.component';
@@ -32,7 +32,7 @@ import { DisplayRulesAppliedComponent } from './pages/display/display-rules-appl
     StyleComponent,
     PreviewDisplayPageComponent,
     ConditionComponent,
-    CommandComponent,
+    OutputComponent,
     RulesComponent,
     EditRuleComponent,
     DisplayComponent,

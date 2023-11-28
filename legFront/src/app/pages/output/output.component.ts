@@ -1,22 +1,22 @@
 import { Component, HostListener } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
-import { Command } from 'src/app/model/command';
-import { CommandService } from 'src/app/shared/command.service';
+import { Output } from 'src/app/model/output';
+import { OutputService } from 'src/app/shared/output.service';
 import { AppDataState, RuleStateEnum } from 'src/app/shared/rules.state';
 
 declare var window: any;
 
 @Component({
-  selector: 'app-command',
-  templateUrl: './command.component.html',
-  styleUrls: ['./command.component.css']
+  selector: 'app-output',
+  templateUrl: './output.component.html',
+  styleUrls: ['./output.component.css']
 })
-export class CommandComponent {
-  commandDataState$!: Observable<AppDataState<Command[]>>;
+export class OutputComponent {
+  commandDataState$!: Observable<AppDataState<Output[]>>;
   readonly RuleStateEnum = RuleStateEnum;
-  allCommands: Command[] = [];
-  filteredCommands: Command[] = [];
+  allOutputs: Output[] = [];
+  filteredCommands: Output[] = [];
   filterFormGroup: FormGroup = new FormGroup(
     {
       name: new FormControl(""), //valeur par defaut du champ de recherche
@@ -42,13 +42,13 @@ export class CommandComponent {
       $event.target.innerText = this.oldValue
     }
   }
-  constructor(private commandService : CommandService) { }
+  constructor(private outputService : OutputService) { }
 
   ngOnInit(): void {
     this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
-    this.commandDataState$ = this.commandService.getCommandsFromDB().pipe(
+    this.commandDataState$ = this.outputService.getOutputsFromDB().pipe(
       map(data => {
-        this.allCommands = data;
+        this.allOutputs = data;
         this.filteredCommands = [...data];
         return ({ dataState: RuleStateEnum.LOADED, data: data });
       }),
@@ -66,7 +66,7 @@ export class CommandComponent {
       
       command[field] = newValue;
       
-      this.commandService.modifyCommand(command).subscribe({
+      this.outputService.modifyOutput(command).subscribe({
         next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
           this.openFeedBackUser("Change saved Succesfully", "bg-success");
         },
@@ -94,16 +94,16 @@ export class CommandComponent {
     this.userFeedBackToast.hide();
   }
 
-  deleteCommand(command: Command) {
+  deleteCommand(command: Output) {
     let conf = confirm("Are you sure?");
     if (conf == false) return;
 
-    this.commandService.deleteCommand(command.id).subscribe({
+    this.outputService.deleteOutput(command.id).subscribe({
       next: (data) => {// affichage sous forme de modal que tout c'est bien passé
         this.openFeedBackUser("Deletion done Succesfully", "bg-success");
         // ici on rafraichi la liste de la copie locale des styles 
-        let index = this.allCommands.indexOf(command);
-        this.allCommands.splice(index, 1); // ici on supprime l'element dans la copie locale pour le composant
+        let index = this.allOutputs.indexOf(command);
+        this.allOutputs.splice(index, 1); // ici on supprime l'element dans la copie locale pour le composant
         index = this.filteredCommands.indexOf(command);
         this.filteredCommands.splice(index, 1);
       },
@@ -113,15 +113,15 @@ export class CommandComponent {
     })
   }
 
-  duplicateCommand(command: Command){
-    let newCommand : Command = {...command};
+  duplicateCommand(command: Output){
+    let newCommand : Output = {...command};
     newCommand.id=0;
     newCommand.name=command.name+' (copy)'
     
-    this.commandService.modifyCommand(newCommand).subscribe({
+    this.outputService.modifyOutput(newCommand).subscribe({
       next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
         this.openFeedBackUser("Change saved Succesfully", "bg-success");
-        this.allCommands.push(data);
+        this.allOutputs.push(data);
         this.filteredCommands.push(data);
         //this.conditions.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
       },
@@ -133,7 +133,7 @@ export class CommandComponent {
 
   onFilterChange(){
     if (this.filterFormGroup.get('inputGroup')?.value=='allGroups') {
-      this.filteredCommands = this.allCommands
+      this.filteredCommands = this.allOutputs
     }
     else {
       //this.filteredCommands = this.allCommands.filter(c => c.inputGroup==this.filterFormGroup.get('inputGroup')?.value);

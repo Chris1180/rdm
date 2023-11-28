@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CommandComponent } from './command.component';
+import { OutputComponent } from './output.component';
 
 describe('CommandComponent', () => {
-  let component: CommandComponent;
-  let fixture: ComponentFixture<CommandComponent>;
+  let component: OutputComponent;
+  let fixture: ComponentFixture<OutputComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CommandComponent]
+      declarations: [OutputComponent]
     });
-    fixture = TestBed.createComponent(CommandComponent);
+    fixture = TestBed.createComponent(OutputComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

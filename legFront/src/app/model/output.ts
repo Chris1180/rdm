@@ -1,4 +1,4 @@
-export interface Command{
+export interface Output{
     id : number;
     name : string;
     description : string;
