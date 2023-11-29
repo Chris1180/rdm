@@ -197,7 +197,7 @@ export class DisplayComponent implements OnInit{
     let filteredRulesByPart : NewRule[] = this.NewRuleService.getAllRules().filter(r => r.part == this.partSelectedForPreview);
     // on réinitialize la liste des inputMissingParamMap
     this.inputMissingParamMap.clear();
-    //console.log(filteredRulesByPart)
+    console.log(filteredRulesByPart)
     this.rulesToBeEvaluated = []
     // on mappe les valeurs du formulaire pour l'eval
     this.mapInputValueFromTheForm();
@@ -216,18 +216,21 @@ export class DisplayComponent implements OnInit{
         var re = new RegExp("\\b" + key + "\\b", "gi"); 
         formattedCondition = formattedCondition.replace(re , value.toString());             
       }
-      //console.log('apres remplacement des valeurs du formulaire')
+      //console.log('apres remplacement des valeurs du formulaire pour la règle: '+r.id)
       //console.log(formattedCondition)
       try {   
         //console.log( 'pas de pb avec : '+formattedCondition)
-        // si la condition possède des sous-conditions il faut aussi vérifier les inputs manquants des sous-conditions
-        if (eval(formattedCondition) && r.nestedCondition){
+        
+        if (eval(formattedCondition)){
           this.rulesToBeEvaluated.push(r)
-          this.getMissingInputFromSubCond(r).subscribe(inputValues => {
-            inputValues.forEach(iv=>{
-              if (!this.inputMissingParamMap.get(iv)) this.inputMissingParamMap.set(iv, false)
+          // si la condition possède des sous-conditions il faut aussi vérifier les inputs manquants des sous-conditions
+          if(r.nestedCondition){
+            this.getMissingInputFromSubCond(r).subscribe(inputValues => {
+              inputValues.forEach(iv=>{
+                if (!this.inputMissingParamMap.get(iv)) this.inputMissingParamMap.set(iv, false)
+              })
             })
-          })
+          }  
         } 
       } catch (e) { // It is a SyntaxError
         this.rulesToBeEvaluated.push(r)
