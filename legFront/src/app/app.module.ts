@@ -13,7 +13,7 @@ import { NgbDateCustomParserFormatter } from './shared/ngbDateCustomParserFormat
 import { RulesAppliedListComponent } from './pages/preview/rules-applied-list/rules-applied-list.component';
 import { StyleComponent } from './pages/style/style.component';
 import { PreviewDisplayPageComponent } from './pages/preview/preview-display-page/preview-display-page.component';
-import { ConditionComponent } from './pages/condition/condition.component';
+import { ConditionComponent } from './pages/input/input.component';
 import { OutputComponent } from './pages/output/output.component';
 import { RulesComponent } from './pages/rules/rules.component';
 import { EditRuleComponent } from './pages/edit-rule/edit-rule.component';

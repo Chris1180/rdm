@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ConditionComponent } from './condition.component';
+import { ConditionComponent } from './input.component';
 
 describe('ConditionComponent', () => {
   let component: ConditionComponent;

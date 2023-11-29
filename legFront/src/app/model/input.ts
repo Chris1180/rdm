@@ -1,4 +1,4 @@
-export interface Condition {
+export interface Input {
     id : number;
     name : string;
     description : string;

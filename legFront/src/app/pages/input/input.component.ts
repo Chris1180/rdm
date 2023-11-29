@@ -1,23 +1,23 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { FormControl, FormGroup, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup} from '@angular/forms';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
-import { Condition } from 'src/app/model/condition';
-import { ConditionService } from 'src/app/shared/condition.service';
+import { Input } from 'src/app/model/input';
+import { InputService } from 'src/app/shared/input.service';
 import { AppDataState, RuleStateEnum } from 'src/app/shared/rules.state';
 
 declare var window: any;
 
 @Component({
-  selector: 'app-condition',
-  templateUrl: './condition.component.html',
-  styleUrls: ['./condition.component.css']
+  selector: 'app-input',
+  templateUrl: './input.component.html',
+  styleUrls: ['./input.component.css']
 })
 export class ConditionComponent implements OnInit {
 
-  conditionDataState$!: Observable<AppDataState<Condition[]>>;
+  conditionDataState$!: Observable<AppDataState<Input[]>>;
   readonly RuleStateEnum = RuleStateEnum;
-  allConditions: Condition[] = [];
-  filteredConditions: Condition[] = [];
+  allInputs: Input[] = [];
+  filteredInputs: Input[] = [];
   listInputGroups: string[] = [];
   filterFormGroup: FormGroup = new FormGroup(
     {
@@ -44,15 +44,15 @@ export class ConditionComponent implements OnInit {
       $event.target.innerText = this.oldValue
     }
   }
-  constructor(private conditionService: ConditionService) { }
+  constructor(private InputService: InputService) { }
 
   ngOnInit(): void {
     this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
-    this.conditionDataState$ = this.conditionService.getConditionsFromDB().pipe(
+    this.conditionDataState$ = this.InputService.getInputsFromDB().pipe(
       map(data => {
-        this.allConditions = data;
-        this.filteredConditions = [...data];
-        this.listInputGroups = [...new Set(this.allConditions.map(c => c.inputGroup))];
+        this.allInputs = data;
+        this.filteredInputs = [...data];
+        this.listInputGroups = [...new Set(this.allInputs.map(c => c.inputGroup))];
         return ({ dataState: RuleStateEnum.LOADED, data: data });
       }),
       startWith({ dataState: RuleStateEnum.LOADING }),
@@ -64,9 +64,9 @@ export class ConditionComponent implements OnInit {
     if(condition[field]!=newValue.trim()){
       
       condition[field] = newValue.trim();
-      console.log("Changement détecté pour la condition: "+condition.name)
+      //console.log("Changement détecté pour l\'input: "+condition.name)
 
-      this.conditionService.modifyCondition(condition).subscribe({
+      this.InputService.modifyInput(condition).subscribe({
         next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
           this.openFeedBackUser("Change saved Succesfully", "bg-success");
         },
@@ -94,18 +94,18 @@ export class ConditionComponent implements OnInit {
     this.userFeedBackToast.hide();
   }
 
-  deleteCondition(condition: Condition) {
+  deleteCondition(condition: Input) {
     let conf = confirm("Are you sure?");
     if (conf == false) return;
 
-    this.conditionService.deleteCondition(condition.id).subscribe({
+    this.InputService.deleteInput(condition.id).subscribe({
       next: (data) => {// affichage sous forme de modal que tout c'est bien passé
         this.openFeedBackUser("Deletion done Succesfully", "bg-success");
         // ici on rafraichi la liste de la copie locale des styles 
-        let index = this.allConditions.indexOf(condition);
-        this.allConditions.splice(index, 1); // ici on supprime l'element dans la copie locale pour le composant
-        index = this.filteredConditions.indexOf(condition);
-        this.filteredConditions.splice(index, 1);
+        let index = this.allInputs.indexOf(condition);
+        this.allInputs.splice(index, 1); // ici on supprime l'element dans la copie locale pour le composant
+        index = this.filteredInputs.indexOf(condition);
+        this.filteredInputs.splice(index, 1);
       },
       error: (err) => {
         this.openFeedBackUser("Error during deletion process in Back-End", "bg-danger")
@@ -113,17 +113,17 @@ export class ConditionComponent implements OnInit {
     })
   }
 
-  duplicateCondition(condition: Condition){
+  duplicateCondition(condition: Input){
     //let newStyle : Style =  { id: 0, name: style.name+'(copy)', margintop: style.margintop, marginleft: style.marginleft, relatif: style.relatif, font: style.font, size: style.size, bold: style.bold, italic: style.italic};
-    let newCondition : Condition = {...condition};
+    let newCondition : Input = {...condition};
     newCondition.id=0;
     newCondition.name=condition.name+' (copy)'
     
-    this.conditionService.modifyCondition(newCondition).subscribe({
+    this.InputService.modifyInput(newCondition).subscribe({
       next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
         this.openFeedBackUser("Change saved Succesfully", "bg-success");
-        this.allConditions.push(data);
-        this.filteredConditions.push(data);
+        this.allInputs.push(data);
+        this.filteredInputs.push(data);
         //this.conditions.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
       },
       error: (err) => {
@@ -134,10 +134,10 @@ export class ConditionComponent implements OnInit {
 
   onFilterChange(){
     if (this.filterFormGroup.get('inputGroup')?.value=='allGroups') {
-      this.filteredConditions = this.allConditions
+      this.filteredInputs = this.allInputs
     }
     else {
-      this.filteredConditions = this.allConditions.filter(c => c.inputGroup==this.filterFormGroup.get('inputGroup')?.value);
+      this.filteredInputs = this.allInputs.filter(c => c.inputGroup==this.filterFormGroup.get('inputGroup')?.value);
     }
   }
 }

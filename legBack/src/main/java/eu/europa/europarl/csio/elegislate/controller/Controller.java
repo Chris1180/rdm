@@ -131,18 +131,18 @@ public class Controller {
 	}
 		
 	
-	@GetMapping ("/getAllConditions")
+	@GetMapping ("/getAllInputs")
 	public List<Condition> getAllConditions() {
 		return conditionRepository.findAll();	
 	}
-	@PostMapping("/newCondition")
+	@PostMapping("/newInput")
 	public Condition addNewCondition(@RequestBody Condition condition) {
 		if (condition.getId()==0) {
 			condition.setId(null);
 		}
 		return conditionRepository.save(condition);
 	}
-	@PostMapping("/deleteCondition/{id}")
+	@PostMapping("/deleteInput/{id}")
 	public void deleteCondition(@PathVariable int id) {
 		conditionRepository.deleteById(id);
 		

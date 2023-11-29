@@ -2,13 +2,13 @@ import { KeyValue } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
-import { Condition } from 'src/app/model/condition';
+import { Input } from 'src/app/model/input';
 
 import { AuthorOfProposal } from 'src/app/model/outputParameters/authorOfProposal';
 import { OutputLanguage } from 'src/app/model/outputParameters/outputLanguage';
 import { Rule } from 'src/app/model/rule';
 import { CheckRulesService } from 'src/app/shared/check-rules.service';
-import { ConditionService } from 'src/app/shared/condition.service';
+import { InputService } from 'src/app/shared/input.service';
 import { RulesService } from 'src/app/shared/rules.service';
 import { AppDataState, RuleStateEnum } from 'src/app/shared/rules.state';
 
@@ -23,16 +23,16 @@ export class PreviewComponent implements OnInit {
 
   rulesDataState$!: Observable<AppDataState<Rule[]>>;
   readonly RuleStateEnum=RuleStateEnum;
-  conditionDataState$!: Observable<AppDataState<Condition[]>>;
+  conditionDataState$!: Observable<AppDataState<Input[]>>;
   
   previewForm! : UntypedFormGroup;
   
-  procedureType : Condition[] = []
-  documentType : Condition[] | undefined;
-  documentStatus  : Condition[] | undefined;  
-  reading : Condition[] | undefined;
-  docLegSpecialization : Condition[] | undefined;
-  language : Condition[] | undefined;
+  procedureType : Input[] = []
+  documentType : Input[] | undefined;
+  documentStatus  : Input[] | undefined;  
+  reading : Input[] | undefined;
+  docLegSpecialization : Input[] | undefined;
+  language : Input[] | undefined;
     
   // liste des langues utilisées dans les output param
   outputLanguage = OutputLanguage; 
@@ -47,7 +47,7 @@ export class PreviewComponent implements OnInit {
   allRules! : Rule[];
   rulesApplied! : Rule[];
 
-  allConditions : Array<Condition> = []
+  allConditions : Array<Input> = []
 
   errorMessage?: string;
   // modal pour demander des valeurs suplémentaires
@@ -106,7 +106,7 @@ export class PreviewComponent implements OnInit {
 
 
 
-  constructor(private checkRules: CheckRulesService, private ruleService: RulesService, private conditionService: ConditionService) { 
+  constructor(private checkRules: CheckRulesService, private ruleService: RulesService, private conditionService: InputService) { 
     const numRows = this.ListOfCommitteeMap.size;
     const numCols = this.headers.length;
   }
@@ -124,7 +124,7 @@ export class PreviewComponent implements OnInit {
       catchError(err=>of({dataState:RuleStateEnum.ERROR, errorMessage:err.message}))
     )
     // pour récupérer la liste des inputs param de la base de donnée
-    this.conditionDataState$ = this.conditionService.getConditionsFromDB().pipe(
+    this.conditionDataState$ = this.conditionService.getInputsFromDB().pipe(
       map(data => {
         return ({ dataState: RuleStateEnum.LOADED, data: data });
       }),

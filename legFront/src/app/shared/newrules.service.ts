@@ -4,7 +4,7 @@ import { Observable, of } from "rxjs";
 import { NewRule } from "../model/newrule";
 import { PageRules } from "../model/pageRules";
 import { RuleCondition } from "../model/rulecondition";
-import { RuleCommand } from "../model/rulecommand";
+
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +18,6 @@ export class NewRulesService {
   private parts! : Array<string>;
   private labels! : Array<string>;
   public filters!:any;
-  //private conditions! : Array<string>;
-  //private commands! : Array<string>;
 
 
 

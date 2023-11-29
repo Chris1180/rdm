@@ -46,7 +46,7 @@
                         </th>
                         <th></th>
                     </tr>
-                    <tr *ngFor="let c of filteredConditions">
+                    <tr *ngFor="let c of filteredInputs">
                         <td #id contentEditable (blur)="editConditionOnline(c, id.innerText.trim(), 'id')">{{c.id}}</td>
                         <td #name contentEditable (blur)="editConditionOnline(c, name.innerText.trim(), 'name')">{{c.name}}</td>
                         <td #description contentEditable (blur)="editConditionOnline(c, description.innerText.trim(), 'description')">{{c.description}}</td>

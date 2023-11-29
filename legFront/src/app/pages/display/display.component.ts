@@ -2,12 +2,12 @@ import { KeyValue } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, catchError, forkJoin, map, of, startWith } from 'rxjs';
-import { Condition } from 'src/app/model/condition';
+import { Input } from 'src/app/model/input';
 import { NewRule } from 'src/app/model/newrule';
 import { AuthorOfProposal } from 'src/app/model/outputParameters/authorOfProposal';
 import { OutputLanguage } from 'src/app/model/outputParameters/outputLanguage';
 import { RuleToEvaluate } from 'src/app/model/ruleToEvaluate';
-import { ConditionService } from 'src/app/shared/condition.service';
+import { InputService } from 'src/app/shared/input.service';
 import { NewCheckRulesService } from 'src/app/shared/newCheckRules.service';
 import { NewRulesService } from 'src/app/shared/newrules.service';
 import { AppDataState, RuleStateEnum } from 'src/app/shared/rules.state';
@@ -22,17 +22,17 @@ declare var window: any;
 export class DisplayComponent implements OnInit{
   rulesDataState$!: Observable<AppDataState<NewRule[]>>;
   readonly RuleStateEnum=RuleStateEnum;
-  conditionDataState$!: Observable<AppDataState<Condition[]>>;
+  conditionDataState$!: Observable<AppDataState<Input[]>>;
   
   previewForm! : FormGroup;
   
-  allConditions : Condition[] = []; // toutes les conditions (input) de la DB
-  procedureType : Condition[] = [];
-  documentType : Condition[] = [];
-  documentStatus  : Condition[] = [];  
-  reading : Condition[] = [];
-  docLegSpecialization : Condition[] = [];
-  language : Condition[] = [];
+  allConditions : Input[] = []; // toutes les conditions (input) de la DB
+  procedureType : Input[] = [];
+  documentType : Input[] = [];
+  documentStatus  : Input[] = [];  
+  reading : Input[] = [];
+  docLegSpecialization : Input[] = [];
+  language : Input[] = [];
   // pour l'évaluation des condition
   inputParamMap: Map<string, boolean> = new Map();
 
@@ -105,7 +105,7 @@ export class DisplayComponent implements OnInit{
   headers = ['Authoring Committee \n (ACJOINTCOM)\n [AUTHORING COMMITTEE]', 'Lead Committee \n (LCJOINTCOM) \n [LEAD COMMITTEE]', 'Drafting Letter \n (LETTER(S)) \n ', 'Drafting Opinion \n (OPINION(S)) \n ', 'Drafting Position \n (POSITION(S)) \n ', 'List Of Assoc \n (ASSOCOM) \n ', 'Rapporteur(s) \n (AUTHCOM_...) (ASSOCOM_...)\n[LIST OF RAPPORTEURS] [RAPPORTEURS / LIST OF ASSOC]']
   
 
-  constructor(private NewRuleService: NewRulesService, private conditionService: ConditionService, private newCheckRulesService: NewCheckRulesService) { 
+  constructor(private NewRuleService: NewRulesService, private conditionService: InputService, private newCheckRulesService: NewCheckRulesService) { 
     const numRows = this.ListOfCommitteeMap.size;
     const numCols = this.headers.length;
   }
@@ -122,7 +122,7 @@ export class DisplayComponent implements OnInit{
       catchError(err=>of({dataState:RuleStateEnum.ERROR, errorMessage:err.message}))
     )
     // pour récupérer la liste des inputs param de la base de donnée
-    this.conditionDataState$ = this.conditionService.getConditionsFromDB().pipe(
+    this.conditionDataState$ = this.conditionService.getInputsFromDB().pipe(
       map(data => {
         return ({ dataState: RuleStateEnum.LOADED, data: data });
       }),

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Rule } from '../model/rule';
 import { OutputParametersList } from '../model/outputParameters/outputParametersList';
 import { Lang } from '../model/lang';
-import { ConditionService } from './condition.service';
-import { Condition } from '../model/condition';
+import { InputService } from './input.service';
+import { Input } from '../model/input';
 
 @Injectable({
   providedIn: 'root'
@@ -16,18 +16,17 @@ export class CheckRulesService {
   unknownInput: string[] = [];
   rulesWithUnknownInput: number[] = [];
   unknownOutput: string[] = [];
-  listOfKnownParam: string[] = ["||", "&&", "true", "false" , ""]
+  listOfKnownInputParam: string[] = ["||", "&&", "true", "false" , ""]
 
-  constructor(private conditionService: ConditionService) {
-    let conditionsFromDB : Condition[];
-    this.conditionService.getConditionsFromDB().subscribe({
-      next: (data) => {conditionsFromDB = data},
+  constructor(private conditionService: InputService) {
+    let inputsFromDB : Input[];
+    this.conditionService.getInputsFromDB().subscribe({
+      next: (data) => {inputsFromDB = data},
       error:(err) => {
         console.log("Error during back end request for list od conditions")
       },
       complete: ()=>{
-        conditionsFromDB.forEach(c=>this.listOfKnownParam.push(c.name));
-        //console.log(this.listOfKnownParam)
+        inputsFromDB.forEach(c=>this.listOfKnownInputParam.push(c.name));
       }
     }
       
@@ -101,7 +100,7 @@ export class CheckRulesService {
         var re = /[!)\s]+/g; 
         let paramTobeChecked = param.replace(re, "")
         //console.log ("param to be checked : "+paramTobeChecked)
-        if (this.listOfKnownParam.indexOf(paramTobeChecked) == -1) {
+        if (this.listOfKnownInputParam.indexOf(paramTobeChecked) == -1) {
           if(this.unknownInput.indexOf(paramTobeChecked) == -1)
           this.unknownInput.push(paramTobeChecked);
           if(this.rulesWithUnknownInput.indexOf(id) == -1)

@@ -1,10 +1,9 @@
 import { Injectable } from "@angular/core";
 import { NewRule } from "../model/newrule";
-import { ConditionService } from "./condition.service";
-import { Condition } from "../model/condition";
+import { InputService } from "./input.service";
+import { Input } from "../model/input";
 import { Output } from "../model/output";
 import { OutputService } from "./output.service";
-import { outputParametersListFromTheForm } from "../model/outputParameters/outputParametersListFromTheForm";
 import { NewRulesService } from "./newrules.service";
 import { Observable, forkJoin, map, of } from "rxjs";
 import { RuleToEvaluate } from "../model/ruleToEvaluate";
@@ -20,16 +19,16 @@ export class NewCheckRulesService {
   unknownInput: string[] = [];
   //commandsWithUnknownInput: number[] = [];
   unknownOutput: string[] = [];
-  listOfKnownParam: string[] = ["||", "&&", "true", "false", ""]
+  listOfKnownInputParam: string[] = ["||", "&&", "true", "false", ""]
   listOfOutputParamFromDB: Output[] = [];
   
 
-  constructor(private conditionService: ConditionService, private outputService: OutputService, private newRuleService: NewRulesService) {
+  constructor(private inputService: InputService, private outputService: OutputService, private newRuleService: NewRulesService) {
     // récupération des conditions (input param) de la Base de donnée dans le tableau listOfKnownParam
-    this.conditionService.getConditionsFromDB().subscribe({
-      next: (conditionsFromDB: Condition[]) => { 
-        conditionsFromDB.forEach(c => {
-        this.listOfKnownParam.push(c.name)
+    this.inputService.getInputsFromDB().subscribe({
+      next: (inputsFromDB: Input[]) => { 
+        inputsFromDB.forEach(c => {
+        this.listOfKnownInputParam.push(c.name)
         }); 
       },
       error: (err) => {
@@ -142,57 +141,57 @@ export class NewCheckRulesService {
     // on regarde si le paramètre est dans le formulaire et sinon (default) on le met dans le tableau des unknownOutput
     // pour le demandé à l'utilisateur
     switch (outputParamToBeChecked){
-      case outputParametersListFromTheForm['PROCEDURE NUMBER']:
+      case 'PROCEDURE NUMBER':
         return previewForm.get('procedureNumber').value.trim()==""? initialValue : previewForm.get('procedureNumber').value;
-      case outputParametersListFromTheForm['GENERATING DATE']:
+      case 'GENERATING DATE':
         return  previewForm.get('generatingDate').value.day + "." + previewForm.get('generatingDate').value.month + "." + previewForm.get('generatingDate').value.year;
-      case outputParametersListFromTheForm['SEND TO TOP DATE']:
+      case 'SEND TO TOP DATE':
         return previewForm.get('sendToTopDate').value.day + "." + previewForm.get('sendToTopDate').value.month + "." + previewForm.get('sendToTopDate').value.year
-      case outputParametersListFromTheForm['TABLING DATE']:
+      case 'TABLING DATE':
         return previewForm.get('tablingDate').value.day + "." + previewForm.get('tablingDate').value.month + "." + previewForm.get('tablingDate').value.year
-      case outputParametersListFromTheForm['PE NUMBER']:
+      case 'PE NUMBER':
         return previewForm.get('peNumber').value;
-      case outputParametersListFromTheForm['AXX NUMBER']:
+      case 'AXX NUMBER':
         return previewForm.get('axxNumber').value.trim()==""? initialValue : previewForm.get('axxNumber').value;
-      case outputParametersListFromTheForm['EPADES REF']:
+      case 'EPADES REF':
         return previewForm.get('epadesRef').value;
-      case outputParametersListFromTheForm['DOC LANGUAGE']:
+      case 'DOC LANGUAGE':
         return previewForm.get('docLanguage').value;
-      case outputParametersListFromTheForm['PREFIX TITLE']:
+      case 'PREFIX TITLE':
         return previewForm.get('prefixTitle').value;
-      case outputParametersListFromTheForm['ITER TITLE']:
+      case 'ITER TITLE':
         return previewForm.get('iterTitle').value.trim()==""? initialValue : previewForm.get('iterTitle').value;
-      case outputParametersListFromTheForm['DOC COM REF']:
+      case 'DOC COM REF':
         return previewForm.get('docComRef').value.trim()==""? initialValue : previewForm.get('docComRef').value;
-      case outputParametersListFromTheForm['DOC COUNCIL REF']:
+      case 'DOC COUNCIL REF':
         return previewForm.get('docCouncilRef').value.trim()==""? initialValue : previewForm.get('docCouncilRef').value;
-      case outputParametersListFromTheForm['AUTHOR OF PROPOSAL']:
+      case 'AUTHOR OF PROPOSAL':
         return previewForm.get('authorOfProposal').value.join(", ");
 
       // valeur du tableau  
-      case outputParametersListFromTheForm['AUTHORING COMMITTEE']:
+      case 'AUTHORING COMMITTEE':
         return previewForm.get('authoringCommittee').value;
-      case outputParametersListFromTheForm['LEAD COMMITTEE']:
+      case 'LEAD COMMITTEE':
         // le "for the" est ajouté dans l'enum pour les comités simples
         return previewForm.get('leadCommittee').value;
-      case outputParametersListFromTheForm['RAPPORTEURS / LIST OF ASSOC']:
+      case 'RAPPORTEURS / LIST OF ASSOC':
         // formattage de la sortie ecran: 'noms des rapporteurs' , committe on 'le nom du committee'
         let outputValue: string = '';
         for (let index = 0; index < previewForm.get('listOfAssoc').value.length; index++) {
           outputValue += previewForm.get('listOfAssocRapporteurs').value[index]+ ', committee on ' + previewForm.get('listOfAssoc').value[index] + "\n";
         }
         return outputValue;
-      case outputParametersListFromTheForm['LIST OF RAPPORTEURS']:
+      case 'LIST OF RAPPORTEURS':
         return previewForm.get('listOfRapporteurs').value.join(", ");
       
       // to be checked if used
-      case outputParametersListFromTheForm['PREFIX LIST OF RAPPORTEURS']:
+      case 'PREFIX LIST OF RAPPORTEURS':
         if (initialValue=='') return previewForm.prefixListOfRapporteurs;
         else {
           previewForm.prefixListOfRapporteurs = initialValue;
           return '';
         }
-      case outputParametersListFromTheForm['SUFFIX LIST OF RAPPORTEURS']:
+      case 'SUFFIX LIST OF RAPPORTEURS':
         if (initialValue=='') return previewForm.suffixListOfRapporteurs;
         else {
           previewForm.suffixListOfRapporteurs = initialValue;
@@ -200,17 +199,17 @@ export class NewCheckRulesService {
         }
       // end of to be checked
       
-      case outputParametersListFromTheForm['COMMITTEE HAVING OPINION']:
+      case 'COMMITTEE HAVING OPINION':
         return 'Committee on '+previewForm.get('opinions').value;
-      case outputParametersListFromTheForm['LIST OF COMMITTEES HAVING OPINION']:
+      case 'LIST OF COMMITTEES HAVING OPINION':
         return 'the Committee on '+previewForm.get('opinions').value.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
-      case outputParametersListFromTheForm['COMMITTEE HAVING POSITION']:
+      case 'COMMITTEE HAVING POSITION':
         return 'the Committee on '+previewForm.get('positions').value;
-      case outputParametersListFromTheForm['LIST OF COMMITTEES HAVING POSITION']:
+      case 'LIST OF COMMITTEES HAVING POSITION':
         return 'the Committee on '+previewForm.get('positions').value.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
-      case outputParametersListFromTheForm['COMMITTEE HAVING LETTER']:
+      case 'COMMITTEE HAVING LETTER':
         return 'the Committee on '+previewForm.get('letters').value;
-      case outputParametersListFromTheForm['LIST OF COMMITTEES HAVING LETTER']:
+      case 'LIST OF COMMITTEES HAVING LETTER':
         return 'the Committee on '+previewForm.get('letters').value.join(", the Committee on ").replace( /(.*)\,/gm, '$1 and');
       default:
         // ajout du paramètre manquant si pas déjà dans la liste
