@@ -57,7 +57,8 @@ export class DisplayComponent implements OnInit{
   inputModal: any;
   outputModal: any;
   outputMissingParamMap = new Map<string, string>();
-  rulesWithUnknownInput: number[] = [];
+  outputMissingParamMapArchive = new Map<string, string>();
+  //rulesWithUnknownInput: number[] = [];
   inputMissingParamMap = new Map<string, boolean>();
   // pour le tableau des inputs et le rendu
   ListOfCommitteeMap: Map<string, string> = new Map<string,string>([
@@ -197,7 +198,7 @@ export class DisplayComponent implements OnInit{
     let filteredRulesByPart : NewRule[] = this.NewRuleService.getAllRules().filter(r => r.part == this.partSelectedForPreview);
     // on réinitialize la liste des inputMissingParamMap
     this.inputMissingParamMap.clear();
-    console.log(filteredRulesByPart)
+    // console.log(filteredRulesByPart)
     this.rulesToBeEvaluated = []
     // on mappe les valeurs du formulaire pour l'eval
     this.mapInputValueFromTheForm();
@@ -420,6 +421,11 @@ export class DisplayComponent implements OnInit{
     for (const [key, value] of this.outputMissingParamMap) {
       console.log(key+' '+value);
     }*/
+    // on sauvegarde les valeurs du map outputMissingParamMap dans l'archive outputMissingParamMapArchive
+    for (const [key, value] of this.outputMissingParamMap){
+      // mise à jour de l'archive ou ajout si besoin
+      this.outputMissingParamMapArchive.set(key, value)
+    }
 
     // il faut maintenant passer en revue les commandes du tableau rulesToBeEvaluated pour modifier les outputvalues
     this.rulesToBeApplied.forEach(rule => {
@@ -532,22 +538,22 @@ export class DisplayComponent implements OnInit{
       }
     )// fin du foreach
 
-    console.log('liste finale des règles DTO avant le preview')
-    console.log(this.rulesToBeApplied) 
-    console.log(this.newCheckRulesService.unknownOutput)
+    //console.log('liste finale des règles DTO avant le preview')
+    //console.log(this.rulesToBeApplied) 
+    //console.log(this.newCheckRulesService.unknownOutput)
     
     let outputMissingParam: string[] = this.newCheckRulesService.unknownOutput;
-    this.outputMissingParamMap.clear()
+    this.outputMissingParamMap.clear();
+    // on initialise la map outputMissingParamMap avec une valeur par défaut vide ou une valeur déjà saisie précedement
+    // et conservé dans outputMissingParamMapArchive    
     outputMissingParam.forEach(unknownOutput => {
-      this.outputMissingParamMap.set(unknownOutput,"")
+      if(this.outputMissingParamMapArchive.has(unknownOutput)){
+        //console.log('trouvé dans l\'archive')
+        //console.log(unknownOutput + ' à pour valeur' + this.outputMissingParamMapArchive.get(unknownOutput))
+        this.outputMissingParamMap.set(unknownOutput, this.outputMissingParamMapArchive.get(unknownOutput)!)
+      }else this.outputMissingParamMap.set(unknownOutput,"")
     });
-    // initialisation de la liste des paramètres output manquants si pas déjà fait (si déjà fait alors on garde les anciennes valeurs) 
-    /*
-    if (this.outputMissingParamMap.size==0 && outputMissingParam.length > 0){
-      outputMissingParam.forEach(unknownOutput => {
-        this.outputMissingParamMap.set(unknownOutput,"")
-      });
-    }*/
+    
     // si des valeurs Output ne sont pas connues alors on affiche le modal pour mapper les valeurs dasn outputMissingParamMap 
     if(outputMissingParam.length>0){
       this.outputModal.show();
