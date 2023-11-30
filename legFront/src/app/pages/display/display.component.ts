@@ -60,6 +60,7 @@ export class DisplayComponent implements OnInit{
   outputMissingParamMapArchive = new Map<string, string>();
   //rulesWithUnknownInput: number[] = [];
   inputMissingParamMap = new Map<string, boolean>();
+  inputMissingParamMapArchive = new Map<string, boolean>();
   // pour le tableau des inputs et le rendu
   ListOfCommitteeMap: Map<string, string> = new Map<string,string>([
     ['Constitutional Affairs', 'Committee on Constitutional Affairs'],
@@ -228,7 +229,11 @@ export class DisplayComponent implements OnInit{
           if(r.nestedCondition){
             this.getMissingInputFromSubCond(r).subscribe(inputValues => {
               inputValues.forEach(iv=>{
-                if (!this.inputMissingParamMap.get(iv)) this.inputMissingParamMap.set(iv, false)
+                // si une valeur déjà saisie exite dans le map inputMissingParamMapArchive
+                // alors on retransmet la valeur dans le map inputMissingParamMap
+                if (this.inputMissingParamMapArchive.has(iv)) {
+                  this.inputMissingParamMap.set(iv, this.inputMissingParamMapArchive.get(iv)!)
+                }else this.inputMissingParamMap.set(iv, false)
               })
             })
           }  
@@ -238,12 +243,18 @@ export class DisplayComponent implements OnInit{
         // il faut récupérer les input value manquante pour les demander à l'utilisateur
         let missingInputValues = this.getMissingInput(formattedCondition)
         // On ajoute la valeur dans le tableau des valeurs Input manquantes
-        missingInputValues.forEach(iv=> this.inputMissingParamMap.set(iv, false))
+        missingInputValues.forEach(iv=> {
+          if (this.inputMissingParamMapArchive.has(iv)) {
+            this.inputMissingParamMap.set(iv, this.inputMissingParamMapArchive.get(iv)!)
+          }else this.inputMissingParamMap.set(iv, false)
+        })
         // Une condition non évaluée peut également avoir des sous-conditions
         if (r.nestedCondition){
           this.getMissingInputFromSubCond(r).subscribe(inputValues => {
             inputValues.forEach(iv=>{
-              if (!this.inputMissingParamMap.get(iv)) this.inputMissingParamMap.set(iv, false)
+              if (this.inputMissingParamMapArchive.has(iv)) {
+                this.inputMissingParamMap.set(iv, this.inputMissingParamMapArchive.get(iv)!)
+              }else this.inputMissingParamMap.set(iv, false)
             })
           })
         }
@@ -413,7 +424,8 @@ export class DisplayComponent implements OnInit{
     this.outputMissingParamMap.set(key, value.value)
   }
   changeValueInput(key: string, value: any){
-    this.inputMissingParamMap.set(key, value.checked)
+    this.inputMissingParamMap.set(key, value.checked);
+    this.inputMissingParamMapArchive.set(key, value.checked);
   }
 
   onSubmitOutputParam(){
