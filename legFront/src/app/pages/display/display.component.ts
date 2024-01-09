@@ -473,7 +473,12 @@ export class DisplayComponent implements OnInit{
         }
       })
     }*/
+
     this.outputModal.hide();
+    // classement des règles suivant leur ordre
+    this.rulesToBeApplied.sort(function(a, b) {
+      return a.order - b.order;
+    });
     this.previewModal.show();
     
   }
@@ -570,6 +575,11 @@ export class DisplayComponent implements OnInit{
     if(outputMissingParam.length>0){
       this.outputModal.show();
     }else{
+      // classement des règles suivant leur ordre
+      this.rulesToBeApplied.sort(function(a, b) {
+        return a.order - b.order;
+      });
+      
       this.previewModal.show();     
     }
   }
