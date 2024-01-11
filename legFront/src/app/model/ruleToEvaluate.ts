@@ -9,4 +9,5 @@ export interface RuleToEvaluate {
     command: string;
     outputValue: string
     style: Style
+    comment: string
 }

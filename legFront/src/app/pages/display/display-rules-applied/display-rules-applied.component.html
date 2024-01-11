@@ -23,10 +23,10 @@
                     <i class="bi bi-pencil p-2" style="cursor:pointer" (click)="editRule(r.idRule)" ngbTooltip="Edit this Rule" placement="right"></i>
                     <ng-template #htmlContent>
                         <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
-                            {{r.conditionFormated}}
+                            {{r.comment}}
                         </span>
                     </ng-template>
-                    <a *ngIf="r.conditionFormated!=''" [ngbTooltip]="htmlContent"><i class="bi bi-info-circle p-2"></i></a>
+                    <a *ngIf="r.comment!=''" [ngbTooltip]="htmlContent"><i class="bi bi-info-circle p-2"></i></a>
                 </td>
             </tr>
         </tbody>
