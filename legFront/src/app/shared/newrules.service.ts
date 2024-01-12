@@ -4,6 +4,7 @@ import { Observable, of } from "rxjs";
 import { NewRule } from "../model/newrule";
 import { PageRules } from "../model/pageRules";
 import { RuleCondition } from "../model/rulecondition";
+import { RuleCommand } from "../model/rulecommand";
 
 
 @Injectable({
@@ -18,6 +19,7 @@ export class NewRulesService {
   private parts! : Array<string>;
   private labels! : Array<string>;
   public filters!:any;
+  private allSubConditions: Array<RuleCondition> = [];
 
 
 
@@ -38,6 +40,9 @@ export class NewRulesService {
   }
   public getSubConditionsFromDB(idRulePreCondition: number) : Observable<RuleCondition[]> {
     return this.http.get<RuleCondition[]>(this.apiUrl + 'getSubConditions/'+idRulePreCondition)
+  }
+  public getAllSubConditionsFromDB() : Observable<RuleCondition[]> {
+    return this.http.get<RuleCondition[]>(this.apiUrl + 'getAllSubConditions')
   }
   public saveSubConditionsinDB(subconditions: RuleCondition[]) : Observable<RuleCondition[]>{
     return this.http.post<RuleCondition[]>(this.apiUrl + 'saveSubConditionsinDB', subconditions)
@@ -93,8 +98,23 @@ export class NewRulesService {
       rulesFiltered = rulesFiltered.filter(r=>r.ruleCondition.textCondition.toLocaleUpperCase().includes(condition.toLocaleUpperCase()));
     }
     if(command!=""){
-      //console.log(command)
-      //rulesFiltered = rulesFiltered.filter(r=>r.command.toLocaleUpperCase().includes(command.toLocaleUpperCase()));
+      // la recherche inclus également les commandes des sous-conditions     
+      let rulesFilteredWithSubCommands: Array<NewRule> = [];
+      
+      const isCommandIncluded = (ruleCommand: RuleCommand, command: string) => 
+        ruleCommand.command.toLowerCase().includes(command.toLowerCase());
+      
+      rulesFiltered.forEach(r => {
+        const hasCommand = r.ruleCondition.ruleCommand.some(ruleCommand => isCommandIncluded(ruleCommand, command));
+        const hasNestedCondition = r.nestedCondition && this.allSubConditions.some(sc => 
+          sc.idPreCondition == r.ruleCondition.id && sc.ruleCommand.some(ruleCommand => isCommandIncluded(ruleCommand, command))
+        );
+      
+        if (hasCommand || hasNestedCondition && !rulesFilteredWithSubCommands.includes(r)) {
+          rulesFilteredWithSubCommands.push(r);
+        }
+      });
+      rulesFiltered = rulesFilteredWithSubCommands;
     }
     let totalPages = ~~(rulesFiltered.length / size); // ~~ garde la partie entière de la division
     if (rulesFiltered.length % size) {
@@ -118,6 +138,12 @@ export class NewRulesService {
   public setAllRules(allRules : NewRule[]){
     this.rules = allRules;
     this.setRulesUniqueValuesPerCategory(allRules);
+  }
+  public setAllSubConditions(allSubConditions: RuleCondition[]){
+    this.allSubConditions = allSubConditions;
+  }
+  public getAllSubConditions() : Array<RuleCondition> {
+    return this.allSubConditions;
   }
 
   // pour les valeurs du filtre à l'initialization

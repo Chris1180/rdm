@@ -170,6 +170,10 @@ public class Controller {
 		
 		return ruleConditionRepository.findByIdPreConditionOrderByIdAsc(idRulePreCondition);
 	}
+	@GetMapping("/getAllSubConditions")
+	public List<RuleCondition> getAllSubConditions() {
+		return ruleConditionRepository.findAllSubConditions();
+	}
 	
 	@PostMapping ("/saveSubConditionsinDB")
 	public List<RuleCondition> saveSubConditionsinDB(@RequestBody List<RuleCondition> subConditions ){

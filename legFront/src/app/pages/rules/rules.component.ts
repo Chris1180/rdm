@@ -64,6 +64,7 @@ export class RulesComponent implements OnInit {
     }*/
 
     this.getAllRules();
+    this.getAllSubConditions();
 
     this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
     
@@ -101,6 +102,16 @@ export class RulesComponent implements OnInit {
       catchError(err=>of({dataState:RuleStateEnum.ERROR, errorMessage:err.message}))
     )
     this.rulesDataState$.subscribe();
+  }
+  getAllSubConditions(){
+    this.newRulesService.getAllSubConditionsFromDB().subscribe({
+      next: (data) => {
+        this.newRulesService.setAllSubConditions(data);
+      },
+      error: (err) => {
+        this.errorMessage = err;
+      }
+    })
   }
 
   displayRules() {
