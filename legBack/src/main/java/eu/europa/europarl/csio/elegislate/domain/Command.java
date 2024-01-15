@@ -20,7 +20,7 @@ public class Command {
 	Integer id;
 	String name;
 	String description;
-	Boolean mandatory;
+	//Boolean mandatory;
 	@Column (name="initvalue")
 	String initValue;
 	String application;

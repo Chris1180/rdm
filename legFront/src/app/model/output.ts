@@ -2,7 +2,7 @@ export interface Output{
     id : number;
     name : string;
     description : string;
-    mandatory : boolean;
+    //mandatory : boolean;
     initValue : string;
     application : string; 
     example : string;

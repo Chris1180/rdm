@@ -132,11 +132,8 @@ export class OutputComponent {
   }
 
   onFilterChange(){
-    if (this.filterFormGroup.get('inputGroup')?.value=='allGroups') {
-      this.filteredCommands = this.allOutputs
-    }
-    else {
-      //this.filteredCommands = this.allCommands.filter(c => c.inputGroup==this.filterFormGroup.get('inputGroup')?.value);
-    }
+      
+    this.filteredCommands = this.allOutputs.filter(output => output.name.toLocaleLowerCase().includes(this.filterFormGroup.get('name')?.value.toLocaleLowerCase()));
+    
   }
 }
