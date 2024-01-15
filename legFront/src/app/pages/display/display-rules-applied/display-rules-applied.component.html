@@ -7,7 +7,8 @@
                 <th>Part</th>    
                 <th>Condition</th>
                 <th>Command</th>
-                <th>OutputValue</th>        
+                <th>OutputValue</th>
+                <th>Style</th>        
                 <th></th>
 
             </tr>
@@ -18,6 +19,7 @@
                 <td>{{r.condition}}</td>
                 <td>{{r.command}}</td>
                 <td>{{r.outputValue}}</td>
+                <td>{{r.style.name}}</td>
                 <td>
                     <i class="bi bi-trash p-2" style="cursor:pointer"  (click)="deleteRule(r.idRule)" ngbTooltip="Delete this Rule" placement="right"></i>
                     <i class="bi bi-pencil p-2" style="cursor:pointer" (click)="editRule(r.idRule)" ngbTooltip="Edit this Rule" placement="right"></i>
