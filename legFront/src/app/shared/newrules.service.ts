@@ -95,7 +95,25 @@ export class NewRulesService {
       rulesFiltered = rulesFiltered.filter(r=>r.label.includes(labelFilter));
     }
     if(condition!=""){
-      rulesFiltered = rulesFiltered.filter(r=>r.ruleCondition.textCondition.toLocaleUpperCase().includes(condition.toLocaleUpperCase()));
+      // la recherche inclus également les conditions des sous-conditions     
+      let rulesFilteredWithSubCommands: Array<NewRule> = [];
+      
+      const isCommandIncluded = (ruleCommand: RuleCommand, command: string) => 
+        ruleCommand.command.toLowerCase().includes(command.toLowerCase());
+
+      rulesFiltered.forEach(r => {
+        const hasCondition = r.ruleCondition.textCondition.toLocaleUpperCase().includes(condition.toLocaleUpperCase());
+        const hasNestedCondition = r.nestedCondition && this.allSubConditions.some(sc => 
+          sc.idPreCondition == r.ruleCondition.id && sc.textCondition.toLocaleUpperCase().includes(condition.toLocaleUpperCase())
+        );
+      
+        if (hasCondition || hasNestedCondition && !rulesFilteredWithSubCommands.includes(r)) {
+          rulesFilteredWithSubCommands.push(r);
+        }
+      });
+          
+      rulesFiltered = rulesFilteredWithSubCommands;
+      //rulesFiltered = rulesFiltered.filter(r=>r.ruleCondition.textCondition.toLocaleUpperCase().includes(condition.toLocaleUpperCase()));
     }
     if(command!=""){
       // la recherche inclus également les commandes des sous-conditions     
