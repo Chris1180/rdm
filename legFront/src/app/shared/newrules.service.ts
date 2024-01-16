@@ -29,6 +29,10 @@ export class NewRulesService {
       this.apiUrl = `http://${window.location.hostname}:8080/`
     }
     this.initRuleToBeEdited();
+    // récupère toutes les sous conditions
+    this.getAllSubConditionsFromDB().subscribe(
+      data => this.allSubConditions = data
+    )
   }
 
   // operations in DB
@@ -150,6 +154,7 @@ export class NewRulesService {
     return this.http.post(this.apiUrl+'deleteRule', ruleToDelete);
   }
 
+  // getter setter
   public getAllRules() : Array<NewRule> {
     return this.rules;
   }

@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Observable, catchError, forkJoin, map, of, startWith } from 'rxjs';
+import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { Input } from 'src/app/model/input';
 import { NewRule } from 'src/app/model/newrule';
 import { AuthorOfProposal } from 'src/app/model/outputParameters/authorOfProposal';
@@ -209,8 +209,8 @@ export class DisplayComponent implements OnInit{
       //console.log(r.ruleCondition.textCondition)
       // pour chaque condition  on formatte la condition
       let formattedCondition: string = this.newCheckRulesService.formatCondition(r.ruleCondition.textCondition).trim()
-      //console.log('apres formatage')
-      //console.log(formattedCondition)
+      // console.log('apres formatage')
+      // console.log(formattedCondition)
       // On ne veut pas demander la valeur d'inputs qui ne seront pas utilisés
       // ex: COD && AAAA => pas besoin de demander la valeur de AAAA si ce n'est pas un COD
       // il faut donc évaluer chaque condition et lorsqu'une erreur est relevé alors il y a une input manquante
@@ -221,24 +221,10 @@ export class DisplayComponent implements OnInit{
       //console.log('apres remplacement des valeurs du formulaire pour la règle: '+r.id)
       //console.log(formattedCondition)
       try {   
+        if (eval(formattedCondition)) this.rulesToBeEvaluated.push(r)
         //console.log( 'pas de pb avec : '+formattedCondition)
-        
-        if (eval(formattedCondition)){
-          this.rulesToBeEvaluated.push(r)
-          // si la condition possède des sous-conditions il faut aussi vérifier les inputs manquants des sous-conditions
-          if(r.nestedCondition){
-            this.getMissingInputFromSubCond(r).subscribe(inputValues => {
-              inputValues.forEach(iv=>{
-                // si une valeur déjà saisie exite dans le map inputMissingParamMapArchive
-                // alors on retransmet la valeur dans le map inputMissingParamMap
-                if (this.inputMissingParamMapArchive.has(iv)) {
-                  this.inputMissingParamMap.set(iv, this.inputMissingParamMapArchive.get(iv)!)
-                }else this.inputMissingParamMap.set(iv, false)
-              })
-            })
-          }  
-        } 
       } catch (e) { // It is a SyntaxError
+        //console.log( 'PB avec : '+formattedCondition)
         this.rulesToBeEvaluated.push(r)
         // il faut récupérer les input value manquante pour les demander à l'utilisateur
         let missingInputValues = this.getMissingInput(formattedCondition)
@@ -248,17 +234,20 @@ export class DisplayComponent implements OnInit{
             this.inputMissingParamMap.set(iv, this.inputMissingParamMapArchive.get(iv)!)
           }else this.inputMissingParamMap.set(iv, false)
         })
-        // Une condition non évaluée peut également avoir des sous-conditions
-        if (r.nestedCondition){
-          this.getMissingInputFromSubCond(r).subscribe(inputValues => {
-            inputValues.forEach(iv=>{
-              if (this.inputMissingParamMapArchive.has(iv)) {
-                this.inputMissingParamMap.set(iv, this.inputMissingParamMapArchive.get(iv)!)
-              }else this.inputMissingParamMap.set(iv, false)
-            })
-          })
-        }
+        
       } // fin du try Catch
+      // Une condition peut également avoir des sous-conditions qui ont des input-param manquants
+      if (r.nestedCondition){
+        this.getMissingInputFromSubCondition(r.ruleCondition.id).forEach(
+          iv=>{
+             // si une valeur déjà saisie exite dans le map inputMissingParamMapArchive
+             // alors on retransmet la valeur dans le map inputMissingParamMap
+             if (this.inputMissingParamMapArchive.has(iv)) {
+               this.inputMissingParamMap.set(iv, this.inputMissingParamMapArchive.get(iv)!)
+             }else this.inputMissingParamMap.set(iv, false)
+          }
+        )
+      }
     }) 
     
     // affiche les valeurs du map pour le debug
@@ -651,13 +640,15 @@ export class DisplayComponent implements OnInit{
           this.inputParamMap.set(condition.name, this.previewForm.get('listOfAssocRapporteursTitle')?.value == 'MF')
           break;
         default:
-          if(condition.inputGroup == 'Procedure Type' || condition.inputGroup == 'Document Type' || condition.inputGroup == 'Reading' 
-            || condition.inputGroup == 'Doc Leg Specialization' || condition.inputGroup == 'Language' || condition.inputGroup == 'Document Status' )
+          if(condition.inputGroup == 'Procedure Type' || condition.inputGroup == 'Document Type' || condition.inputGroup == 'Document Status'
+            || condition.inputGroup == 'Reading' || condition.inputGroup == 'Doc Leg Specialization' || condition.inputGroup == 'Language'
+            )
           this.inputParamMap.set(condition.name, this.previewForm.get(condition.formname)?.value == condition.name)
           break;
       }
     })// fin du foreach
   }
+  
 
   getMissingInput(formattedCondition: string): string[] {
     //on supprime d'abord les caractères ( ) ! avec une expression régulière
@@ -675,51 +666,37 @@ export class DisplayComponent implements OnInit{
     return inputValue
   }
 
-  getMissingInputFromSubCond(r: NewRule): Observable<string[]> {
-    let missingInputs: string[] = [];
-  
-    // Créer un observable pour la requête à la BDD
-    const subConditionsObservable = this.NewRuleService.getSubConditionsFromDB(r.ruleCondition.id);
-  
-    return new Observable<string[]>(observer => {
-      // Souscrire à l'observable de la BDD
-      subConditionsObservable.subscribe({
-        next: (subconds) => {
-          const observables = subconds.map(sc => {
-            let scFormattedCondition: string = this.newCheckRulesService.formatCondition(sc.textCondition);
-  
-            return new Observable<string>(innerObserver => {
-              scFormattedCondition.split(" ").forEach(input => {
-                var re = /[(!)\s]+/g;
-                let paramTobeChecked = input.replace(re, "");
-                if (paramTobeChecked != "&&" && paramTobeChecked != "||") {
-                  if (this.allConditions.filter(sc => (sc.name == paramTobeChecked && (sc.inputGroup == 'Procedure Type' || sc.inputGroup == 'Document Type' || sc.inputGroup == 'Reading'
-                    || sc.inputGroup == 'Doc Leg Specialization' || sc.inputGroup == 'Document Status' || sc.inputGroup == 'Language'))).length == 0) {
-                    if (missingInputs.indexOf(paramTobeChecked) == -1) missingInputs.push(paramTobeChecked);
-                  }
-                }
-              });
-              innerObserver.next();
-              innerObserver.complete();
-            });
-          });
-  
-          // Utiliser forkJoin pour attendre la fin de tous les observables internes
-          forkJoin(observables).subscribe({
-            complete: () => {
-              observer.next(missingInputs);
-              observer.complete();
-            }
-          });
-        },
-        error: (err) => {
-          console.log("Error during back end request for list of conditions");
-          observer.error(err);
+  getMissingInputFromSubCondition(ruleConditionId: number): Array<string>{
+    // dans ce tableau on met les InputParam manquants
+    let missingInputParam : Array<string> = [];
+    // dans le tableau subConditions on met toutes les sous-conditions de la règle à tester
+    let subConditions = this.NewRuleService.getAllSubConditions().filter(sc=>sc.idPreCondition==ruleConditionId)
+    
+    subConditions.forEach(sc=>{
+      // on formate la condition en supprimant les 'or','and' ...
+      let scFormattedCondition: string = this.newCheckRulesService.formatCondition(sc.textCondition);
+      // ensuite pour chaque input param de la condition on vérifie si il existe ou non 
+      scFormattedCondition.split(" ").forEach(input => {
+        // expression régulière utilisée pour retirer tous les espaces blancs et les signes d'exclamation
+        var re = /[(!)\s]+/g;
+        let paramTobeChecked = input.replace(re, "");
+        if (paramTobeChecked != "&&" && paramTobeChecked != "||") {
+          const INPUT_GROUPS = ['Procedure Type', 'Document Type', 'Reading', 'Doc Leg Specialization', 'Document Status', 'Language', 'Committee'];
+
+          function isConditionMatched(sc: Input, paramName: string) {
+              return sc.name === paramName && INPUT_GROUPS.includes(sc.inputGroup);
+          }
+
+          if (!this.allConditions.some(sc => isConditionMatched(sc, paramTobeChecked))) {
+              if (!missingInputParam.includes(paramTobeChecked)) {
+                  missingInputParam.push(paramTobeChecked);
+              }
+          }
         }
       });
-    });
+    })
+    return missingInputParam;
   }
-
   // méthode utilisée pour afficher la description des input value dans le modal
   findDescription(key: string){
     return this.allConditions.find(c => c.name === key)
