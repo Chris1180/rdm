@@ -98,33 +98,50 @@
                             </th>
                             
                         </tr>
-                        <tr *ngFor="let r of rules">
-                            <td>{{r.id}}</td>
-                            <td>{{r.order}}</td>
-                            <td>{{r.part}}</td>
-                            <td>{{r.label}}</td>
-                            <td>{{r.ruleCondition.textCondition}}</td>
-                            <td>
-                                <input class="form-check-input" type="checkbox" disabled [checked]="r.nestedCondition">
-                            </td>
-                            <td>
-                                <ng-container *ngFor="let rc of r.ruleCondition.ruleCommand">
-                                    <span *ngIf="rc.lang == 'EN'">{{rc.command}}</span>
-                                </ng-container>                                
-                            </td>
-                            <td>{{r.style?.name}}</td>
-                            <td>
-                                <ng-template #htmlContent>
-                                    <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
-                                        {{r.comment}}
-                                    </span>
-                                </ng-template>
-                                <i class="bi bi-trash p-2" style="cursor:pointer"  (click)="deleteRule(r)" ngbTooltip="Delete this Rule" placement="right"></i>
-                                <i class="bi bi-pencil p-2" style="cursor:pointer" (click)="editRule(r)" ngbTooltip="Edit this Rule" placement="right"></i>
-                                <i class="bi bi-files p-2" style="cursor:pointer"  (click)="duplicateRule(r)" ngbTooltip="Duplicate this Rule" placement="right"></i>
-                                <i *ngIf="r.comment!=''" [ngbTooltip]="htmlContent" class="bi bi-info-circle p-2"></i>
-                            </td>
-                        </tr>
+                        <ng-container *ngFor="let r of rules">
+                            <tr>
+                                <td>{{r.id}}</td>
+                                <td>{{r.order}}</td>
+                                <td>{{r.part}}</td>
+                                <td>{{r.label}}</td>
+                                <td>{{r.ruleCondition.textCondition}}</td>
+                                <td (click)="r.expanded = !r.expanded">
+                                    <i *ngIf="r.nestedCondition" class="bi" [ngClass]="r.expanded? 'bi-chevron-up':'bi-chevron-down'"></i>
+                                    <!-- <input class="form-check-input" type="checkbox" disabled [checked]="r.nestedCondition"> -->
+                                </td>
+                                <td>
+                                    <ng-container *ngFor="let rc of r.ruleCondition.ruleCommand">
+                                        <span *ngIf="rc.lang == 'EN'">{{rc.command}}</span>
+                                    </ng-container>                                
+                                </td>
+                                <td>{{r.style?.name}}</td>
+                                <td>
+                                    <ng-template #htmlContent>
+                                        <span style="white-space: normal; max-width:200px;  word-wrap:break-word;">
+                                            {{r.comment}}
+                                        </span>
+                                    </ng-template>
+                                    <i class="bi bi-trash p-2" style="cursor:pointer"  (click)="deleteRule(r)" ngbTooltip="Delete this Rule" placement="right"></i>
+                                    <i class="bi bi-pencil p-2" style="cursor:pointer" (click)="editRule(r)" ngbTooltip="Edit this Rule" placement="right"></i>
+                                    <i class="bi bi-files p-2" style="cursor:pointer"  (click)="duplicateRule(r)" ngbTooltip="Duplicate this Rule" placement="right"></i>
+                                    <i *ngIf="r.comment!=''" [ngbTooltip]="htmlContent" class="bi bi-info-circle p-2"></i>
+                                </td>
+                            </tr>
+                            <ng-container *ngIf="r.expanded && r.nestedCondition">
+                                <tr *ngFor="let ruleCondition of findDetails(r.ruleCondition.id); index as i">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><i>subCondition {{i}}</i></td>
+                                    <td>{{ruleCondition.textCondition}}</td>
+                                    <td></td>
+                                    <td>{{ruleCondition.ruleCommand}}</td>
+                                    <td></td>
+                                    <td></td>
+                                    
+                                </tr>
+                            </ng-container>
+                        </ng-container>
                     </tbody>
                 </table>
             </form>

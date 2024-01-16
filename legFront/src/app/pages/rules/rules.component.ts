@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { NewRule } from 'src/app/model/newrule';
+import { RuleCondition } from 'src/app/model/rulecondition';
 import { NewRulesService } from 'src/app/shared/newrules.service';
 import { AppDataState, RuleStateEnum } from 'src/app/shared/rules.state';
 
@@ -260,6 +261,10 @@ export class RulesComponent implements OnInit {
     this.filterFormGroup.get('command')?.setValue('');
     this.filterActive = false;
     this.onFilterChange(0);
+  }
+
+  findDetails(ruleConditionId: number): RuleCondition[] {
+    return this.newRulesService.getAllSubConditions().filter(rc => rc.idPreCondition === ruleConditionId);
   }
 
 }

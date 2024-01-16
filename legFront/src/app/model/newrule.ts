@@ -12,4 +12,5 @@ export interface NewRule {
     finalCondition: string;
     outputValue : string;
     style?: Style
+    expanded?: Boolean
 }
