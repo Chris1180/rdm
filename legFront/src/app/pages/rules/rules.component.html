@@ -128,16 +128,16 @@
                                 </td>
                             </tr>
                             <ng-container *ngIf="r.expanded && r.nestedCondition">
-                                <tr *ngFor="let ruleCondition of findDetails(r.ruleCondition.id); index as i">
+                                <tr *ngFor="let ruleCondition of findDetails(r.ruleCondition.id); index as i; let isLast = last" class=" border table-active">
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td><i>subCondition {{i}}</i></td>
-                                    <td>{{ruleCondition.textCondition}}</td>
-                                    <td></td>
-                                    <td>{{ruleCondition.ruleCommand}}</td>
-                                    <td></td>
-                                    <td></td>
+                                    <td class="px-3" [ngClass]="{'border-secondary': isLast}"><i class="bi bi-arrow-return-right pe-2"></i><i>subCondition {{i+1}}</i></td>
+                                    <td class="px-3" [ngClass]="{'border-secondary': isLast}">{{ruleCondition.textCondition}}</td>
+                                    <td [ngClass]="{'border-secondary': isLast}"></td>
+                                    <td class="px-3" [ngClass]="{'border-secondary': isLast}">{{ruleCondition.ruleCommand[0].command}}</td>
+                                    <td [ngClass]="{'border-secondary': isLast}"></td>
+                                    <td [ngClass]="{'border-secondary': isLast}"></td>
                                     
                                 </tr>
                             </ng-container>

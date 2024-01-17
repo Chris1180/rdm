@@ -264,7 +264,16 @@ export class RulesComponent implements OnInit {
   }
 
   findDetails(ruleConditionId: number): RuleCondition[] {
-    return this.newRulesService.getAllSubConditions().filter(rc => rc.idPreCondition === ruleConditionId);
+    return this.newRulesService.getAllSubConditions().filter(rc => {
+      // on selectionne la version de la commande en Anglais seulement
+      let ruleCommandEN = rc.ruleCommand.find(command => command.lang=='EN')
+      rc.ruleCommand = []
+      if (ruleCommandEN){
+        rc.ruleCommand.push(ruleCommandEN)
+      }else{
+        rc.ruleCommand.push({"id": 0 , "lang" : '' , "command" : 'No EN command found'})
+      }
+      return rc.idPreCondition === ruleConditionId});
   }
 
 }
