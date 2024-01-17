@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import eu.europa.europarl.csio.elegislate.DAO.CommandRepository;
-import eu.europa.europarl.csio.elegislate.DAO.ConditionRepository;
+import eu.europa.europarl.csio.elegislate.DAO.OutputRepository;
+import eu.europa.europarl.csio.elegislate.DAO.InputRepository;
 import eu.europa.europarl.csio.elegislate.DAO.LanguageRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RuleCommandRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RuleConditionRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RuleRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RulesRepository;
 import eu.europa.europarl.csio.elegislate.DAO.StyleRepository;
-import eu.europa.europarl.csio.elegislate.domain.Command;
-import eu.europa.europarl.csio.elegislate.domain.Condition;
+import eu.europa.europarl.csio.elegislate.domain.Output;
+import eu.europa.europarl.csio.elegislate.domain.Input;
 import eu.europa.europarl.csio.elegislate.domain.Language;
 import eu.europa.europarl.csio.elegislate.domain.Rule;
 import eu.europa.europarl.csio.elegislate.domain.RuleCommand;
@@ -42,9 +42,9 @@ public class Controller {
 	@Autowired
 	private RulesRepository rulesRepository;
 	@Autowired
-	private ConditionRepository conditionRepository;
+	private InputRepository conditionRepository;
 	@Autowired
-	private CommandRepository commandRepository;
+	private OutputRepository commandRepository;
 	@Autowired
 	private RuleConditionRepository ruleConditionRepository;
 	@Autowired
@@ -132,15 +132,15 @@ public class Controller {
 		
 	
 	@GetMapping ("/getAllInputs")
-	public List<Condition> getAllConditions() {
+	public List<Input> getAllConditions() {
 		return conditionRepository.findAll();	
 	}
 	@PostMapping("/newInput")
-	public Condition addNewCondition(@RequestBody Condition condition) {
-		if (condition.getId()==0) {
-			condition.setId(null);
+	public Input addNewCondition(@RequestBody Input input) {
+		if (input.getId()==0) {
+			input.setId(null);
 		}
-		return conditionRepository.save(condition);
+		return conditionRepository.save(input);
 	}
 	@PostMapping("/deleteInput/{id}")
 	public void deleteCondition(@PathVariable int id) {
@@ -149,15 +149,15 @@ public class Controller {
 	}
 	
 	@GetMapping ("/getAllOutputs")
-	public List<Command> getAllCommands() {
+	public List<Output> getAllCommands() {
 		return commandRepository.findAll();	
 	}
 	@PostMapping("/newOutput")
-	public Command addNewCommand(@RequestBody Command command) {
-		if (command.getId()==0) {
-			command.setId(null);
+	public Output addNewCommand(@RequestBody Output output) {
+		if (output.getId()==0) {
+			output.setId(null);
 		}
-		return commandRepository.save(command);
+		return commandRepository.save(output);
 	}
 	@PostMapping("/deleteOutput/{id}")
 	public void deleteCommand(@PathVariable int id) {

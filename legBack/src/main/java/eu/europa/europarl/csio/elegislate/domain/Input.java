@@ -12,14 +12,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="CONDITION_VALUE")
+@Table(name="INPUTS")
 @NoArgsConstructor @AllArgsConstructor @Data
-public class Condition {
+public class Input {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;
 	String name;
 	String description;
+	String question;
 	@Column (name="inputgroup")
 	String inputGroup;
 	String formname;

@@ -33,6 +33,7 @@
                         <th>id</th>
                         <th>Name</th>
                         <th>Description</th>
+                        <th>Question</th>
                         <th>Input Group
                             <form [formGroup]="filterFormGroup">
                                 <select class="form-control-sm" formControlName="inputGroup" style="width: 100px;"
@@ -46,14 +47,15 @@
                         </th>
                         <th></th>
                     </tr>
-                    <tr *ngFor="let c of filteredInputs">
-                        <td #id contentEditable (blur)="editConditionOnline(c, id.innerText.trim(), 'id')">{{c.id}}</td>
-                        <td #name contentEditable (blur)="editConditionOnline(c, name.innerText.trim(), 'name')">{{c.name}}</td>
-                        <td #description contentEditable (blur)="editConditionOnline(c, description.innerText.trim(), 'description')">{{c.description}}</td>
-                        <td #inputgroup contentEditable (blur)="editConditionOnline(c, inputgroup.innerText.trim(), 'inputGroup')">{{c.inputGroup}}</td>
+                    <tr *ngFor="let input of filteredInputs">
+                        <td #id contentEditable (blur)="editConditionOnline(input, id.innerText.trim(), 'id')">{{input.id}}</td>
+                        <td #name contentEditable (blur)="editConditionOnline(input, name.innerText.trim(), 'name')">{{input.name}}</td>
+                        <td #description contentEditable (blur)="editConditionOnline(input, description.innerText.trim(), 'description')">{{input.description}}</td>
+                        <td #question contentEditable (blur)="editConditionOnline(input, question.innerText.trim(), 'question')">{{input.question}}</td>
+                        <td #inputgroup contentEditable (blur)="editConditionOnline(input, inputgroup.innerText.trim(), 'inputGroup')">{{input.inputGroup}}</td>
                         <td>
-                            <i class="bi bi-trash p-2" style="cursor:pointer" (click)="deleteCondition(c)" ngbTooltip="Delete this Condition" placement="right"></i>
-                            <i class="bi bi-files p-2" style="cursor:pointer" (click)="duplicateCondition(c)" ngbTooltip="Duplicate this Condition" placement="right"></i>
+                            <i class="bi bi-trash p-2" style="cursor:pointer" (click)="deleteCondition(input)" ngbTooltip="Delete this Condition" placement="right"></i>
+                            <i class="bi bi-files p-2" style="cursor:pointer" (click)="duplicateCondition(input)" ngbTooltip="Duplicate this Condition" placement="right"></i>
                         </td>
                     </tr>
                 </tbody>

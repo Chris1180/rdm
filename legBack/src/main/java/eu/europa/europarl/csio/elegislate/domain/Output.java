@@ -12,14 +12,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="COMMAND_VALUE")
+@Table(name="OUTPUTS")
 @NoArgsConstructor @AllArgsConstructor @Data
-public class Command {
+public class Output {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;
 	String name;
 	String description;
+	String question;
 	//Boolean mandatory;
 	@Column (name="initvalue")
 	String initValue;
