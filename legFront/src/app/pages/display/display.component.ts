@@ -221,7 +221,21 @@ export class DisplayComponent implements OnInit{
       //console.log('apres remplacement des valeurs du formulaire pour la règle: '+r.id)
       //console.log(formattedCondition)
       try {   
-        if (eval(formattedCondition)) this.rulesToBeEvaluated.push(r)
+        if (eval(formattedCondition)) {
+          this.rulesToBeEvaluated.push(r)
+          // une règle vraie peut avoir des sous-conditions avec des inputs manquants
+          if (r.nestedCondition){
+            this.getMissingInputFromSubCondition(r.ruleCondition.id).forEach(
+              iv=>{
+                 // si une valeur déjà saisie exite dans le map inputMissingParamMapArchive
+                 // alors on retransmet la valeur dans le map inputMissingParamMap
+                 if (this.inputMissingParamMapArchive.has(iv)) {
+                   this.inputMissingParamMap.set(iv, this.inputMissingParamMapArchive.get(iv)!)
+                 }else this.inputMissingParamMap.set(iv, false)
+              }
+            )
+          }
+        }
         //console.log( 'pas de pb avec : '+formattedCondition)
       } catch (e) { // It is a SyntaxError
         //console.log( 'PB avec : '+formattedCondition)
@@ -234,20 +248,31 @@ export class DisplayComponent implements OnInit{
             this.inputMissingParamMap.set(iv, this.inputMissingParamMapArchive.get(iv)!)
           }else this.inputMissingParamMap.set(iv, false)
         })
-        
+        // une sous-conditions évaluée fausse peut aussi avoir des sous-conditions avec des inputs manquantes
+        if (r.nestedCondition){
+          this.getMissingInputFromSubCondition(r.ruleCondition.id).forEach(
+            iv=>{
+               // si une valeur déjà saisie exite dans le map inputMissingParamMapArchive
+               // alors on retransmet la valeur dans le map inputMissingParamMap
+               if (this.inputMissingParamMapArchive.has(iv)) {
+                 this.inputMissingParamMap.set(iv, this.inputMissingParamMapArchive.get(iv)!)
+               }else this.inputMissingParamMap.set(iv, false)
+            }
+          )
+        }
       } // fin du try Catch
       // Une condition peut également avoir des sous-conditions qui ont des input-param manquants
-      if (r.nestedCondition){
-        this.getMissingInputFromSubCondition(r.ruleCondition.id).forEach(
-          iv=>{
-             // si une valeur déjà saisie exite dans le map inputMissingParamMapArchive
-             // alors on retransmet la valeur dans le map inputMissingParamMap
-             if (this.inputMissingParamMapArchive.has(iv)) {
-               this.inputMissingParamMap.set(iv, this.inputMissingParamMapArchive.get(iv)!)
-             }else this.inputMissingParamMap.set(iv, false)
-          }
-        )
-      }
+      // if (r.nestedCondition){
+      //   this.getMissingInputFromSubCondition(r.ruleCondition.id).forEach(
+      //     iv=>{
+      //        // si une valeur déjà saisie exite dans le map inputMissingParamMapArchive
+      //        // alors on retransmet la valeur dans le map inputMissingParamMap
+      //        if (this.inputMissingParamMapArchive.has(iv)) {
+      //          this.inputMissingParamMap.set(iv, this.inputMissingParamMapArchive.get(iv)!)
+      //        }else this.inputMissingParamMap.set(iv, false)
+      //     }
+      //   )
+      // }
     }) 
     
     // affiche les valeurs du map pour le debug
