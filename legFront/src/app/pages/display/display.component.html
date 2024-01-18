@@ -314,7 +314,7 @@
     </div>
     <!--Output modal for missing Output Param-->
     <div class="modal fade" id="outputModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Preview of the {{partSelectedForPreview}}</h5>
@@ -325,7 +325,7 @@
                     <div class="pb-3 text-decoration-underline">Some Output Parameters are missing:</div>
                                        
                     <div class="pb-3" *ngFor="let p of outputMissingParamMap | keyvalue">
-                        <label class="align-middle pb-1">{{ findOutputDescription(p.key)?.question +'&nbsp;&nbsp;&nbsp; (Example: ' + findOutputDescription(p.key)?.example+')'}}</label>
+                        <label *ngIf="findOutputDescription(p.key)" class="align-middle pb-1">{{ findOutputDescription(p.key)?.question +'&nbsp;&nbsp;&nbsp; (Example: ' + findOutputDescription(p.key)?.example+')'}}</label>
                         <br>
                         <div class="row">           
                             <div class="form-floating col-6">
@@ -351,7 +351,7 @@
     </div>
     <!--Input modal for missing Input Param-->
     <div class="modal fade" id="inputModal" tabindex="-1" aria-labelledby="InputModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                 <h5 class="modal-title">Input for the {{partSelectedForPreview}}</h5>

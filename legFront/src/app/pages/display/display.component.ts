@@ -731,5 +731,6 @@ export class DisplayComponent implements OnInit{
     key = key.replace(/\[|\]/g, '')
     //console.log(this.newCheckRulesService.listOfOutputParamFromDB.find(o => o.name.toLowerCase() === key.toLowerCase()))
     return this.newCheckRulesService.listOfOutputParamFromDB.find(o => o.name.toLowerCase() === key.toLowerCase())
+    
   }
 }
