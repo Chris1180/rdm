@@ -325,7 +325,7 @@
                     <div class="pb-3 text-decoration-underline">Some Output Parameters are missing:</div>
                                        
                     <div class="pb-3" *ngFor="let p of outputMissingParamMap | keyvalue">
-                        <label class="align-middle pb-1">{{ findOutputDescription(p.key)?.question }}</label>
+                        <label class="align-middle pb-1">{{ findOutputDescription(p.key)?.question +'&nbsp;&nbsp;&nbsp; (Example: ' + findOutputDescription(p.key)?.example+')'}}</label>
                         <br>
                         <div class="row">           
                             <div class="form-floating col-6">
@@ -333,16 +333,12 @@
                                 [(ngModel)]="p.value" (change)="changeValueOutput(p.key, $event.target)" />
                                 <label for="p.value">{{p.key}}</label>
                             </div>
-                            <div class="col-3">
+                            <div class="col-6">
                                 <label class="form-text align-middle">{{ findOutputDescription(p.key)?.description }}</label>
                             </div>
                             
                         </div>
                         
-                        <!-- <label class="col-2 col-form-label col-form-label-sm pe-2">{{p.key}}</label>
-                        <input class="col-5 form-control form-control-sm" type="text" [(ngModel)]="p.value" (change)="changeValueOutput(p.key, $event.target)" />
-                        <label class="col-3 align-middle">{{ findOutputDescription(p.key)?.description }}</label>
-                     -->
                     </div>
                 </div>
 

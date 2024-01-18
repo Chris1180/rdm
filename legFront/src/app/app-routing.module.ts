@@ -13,9 +13,9 @@ import { DisplayComponent } from './pages/display/display.component';
 
 const routes: Routes = [
   { path: 'Rules', component: RulesComponent },
-  { path: 'CSIOForm', component: FormComponent },
-  { path: 'Edition', component: EditionComponent },
-  { path: 'Preview', component: PreviewComponent },
+  // { path: 'CSIOForm', component: FormComponent },
+  // { path: 'Edition', component: EditionComponent },
+  // { path: 'Preview', component: PreviewComponent },
   { path: 'Display', component: DisplayComponent },
   { path: 'Styles', component: StyleComponent },
   { path: 'Inputs', component: ConditionComponent },
