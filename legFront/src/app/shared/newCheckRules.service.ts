@@ -20,7 +20,7 @@ export class NewCheckRulesService {
   //commandsWithUnknownInput: number[] = [];
   unknownOutput: string[] = [];
   listOfKnownInputParam: string[] = ["||", "&&", "true", "false", ""]
-  listOfOutputParamFromDB: Output[] = [];
+  listOfOutputParam: Output[] = [];
   
 
   constructor(private inputService: InputService, private outputService: OutputService, private newRuleService: NewRulesService) {
@@ -38,7 +38,7 @@ export class NewCheckRulesService {
     // récupération des commandes (output param) de la Base de donnée dans le tableau listOfOutputParamFromDB
     this.outputService.getOutputsFromDB().subscribe({
       next: (outputsFromDB: Output[]) => { 
-        this.listOfOutputParamFromDB = outputsFromDB; 
+        this.listOfOutputParam = outputsFromDB; 
       },
       error: (err) => {
         console.log("Error during back end request for list of commands (output param)")
@@ -128,7 +128,7 @@ export class NewCheckRulesService {
     let outputParamToBeChecked = outputParam.replace(/\[|\]/g,'').toLocaleUpperCase();
 
     // on regarde dans la liste des commandes si le paramètre existe
-    let outputCommand = this.listOfOutputParamFromDB.filter(op=> op.name.toLocaleUpperCase() == outputParamToBeChecked)
+    let outputCommand = this.listOfOutputParam.filter(op=> op.name.toLocaleUpperCase() == outputParamToBeChecked)
     let initialValue = ''
     //console.log('output récupérée de la db')
     //console.log(outputCommand)

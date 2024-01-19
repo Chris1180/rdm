@@ -261,18 +261,7 @@ export class DisplayComponent implements OnInit{
           )
         }
       } // fin du try Catch
-      // Une condition peut également avoir des sous-conditions qui ont des input-param manquants
-      // if (r.nestedCondition){
-      //   this.getMissingInputFromSubCondition(r.ruleCondition.id).forEach(
-      //     iv=>{
-      //        // si une valeur déjà saisie exite dans le map inputMissingParamMapArchive
-      //        // alors on retransmet la valeur dans le map inputMissingParamMap
-      //        if (this.inputMissingParamMapArchive.has(iv)) {
-      //          this.inputMissingParamMap.set(iv, this.inputMissingParamMapArchive.get(iv)!)
-      //        }else this.inputMissingParamMap.set(iv, false)
-      //     }
-      //   )
-      // }
+      
     }) 
     
     // affiche les valeurs du map pour le debug
@@ -463,7 +452,7 @@ export class DisplayComponent implements OnInit{
           //console.log(rule.outputValue.includes(key))
           if (value==''){
             // il faut vérifier si une valeur par défaut existe dans la liste des output value connue de la DB
-            let outputDB = this.newCheckRulesService.listOfOutputParamFromDB.filter(output => '['+output.name.toLocaleUpperCase()+']' == key.toLocaleUpperCase())
+            let outputDB = this.newCheckRulesService.listOfOutputParam.filter(output => '['+output.name.toLocaleUpperCase()+']' == key.toLocaleUpperCase())
             //console.log(outputDB)
             if (outputDB.length>0) rule.outputValue = rule.outputValue.replace(key, outputDB[0].initValue)
             else rule.outputValue = rule.outputValue.replace(key, value)
@@ -730,7 +719,7 @@ export class DisplayComponent implements OnInit{
   findOutputDescription(key: string){
     key = key.replace(/\[|\]/g, '')
     //console.log(this.newCheckRulesService.listOfOutputParamFromDB.find(o => o.name.toLowerCase() === key.toLowerCase()))
-    return this.newCheckRulesService.listOfOutputParamFromDB.find(o => o.name.toLowerCase() === key.toLowerCase())
+    return this.newCheckRulesService.listOfOutputParam.find(o => o.name.toLowerCase() === key.toLowerCase())
     
   }
 }

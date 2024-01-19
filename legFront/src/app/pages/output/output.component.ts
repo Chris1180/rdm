@@ -2,6 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { Output } from 'src/app/model/output';
+import { NewCheckRulesService } from 'src/app/shared/newCheckRules.service';
 import { OutputService } from 'src/app/shared/output.service';
 import { AppDataState, RuleStateEnum } from 'src/app/shared/rules.state';
 
@@ -42,7 +43,7 @@ export class OutputComponent {
       $event.target.innerText = this.oldValue
     }
   }
-  constructor(private outputService : OutputService) { }
+  constructor(private outputService : OutputService, private newCheckRuleService : NewCheckRulesService) { }
 
   ngOnInit(): void {
     this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
@@ -67,8 +68,11 @@ export class OutputComponent {
       command[field] = newValue;
       
       this.outputService.modifyOutput(command).subscribe({
-        next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
+        next : (output)=>{// affichage sous forme de modal que tout c'est bien passé
           this.openFeedBackUser("Change saved Succesfully", "bg-success");
+          // mise à jour de l'output dans la copie locale du service newCheckRuleService
+          let index = this.newCheckRuleService.listOfOutputParam.findIndex(o => o.id == output.id);
+          this.newCheckRuleService.listOfOutputParam.splice(index, 1, command)
         },
         error: (err) => {
           this.openFeedBackUser("Error during saving process in Back-End", "bg-danger")
@@ -94,18 +98,21 @@ export class OutputComponent {
     this.userFeedBackToast.hide();
   }
 
-  deleteCommand(command: Output) {
+  deleteCommand(output: Output) {
     let conf = confirm("Are you sure?");
     if (conf == false) return;
 
-    this.outputService.deleteOutput(command.id).subscribe({
+    this.outputService.deleteOutput(output.id).subscribe({
       next: (data) => {// affichage sous forme de modal que tout c'est bien passé
         this.openFeedBackUser("Deletion done Succesfully", "bg-success");
-        // ici on rafraichi la liste de la copie locale des styles 
-        let index = this.allOutputs.indexOf(command);
+        // ici on rafraichi la liste de la copie locale 
+        let index = this.allOutputs.indexOf(output);
         this.allOutputs.splice(index, 1); // ici on supprime l'element dans la copie locale pour le composant
-        index = this.filteredCommands.indexOf(command);
+        index = this.filteredCommands.indexOf(output);
         this.filteredCommands.splice(index, 1);
+        // mise à jour de l'output dans la copie locale du service newCheckRuleService
+        index = this.newCheckRuleService.listOfOutputParam.findIndex(o => o.id == output.id);
+        this.newCheckRuleService.listOfOutputParam.splice(index, 1)
       },
       error: (err) => {
         this.openFeedBackUser("Error during deletion process in Back-End", "bg-danger")
@@ -123,6 +130,7 @@ export class OutputComponent {
         this.openFeedBackUser("Change saved Succesfully", "bg-success");
         this.allOutputs.push(data);
         this.filteredCommands.push(data);
+        this.newCheckRuleService.listOfOutputParam.push(data)
         //this.conditions.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
       },
       error: (err) => {
