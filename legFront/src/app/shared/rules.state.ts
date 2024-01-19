@@ -1,5 +1,5 @@
-import { Lang } from "../model/lang"
-import { Rule } from "../model/rule"
+import { NewRule } from "../model/newrule"
+
 
 export enum RuleActionTypes{
     GET_ALL_RULES= "[Rule] Get All Rules",
@@ -18,7 +18,7 @@ export interface AppDataState<T> {
 
 export interface ActionEvent {
     type: RuleActionTypes,
-    rule?: Rule,
+    rule?: NewRule,
     error?: any  //? Non obligatoire
 }
 

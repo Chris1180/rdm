@@ -1,8 +1,8 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
-import { Rule } from 'src/app/model/rule';
+import { NewRule } from 'src/app/model/newrule';
 import { Style } from 'src/app/model/style';
-import { RulesService } from 'src/app/shared/rules.service';
+import { NewRulesService } from 'src/app/shared/newrules.service';
 import { RuleStateEnum } from 'src/app/shared/rules.state';
 import { AppDataState } from 'src/app/shared/rules.state';
 import { StyleService } from 'src/app/shared/style.service';
@@ -25,7 +25,7 @@ export class StyleComponent implements OnInit {
   userFeedBackMessage!: string;
   userFeedBackStyle!: string;
   styles : Style[] = [];
-  rules : Rule[] = []
+  rules : NewRule[] = []
 
   @HostListener('focusin', ['$event'])
   @HostListener('keydown.escape', ['$event'])
@@ -40,7 +40,7 @@ export class StyleComponent implements OnInit {
     }
   }  
 
-  constructor(private styleService: StyleService, private ruleService: RulesService) { }
+  constructor(private styleService: StyleService, private newRuleService: NewRulesService) { }
 
   ngOnInit(): void {
     this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
@@ -53,11 +53,11 @@ export class StyleComponent implements OnInit {
       catchError(err=>of({dataState : RuleStateEnum.ERROR, errorMessage:err.message}))
     )
     
-    if (!this.ruleService.getAllRules()){
-      this.ruleService.getRulesFromDB().subscribe(
+    if (!this.newRuleService.getAllRules()){
+      this.newRuleService.getRulesFromDB().subscribe(
         rules => this.rules = rules
       )  
-    }else this.rules = this.ruleService.getAllRules();
+    }else this.rules = this.newRuleService.getAllRules();
      
   }
 
