@@ -133,7 +133,7 @@ public class Controller {
 	
 	@GetMapping ("/getAllInputs")
 	public List<Input> getAllConditions() {
-		return conditionRepository.findAll();	
+		return conditionRepository.findAllByOrderByLabelAscOrderAsc();
 	}
 	@PostMapping("/newInput")
 	public Input addNewCondition(@RequestBody Input input) {

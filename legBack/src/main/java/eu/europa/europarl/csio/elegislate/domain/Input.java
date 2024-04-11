@@ -18,10 +18,14 @@ public class Input {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;
+	@Column (name="inputorder")
+	String order;
 	String name;
 	String description;
 	String question;
 	@Column (name="inputgroup")
 	String inputGroup;
+	@Column (name="inputlabel")
+	String label;
 	String formname;
 }

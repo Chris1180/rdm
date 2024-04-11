@@ -43,7 +43,7 @@ export class DisplayComponent implements OnInit{
   partUniqueValues: Array<string>= [];
   partSelectedForPreview: string = "";
   
-  // utilisé pur mettre la valeur du jour par defaut dans le datePicker
+  // utilisé pour mettre la valeur du jour par defaut dans le datePicker
   d = new Date();
 
   allRules! : NewRule[];
@@ -479,11 +479,36 @@ export class DisplayComponent implements OnInit{
 
     this.outputModal.hide();
     // classement des règles suivant leur ordre
-    this.rulesToBeApplied.sort(function(a, b) {
-      return a.order - b.order;
-    });
+    
+    // this.rulesToBeApplied.sort(function(a, b) {
+    //   return a.order - b.order;
+    // });
+    this.customSort(this.rulesToBeApplied)
+    console.log(this.rulesToBeApplied)
     this.previewModal.show();
     
+  }
+  customSort(data: RuleToEvaluate[]): RuleToEvaluate[] {
+    return data.sort((a, b) => {
+        const regex = /(\d+)(\D*)/; // Expression régulière pour extraire les parties numérique et alphabétique
+        const matchA = a.order.match(regex);
+        const matchB = b.order.match(regex);
+
+        if (!matchA || !matchB) {
+            return 0; // En cas d'erreur dans l'appariement, ne changez pas l'ordre
+        }
+
+        const numA = parseInt(matchA[1], 10); // Partie numérique de 'a'
+        const numB = parseInt(matchB[1], 10); // Partie numérique de 'b'
+
+        // Comparaison des parties numériques
+        if (numA !== numB) {
+            return numA - numB;
+        }
+
+        // Si numériques sont égales, comparaison des parties alphabétiques
+        return matchA[2].localeCompare(matchB[2]);
+    });
   }
   onIgnoreOutputParam(){
     this.outputModal.hide();
@@ -579,9 +604,11 @@ export class DisplayComponent implements OnInit{
       this.outputModal.show();
     }else{
       // classement des règles suivant leur ordre
-      this.rulesToBeApplied.sort(function(a, b) {
-        return a.order - b.order;
-      });
+      this.customSort(this.rulesToBeApplied)
+      console.log(this.rulesToBeApplied)
+      // this.rulesToBeApplied.sort(function(a, b) {
+      //   return a.order - b.order;
+      // });
       
       this.previewModal.show();     
     }

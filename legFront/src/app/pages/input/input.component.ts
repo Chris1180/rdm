@@ -19,9 +19,12 @@ export class ConditionComponent implements OnInit {
   allInputs: Input[] = [];
   filteredInputs: Input[] = [];
   listInputGroups: string[] = [];
+  listInputLabels: string[] = [];
+  totalResults: number = 0;
   filterFormGroup: FormGroup = new FormGroup(
     {
       inputGroup: new FormControl("allGroups"), //valeur par defaut
+      label: new FormControl("allLabels"), //valeur par defaut
     }
   );
 
@@ -53,6 +56,8 @@ export class ConditionComponent implements OnInit {
         this.allInputs = data;
         this.filteredInputs = [...data];
         this.listInputGroups = [...new Set(this.allInputs.map(c => c.inputGroup))];
+        this.listInputLabels = [...new Set(this.allInputs.map(c => c.label))];
+        this.totalResults = this.filteredInputs.length;
         return ({ dataState: RuleStateEnum.LOADED, data: data });
       }),
       startWith({ dataState: RuleStateEnum.LOADING }),
@@ -61,6 +66,7 @@ export class ConditionComponent implements OnInit {
   }
 
   editConditionOnline(condition: any, newValue: any, field: any){
+   
     if(condition[field]!=newValue.trim()){
       
       condition[field] = newValue.trim();
@@ -74,6 +80,12 @@ export class ConditionComponent implements OnInit {
           this.openFeedBackUser("Error during saving process in Back-End", "bg-danger")
         },
         complete: ()=>{
+          if(field=="label"){
+            this.listInputLabels = [...new Set(this.allInputs.map(c => c.label))];
+          }
+          if(field=="inputGroup"){
+            this.listInputGroups = [...new Set(this.allInputs.map(c => c.inputGroup))];
+          }
           /*if (field=='name'){
             this.conditions.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
           }*/
@@ -133,11 +145,17 @@ export class ConditionComponent implements OnInit {
   }
 
   onFilterChange(){
-    if (this.filterFormGroup.get('inputGroup')?.value=='allGroups') {
-      this.filteredInputs = this.allInputs
+    let filterLabel = this.filterFormGroup.get('label')?.value;
+    let filterGroup = this.filterFormGroup.get('inputGroup')?.value
+
+    this.filteredInputs = this.allInputs
+    
+    if (filterGroup!='allGroups'){
+      this.filteredInputs = this.filteredInputs.filter(c => c.inputGroup==this.filterFormGroup.get('inputGroup')?.value);
     }
-    else {
-      this.filteredInputs = this.allInputs.filter(c => c.inputGroup==this.filterFormGroup.get('inputGroup')?.value);
+    if (filterLabel!='allLabels') {
+      this.filteredInputs = this.filteredInputs.filter(c => c.label==this.filterFormGroup.get('label')?.value);
     }
+    this.totalResults = this.filteredInputs.length;
   }
 }

@@ -1,7 +1,5 @@
 package eu.europa.europarl.csio.elegislate.domain;
 
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +19,7 @@ public class Rules {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;
 	@Column (name="priority_order")
-	Integer order;
+	String order;
 	String part;
 	String label;
 	String comment;

@@ -2,7 +2,7 @@ import { Style } from "./style";
 
 export interface RuleToEvaluate {
     idRule: number;
-    order: number;
+    order: any;
     part: string;
     condition: string;
     conditionFormated: string;
