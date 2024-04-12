@@ -359,21 +359,35 @@
                 </div>
                     <div class="modal-body" >
                         <div class="pb-3 text-decoration-underline">Some Input Parameters are missing, check boxes if they are true:</div>
-                        
                         <div *ngFor="let p of inputMissingParamMap | keyvalue">
-                            <label class="form-label">{{ findDescription(p.key)?.question }}</label>
-                            <br>
-                            <div class="row">
-                                <div class="col">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" id="p.value" type="checkbox" [(ngModel)]="p.value" (change)="changeValueInput(p.key, $event.target)" />
-                                        {{p.key}}
-                                    </label>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label class="form-label">{{ findDescription(p.key)?.label }}</label>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label">{{ findDescription(p.key)?.question }}</label>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" id="p.value" type="checkbox" [(ngModel)]="p.value" (change)="changeValueInput(p.key, $event.target)" />
+                                            {{p.key}}
+                                        </label>
+                                    </div>
+                                    <div class="col-1">
+                                        <ng-container *ngIf="findDescription(p.key)?.description !=''">
+                                            <ng-template #TooltipInputValue>
+                                                <span>
+                                                    <label class="form-text text-white" style="white-space: normal; max-width:200px;  word-wrap:break-word;">{{ findDescription(p.key)?.description }}</label>
+                                                </span>
+                                            </ng-template>
+                                            <i class="bi bi-info-circle" [ngbTooltip]='TooltipInputValue'></i>
+                                        </ng-container>
+                                        
+                                        <!--<label class="form-text">{{ findDescription(p.key)?.description }}</label>-->
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    <label class="form-text">{{ findDescription(p.key)?.description }}</label>
-                                </div>
-                            </div>   
+                            </div>
                         </div>
                     </div>
                 <div class="modal-footer">

@@ -605,7 +605,7 @@ export class DisplayComponent implements OnInit{
     }else{
       // classement des règles suivant leur ordre
       this.customSort(this.rulesToBeApplied)
-      console.log(this.rulesToBeApplied)
+      //console.log(this.rulesToBeApplied)
       // this.rulesToBeApplied.sort(function(a, b) {
       //   return a.order - b.order;
       // });
