@@ -61,7 +61,7 @@
                         <th></th>
                     </tr>
                     <tr *ngFor="let input of filteredInputs">
-                        <td #id contentEditable (blur)="editConditionOnline(input, id.innerText.trim(), 'id')">{{input.id}}</td>
+                        <td>{{input.id}}</td>
                         <td #label contentEditable (blur)="editConditionOnline(input, label.innerText.trim(), 'label')">{{input.label}}</td>
                         <td #order contentEditable (blur)="editConditionOnline(input, order.innerText.trim(), 'order')">{{input.order}}</td>
                         <td #name contentEditable (blur)="editConditionOnline(input, name.innerText.trim(), 'name')">{{input.name}}</td>

@@ -5,6 +5,7 @@ import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { NewRule } from 'src/app/model/newrule';
 import { RuleCondition } from 'src/app/model/rulecondition';
 import { NewRulesService } from 'src/app/shared/newrules.service';
+import { OrderCustomSortService } from 'src/app/shared/orderCustomSort.service';
 import { AppDataState, RuleStateEnum } from 'src/app/shared/rules.state';
 
 declare var window: any;
@@ -36,33 +37,9 @@ export class RulesComponent implements OnInit {
   parts!: Array<string>; // utilisé pour afficher les valeurs des filtres
   labels!: Array<string>;
 
-  constructor(private newRulesService: NewRulesService, private router: Router){}
+  constructor(private newRulesService: NewRulesService, private router: Router, private orderCustomSortService: OrderCustomSortService){}
 
   ngOnInit(): void {
-    //let ruleToBeEdited : NewRule = this.newRulesService.getRuleToBeEdited();
-    //console.log('dans la page rules')
-    //console.log(ruleToBeEdited)
-    // si l'index n'est pas -1 alors il s'agit d'une modif ou d'une création
-    /*if (ruleToBeEdited.id!=-1){
-      this.newRulesService.saveRuleinDB(ruleToBeEdited).subscribe({
-        next : (data)=>{// affichage sous forme de modal que tout c'est bien passé
-          this.openFeedBackUser("Rule changes saved Succesfully", "bg-success");
-          //console.log('retour de la DB')
-          //console.log(data)
-          ruleToBeEdited.id = data.id; // on récupère l'id au cas où il s'agit d'un nouvel enregistrement
-        },
-        error: (err) => {
-          this.openFeedBackUser("Error during saving process in Back-End", "bg-danger")
-          console.error("Une erreur est remontée lors de la mise à jour d'une règle");
-        },
-        complete: ()=>{
-          this.getAllRules();
-        }
-      })
-
-    }else { // pas de modif de règle
-      this.getAllRules();
-    }*/
 
     this.getAllRules();
     this.getAllSubConditions();
@@ -89,7 +66,8 @@ export class RulesComponent implements OnInit {
   getAllRules(){
     this.rulesDataState$ = this.newRulesService.getRulesFromDB().pipe(
       map(data=>{
-        this.newRulesService.setAllRules(data);
+        // Classement des règles selon l'orde suivant 1a,1b,2,2a,10...
+        this.newRulesService.setAllRules(this.orderCustomSortService.customSortRules(data));
         this.displayRules();
         /*
         if (this.filterActive) {
@@ -132,7 +110,7 @@ export class RulesComponent implements OnInit {
   addNewRule() {
     this.newRulesService.setRuleToBeEdited({
       id: 0, 
-      order: 1, 
+      order: "1", 
       part: '', 
       label: '',
       ruleCondition: {"id" :0 , "idPreCondition": 0, "textCondition": '', "ruleCommand": [{"id":0, "lang": 'EN', "command":''}]},
@@ -188,7 +166,7 @@ export class RulesComponent implements OnInit {
         },
       complete: () => {
         // met à jour les filtres en fonction de la selection
-        this.parts = this.newRulesService.getPartUniqueValues();
+        //this.parts = this.newRulesService.getPartUniqueValues();
         this.labels = this.newRulesService.getLabelUniqueValues();
         
       }

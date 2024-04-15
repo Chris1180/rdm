@@ -3,7 +3,7 @@ import { Style } from "./style";
 
 export interface NewRule {
     id: number;
-    order: number;
+    order: string;
     part: string;
     label: string;
     comment: string;

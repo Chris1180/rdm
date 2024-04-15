@@ -63,7 +63,7 @@ export class NewRulesService {
   public initRuleToBeEdited(){
     this.setRuleToBeEdited({
       id: -1, 
-      order: 1, 
+      order: "1", 
       part: '', 
       label: '',
       ruleCondition: {"id" :-1 , "idPreCondition": 0, "textCondition": '', "ruleCommand": [{"id":0, "lang": 'EN', "command":''}]},

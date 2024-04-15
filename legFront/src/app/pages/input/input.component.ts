@@ -3,6 +3,7 @@ import { FormControl, FormGroup} from '@angular/forms';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { Input } from 'src/app/model/input';
 import { InputService } from 'src/app/shared/input.service';
+import { OrderCustomSortService } from 'src/app/shared/orderCustomSort.service';
 import { AppDataState, RuleStateEnum } from 'src/app/shared/rules.state';
 
 declare var window: any;
@@ -47,14 +48,14 @@ export class ConditionComponent implements OnInit {
       $event.target.innerText = this.oldValue
     }
   }
-  constructor(private InputService: InputService) { }
+  constructor(private InputService: InputService, private orderCustomSortService: OrderCustomSortService) { }
 
   ngOnInit(): void {
     this.userFeedBackToast = new window.bootstrap.Toast(document.getElementById('userFeedBack'));
     this.conditionDataState$ = this.InputService.getInputsFromDB().pipe(
       map(data => {
-        this.allInputs = data;
-        this.filteredInputs = [...data];
+        this.allInputs = this.orderCustomSortService.customSortInput(data);
+        this.filteredInputs = [...this.allInputs];
         this.listInputGroups = [...new Set(this.allInputs.map(c => c.inputGroup))];
         this.listInputLabels = [...new Set(this.allInputs.map(c => c.label))];
         this.totalResults = this.filteredInputs.length;
@@ -81,14 +82,20 @@ export class ConditionComponent implements OnInit {
         },
         complete: ()=>{
           if(field=="label"){
+            // on met à jour la liste des labels dans le select
             this.listInputLabels = [...new Set(this.allInputs.map(c => c.label))];
+            // on classe les resultats 
+            this.orderCustomSortService.customSortInput(this.filteredInputs)
+            this.orderCustomSortService.customSortInput(this.allInputs)
           }
           if(field=="inputGroup"){
             this.listInputGroups = [...new Set(this.allInputs.map(c => c.inputGroup))];
           }
-          /*if (field=='name'){
-            this.conditions.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
-          }*/
+          if (field='order') {
+            // on classe les resultats 
+            this.orderCustomSortService.customSortInput(this.filteredInputs)
+            this.orderCustomSortService.customSortInput(this.allInputs)
+          }
         }
       })
     }else{

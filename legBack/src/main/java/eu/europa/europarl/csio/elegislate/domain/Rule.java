@@ -25,7 +25,7 @@ public class Rule {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;
 	@Column (name="priority_order")
-	Integer order;
+	String order;
 	String part;
 	String label;
 	@Column (name="conditionrule")
