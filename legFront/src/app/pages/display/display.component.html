@@ -366,6 +366,7 @@
                                 <div class="row">
                                     <div class="col-2">
                                         <label class="form-label" *ngIf="i>0 && inputMissingList[i-1].label != p.label">{{ p.label }}</label>
+                                        <label class="form-label" *ngIf="i==0">{{ p.label }}</label>
                                     </div>
                                     <div class="col-1">
                                         <label class="form-label">{{ p.order }}</label>
