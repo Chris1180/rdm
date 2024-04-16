@@ -359,12 +359,16 @@
                 </div>
                     <div class="modal-body" >
                         <div class="pb-3 text-decoration-underline">Some Input Parameters are missing, check boxes if they are true:</div>
-                        <div *ngFor="let p of inputMissingList;let last = last">
+                        
+                        <div *ngFor="let p of inputMissingList; let i = index; let last = last">
                             <div class="container">
-                                
+                                <hr *ngIf="i>0 && inputMissingList[i-1].label != p.label">
                                 <div class="row">
-                                    <div class="col-3">
-                                        <label class="form-label">{{ p.label }}</label>
+                                    <div class="col-2">
+                                        <label class="form-label" *ngIf="i>0 && inputMissingList[i-1].label != p.label">{{ p.label }}</label>
+                                    </div>
+                                    <div class="col-1">
+                                        <label class="form-label">{{ p.order }}</label>
                                     </div>
                                     <div class="col-4">
                                         <label class="form-label">{{ p.question }}</label>
@@ -387,8 +391,6 @@
                                         
                                     </div>
                                 </div>
-                                <hr *ngIf="p.label=='' && !last">
-                                
                             </div>
                         </div>
                     </div>

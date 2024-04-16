@@ -739,20 +739,20 @@ export class DisplayComponent implements OnInit{
     return missingInputParam;
   }
   // méthode utilisée pour afficher la description des input value dans le modal
-  findDescription(key: string){
-    let input: Input
-    if (this.allConditions.find(c => c.name === key)) {
-      input = this.allConditions.find(c => c.name === key)!
-    }else{
-      input = {id: 0, label: '', order: '', name: '', description: '', question: '', inputGroup: '', formname: ''}
-    }
-    if (this.previousInputLabelValue == input.label){
-      input.label = ''
-    }else{
-      this.previousInputLabelValue = input.label
-    }
-    return input
-  }
+  // findDescription(key: string){
+  //   let input: Input
+  //   if (this.allConditions.find(c => c.name === key)) {
+  //     input = this.allConditions.find(c => c.name === key)!
+  //   }else{
+  //     input = {id: 0, label: '', order: '', name: '', description: '', question: '', inputGroup: '', formname: ''}
+  //   }
+  //   if (this.previousInputLabelValue == input.label){
+  //     input.label = ''
+  //   }else{
+  //     this.previousInputLabelValue = input.label
+  //   }
+  //   return input
+  // }
 
   findOutputDescription(key: string){
     key = key.replace(/\[|\]/g, '')
