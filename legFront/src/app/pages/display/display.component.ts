@@ -306,7 +306,7 @@ export class DisplayComponent implements OnInit{
       }
       // classement
       this.orderCustomSortService.customSortInput(this.inputMissingList)
-      console.log(this.inputMissingList)
+      console.log('inputMissingList: ',this.inputMissingList)
       this.inputModal.show();
     }
     
@@ -510,12 +510,12 @@ export class DisplayComponent implements OnInit{
     
   }
   
-  onIgnoreOutputParam(){
-    this.outputModal.hide();
-  }
-  onIgnoreInputParam(){
-    this.inputModal.hide();
-  }
+  // onIgnoreOutputParam(){
+  //   this.outputModal.hide();
+  // }
+  // onIgnoreInputParam(){
+  //   this.inputModal.hide();
+  // }
   onSubmitInputParam(){
     //console.log(this.inputMissingParamMap);
     //on ajoute les valeurs saisies par l'utilisateur pour les input manquant au map InputParam avant l'éval
