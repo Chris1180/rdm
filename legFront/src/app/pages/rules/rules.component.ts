@@ -254,4 +254,8 @@ export class RulesComponent implements OnInit {
       return rc.idPreCondition === ruleConditionId});
   }
 
+  exportRules(){
+    console.log('export rules')
+  }
+
 }

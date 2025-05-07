@@ -3,8 +3,6 @@ package eu.europa.europarl.csio.elegislate.security.domain;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
@@ -14,7 +12,7 @@ import javax.persistence.MappedSuperclass;
 
 
 @MappedSuperclass
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Permission implements Serializable {
 
 	private static final long serialVersionUID = 7874032709787162037L;

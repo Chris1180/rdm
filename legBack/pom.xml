@@ -55,6 +55,13 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		
+		<!-- Utilisé pour l'export XLS' -->
+		<dependency>
+		  <groupId>org.apache.poi</groupId>
+		  <artifactId>poi-ooxml</artifactId>
+		  <version>5.2.3</version>
+		</dependency>
 
 		<!-- pour le restart auto après modif du code -->
 		<dependency>

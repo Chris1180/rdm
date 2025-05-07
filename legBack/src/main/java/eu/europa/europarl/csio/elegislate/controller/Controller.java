@@ -1,28 +1,35 @@
 package eu.europa.europarl.csio.elegislate.controller;
 
 
+import java.io.IOException;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import eu.europa.europarl.csio.elegislate.DAO.OutputRepository;
+
 import eu.europa.europarl.csio.elegislate.DAO.InputRepository;
 import eu.europa.europarl.csio.elegislate.DAO.LanguageRepository;
+import eu.europa.europarl.csio.elegislate.DAO.OutputRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RuleCommandRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RuleConditionRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RuleRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RulesRepository;
 import eu.europa.europarl.csio.elegislate.DAO.StyleRepository;
-import eu.europa.europarl.csio.elegislate.domain.Output;
 import eu.europa.europarl.csio.elegislate.domain.Input;
 import eu.europa.europarl.csio.elegislate.domain.Language;
+import eu.europa.europarl.csio.elegislate.domain.Output;
 import eu.europa.europarl.csio.elegislate.domain.Rule;
 import eu.europa.europarl.csio.elegislate.domain.RuleCommand;
 import eu.europa.europarl.csio.elegislate.domain.RuleCondition;
@@ -49,6 +56,7 @@ public class Controller {
 	private RuleConditionRepository ruleConditionRepository;
 	@Autowired
 	private RuleCommandRepository ruleCommandRepository;
+	
 	
 	// new controllers
 	@GetMapping ("/getAllRules")
@@ -303,4 +311,23 @@ public class Controller {
 		styleRepository.deleteById(id);
 		
 	}
+	
+	@GetMapping("/export")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        // utilisé pour le nom du fichier XLS
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+         
+        String headerKey = "Content-Disposition";
+        // nom du ficher XLS
+        String headerValue = "attachment; filename=SEF_projects_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+         
+        List<Rules> listReport1 = rulesRepository.findAll();
+         
+        ExcelExporter excelExporter = new ExcelExporter(listReport1);
+         
+        excelExporter.export(response);    
+    }   
 }
