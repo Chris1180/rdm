@@ -254,8 +254,17 @@ export class RulesComponent implements OnInit {
       return rc.idPreCondition === ruleConditionId});
   }
 
-  exportRules(){
-    console.log('export rules')
+  exportRules() {
+    this.newRulesService.exportRules().subscribe(blob => {
+      const a = document.createElement('a');
+      const objectUrl = URL.createObjectURL(blob);
+      a.href = objectUrl;
+      a.download = 'RDM_rules_export.xlsx';
+      a.click();
+      URL.revokeObjectURL(objectUrl);
+    }, error => {
+      console.error('Erreur lors de l\'export Excel', error);
+    });
   }
 
 }

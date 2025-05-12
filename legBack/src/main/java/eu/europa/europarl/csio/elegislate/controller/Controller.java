@@ -321,7 +321,7 @@ public class Controller {
          
         String headerKey = "Content-Disposition";
         // nom du ficher XLS
-        String headerValue = "attachment; filename=SEF_projects_" + currentDateTime + ".xlsx";
+        String headerValue = "attachment; filename=RDM_rules_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
          
         List<Rules> listReport1 = rulesRepository.findAll();

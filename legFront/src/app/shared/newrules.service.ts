@@ -184,4 +184,11 @@ export class NewRulesService {
   public getLabelUniqueValues() : Array<string>{
     return this.labels;
   }
+
+  // partie pour l'export des règles de la bdd
+  exportRules() {
+    return this.http.get(this.apiUrl + 'export/', {
+      responseType: 'blob' // très important pour fichiers binaires
+    });
+  }
 }
