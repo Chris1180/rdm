@@ -16,17 +16,19 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import eu.europa.europarl.csio.elegislate.domain.Rules;
+import eu.europa.europarl.csio.elegislate.domain.RuleExportDto;
+
 
 
 
 public class ExcelExporter {
 	private XSSFWorkbook workbook;
     private XSSFSheet rulesSheet;
-    private List<Rules> listReportRules;
     
-    public ExcelExporter(List<Rules> listRules) {
-        this.listReportRules = listRules;
+    private List<RuleExportDto> listExportRules;
+
+    public ExcelExporter(List<RuleExportDto> exportRules) {
+        this.listExportRules = exportRules;
         workbook = new XSSFWorkbook();
     }
 
@@ -48,88 +50,91 @@ public class ExcelExporter {
         
         //La première ligne reste fixe
         rulesSheet.createFreezePane(0, 1);
-        rulesSheet.setColumnWidth(0, 12*256);
-        createCell(rowRules, 0, "SEF", style);
-        rulesSheet.setColumnWidth(1, 6*256);
-        createCell(rowRules, 1, "DG\nNr", style);
-        rulesSheet.setColumnWidth(2, 15*256);
-        createCell(rowRules, 2, "DG Name", style);
-        rulesSheet.setColumnWidth(3, 30*256);
-        createCell(rowRules, 3, "Program", style);
-        rulesSheet.setColumnWidth(4, 70*256);
-        createCell(rowRules, 4, "Project_Name", style);
-        rulesSheet.setColumnWidth(5, 12*256);
-        createCell(rowRules, 5, "Project \nStart", style);
-        rulesSheet.setColumnWidth(6, 12*256);
-        createCell(rowRules, 6, "Project \nEnd", style);
-        rulesSheet.setColumnWidth(7, 12*256);
-        createCell(rowRules, 7, "Project \nStatus", style);
+        rulesSheet.setColumnWidth(0, 6 * 256);   // Rule ID
+        createCell(rowRules, 0, "Rule ID", style);
+
+        rulesSheet.setColumnWidth(1, 6 * 256);   // Priority Order
+        createCell(rowRules, 1, "Priority Order", style);
+
+        rulesSheet.setColumnWidth(2, 15 * 256);  // Part
+        createCell(rowRules, 2, "Part", style);
+
+        rulesSheet.setColumnWidth(3, 35 * 256);  // Label
+        createCell(rowRules, 3, "Label", style);
+
+        rulesSheet.setColumnWidth(4, 6 * 256);   // Condition ID
+        createCell(rowRules, 4, "Condition ID", style);
+
+        rulesSheet.setColumnWidth(5, 35 * 256);  // Text Condition
+        createCell(rowRules, 5, "Text Condition", style);
+
+        rulesSheet.setColumnWidth(6, 6 * 256);   // Command Lang
+        createCell(rowRules, 6, "Command Lang", style);
+
+        rulesSheet.setColumnWidth(7, 25 * 256);  // Command
+        createCell(rowRules, 7, "Command", style);
+
+        rulesSheet.setColumnWidth(8, 6 * 256);   // Nested Cmd ID
+        createCell(rowRules, 8, "Nested Cmd ID", style);
+
+        rulesSheet.setColumnWidth(9, 6 * 256);   // Nested Cmd Lang
+        createCell(rowRules, 9, "Nested Cmd Lang", style);
+
+        rulesSheet.setColumnWidth(10, 25 * 256); // Nested Cmd
+        createCell(rowRules, 10, "Nested Cmd", style);
+
+        rulesSheet.setColumnWidth(11, 35 * 256); // Comment
+        createCell(rowRules, 11, "Comment", style);
         
     }
     
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
-        //Line commented because it slows down the process of export
-    	//sheet.autoSizeColumn(columnCount);
-    	
-    	//DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");  
-    	CreationHelper createHelper = workbook.getCreationHelper();
-    	Cell cell = row.createCell(columnCount);
-    	if (value instanceof Integer) {
-        	cell.setCellValue((Integer) value);
-        	return;
-		}
-    	if (value instanceof String) {
-    		cell.setCellValue((String) value);
-    		return;
-		}
-    	if (value instanceof Date) {
-    		cell.setCellValue((Date)value);
-    		style.setDataFormat(createHelper.createDataFormat().getFormat("dd/mm/yyyy"));
-    		cell.setCellStyle(style);
-        	return;
-		}
-    	
-    	/*
-    	if (value instanceof Integer) {
+        CreationHelper createHelper = workbook.getCreationHelper();
+        Cell cell = row.createCell(columnCount);
+        
+        if (value instanceof Integer) {
             cell.setCellValue((Integer) value);
-        } else if (value instanceof Boolean) {
-            cell.setCellValue((Boolean) value);
-        } else if (value instanceof Date) {
-            cell.setCellValue((String) dateFormat.format(value));
-        } else if (value instanceof Float) {
-            //cell.setCellValue((Float)value*100);
-        	cell.setCellValue(Math.round((Float)value*100));
-        }
-        else {
-        	//cell.setCellType(CellType.STRING);
+        } else if (value instanceof Long) {
+            cell.setCellValue((Long) value);
+        } else if (value instanceof String) {
             cell.setCellValue((String) value);
+        } else if (value instanceof Date) {
+            cell.setCellValue((Date) value);
+            style.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
+            cell.setCellStyle(style);
         }
-        cell.setCellStyle(style);*/
+
+        cell.setCellStyle(style);
     }
+
     
     private void writeDataLines() {
-        int rowCount = 1;
- 
-        CellStyle style = workbook.createCellStyle();
-        XSSFFont font = workbook.createFont();
-        font.setFontHeight(12);
-        style.setFont(font);
-                 
-        for (Rules data : listReportRules) {
-            Row row = rulesSheet.createRow(rowCount++);
-            int columnCount = 0;
-             
-            createCell(row, columnCount++, data.getId(), style);
-            createCell(row, columnCount++, data.getLabel(), style);
-            createCell(row, columnCount++, data.getNestedCondition(), style);
-            createCell(row, columnCount++, data.getOrder(), style);
-            createCell(row, columnCount++, data.getPart(), style);
-            createCell(row, columnCount++, data.getRuleCondition(), style);
-            createCell(row, columnCount++, data.getStyle(), style);
-             
-        }
-        
+    int rowCount = 1;
+
+    CellStyle style = workbook.createCellStyle();
+    XSSFFont font = workbook.createFont();
+    font.setFontHeight(12);
+    style.setFont(font);
+
+    for (RuleExportDto data : listExportRules) {
+        Row row = rulesSheet.createRow(rowCount++);
+        int col = 0;
+
+        createCell(row, col++, data.getRuleId(), style);                           // ✅ doit renvoyer 2, 3, 4…
+        createCell(row, col++, data.getPriorityOrder(), style);
+        createCell(row, col++, data.getPart(), style);
+        createCell(row, col++, data.getLabel(), style);
+        createCell(row, col++, data.getConditionId(), style);
+        createCell(row, col++, data.getTextCondition(), style);
+        createCell(row, col++, data.getCommandLang(), style);
+        createCell(row, col++, data.getCommand(), style);
+        createCell(row, col++, data.getNestedConditionCommandId(), style);
+        createCell(row, col++, data.getNestedConditionCommandLanguage(), style);
+        createCell(row, col++, data.getNestedConditionCommandCommand(), style);
+        createCell(row, col++, data.getComment(), style);
     }
+}
+
     
     public void export(HttpServletResponse response) throws IOException {
         writeHeaderLine();

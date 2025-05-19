@@ -24,6 +24,7 @@ import eu.europa.europarl.csio.elegislate.DAO.LanguageRepository;
 import eu.europa.europarl.csio.elegislate.DAO.OutputRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RuleCommandRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RuleConditionRepository;
+import eu.europa.europarl.csio.elegislate.DAO.RuleExportDtoRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RuleRepository;
 import eu.europa.europarl.csio.elegislate.DAO.RulesRepository;
 import eu.europa.europarl.csio.elegislate.DAO.StyleRepository;
@@ -33,6 +34,7 @@ import eu.europa.europarl.csio.elegislate.domain.Output;
 import eu.europa.europarl.csio.elegislate.domain.Rule;
 import eu.europa.europarl.csio.elegislate.domain.RuleCommand;
 import eu.europa.europarl.csio.elegislate.domain.RuleCondition;
+import eu.europa.europarl.csio.elegislate.domain.RuleExportDto;
 import eu.europa.europarl.csio.elegislate.domain.Rules;
 import eu.europa.europarl.csio.elegislate.domain.Style;
 
@@ -40,8 +42,8 @@ import eu.europa.europarl.csio.elegislate.domain.Style;
 @RestController
 public class Controller {
 
-	@Autowired
-	private RuleRepository ruleRepository;
+	//@Autowired
+	//private RuleRepository ruleRepository;
 	@Autowired
 	private LanguageRepository languageRepository;
 	@Autowired
@@ -56,7 +58,8 @@ public class Controller {
 	private RuleConditionRepository ruleConditionRepository;
 	@Autowired
 	private RuleCommandRepository ruleCommandRepository;
-	
+	@Autowired
+	private RuleExportDtoRepository ruleExportDtoRepository;
 	
 	// new controllers
 	@GetMapping ("/getAllRules")
@@ -224,11 +227,11 @@ public class Controller {
 	}
 	// end new controllers
 	
-	@GetMapping ("/rules")
+	/*@GetMapping ("/rules")
 	public List<Rule> getRules() {
 		return ruleRepository.findAllByOrderByOrderAsc();
 		
-	}
+	}*/
 	
 	@GetMapping ("/language")
 	public List<Language> getLang() {
@@ -236,7 +239,7 @@ public class Controller {
 		
 	}
 	
-	@PostMapping ("/update")
+	/* @PostMapping ("/update")
 	public Rule updateRule(@RequestBody Rule rule ) {
 		
 		Set<Language> languages = rule.getLanguages();
@@ -278,9 +281,9 @@ public class Controller {
 		}
 		
 		return rule;
-	}
+	} */
 	
-	
+	/*
 	@PostMapping ("/delete")
 	public void deleteRule(@RequestBody Integer idRule) {
 		//System.out.println(idRule);
@@ -290,7 +293,7 @@ public class Controller {
 			
 		}
 		
-	}
+	}*/
 	@GetMapping ("/styles")
 	public List<Style> getStyles() {
 		return styleRepository.findAllByOrderByNameAsc(); 
@@ -324,10 +327,15 @@ public class Controller {
         String headerValue = "attachment; filename=RDM_rules_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
          
-        List<Rules> listReport1 = rulesRepository.findAll();
+        List<RuleExportDto> listReport1 = ruleExportDtoRepository.findAllOrdered();
+        //List<RuleExportDto> listReport1 = ruleExportDtoRepository.findAll();
          
         ExcelExporter excelExporter = new ExcelExporter(listReport1);
          
         excelExporter.export(response);    
     }   
+	@GetMapping("/getexport")
+	public List<RuleExportDto> getAllRulesDTO() {
+		return ruleExportDtoRepository.findAll();
+	}
 }
