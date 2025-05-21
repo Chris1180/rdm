@@ -329,13 +329,14 @@ public class Controller {
          
         List<RuleExportDto> listReport1 = ruleExportDtoRepository.findAllOrdered();
         //List<RuleExportDto> listReport1 = ruleExportDtoRepository.findAll();
-         
         ExcelExporter excelExporter = new ExcelExporter(listReport1);
          
         excelExporter.export(response);    
     }   
 	@GetMapping("/getexport")
 	public List<RuleExportDto> getAllRulesDTO() {
-		return ruleExportDtoRepository.findAll();
+	    List<RuleExportDto> data = ruleExportDtoRepository.findAllOrdered();
+	    data.forEach(row -> System.out.println("nested = " + row.getNestedConditionCommandCommand()));
+	    return data;
 	}
 }

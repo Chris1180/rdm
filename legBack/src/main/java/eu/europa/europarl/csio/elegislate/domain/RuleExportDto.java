@@ -8,7 +8,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Entity
 @Table(name = "view_rule_conditions_export")
 @NoArgsConstructor
@@ -17,12 +16,15 @@ import lombok.NoArgsConstructor;
 public class RuleExportDto {
 
     @Id
+    @Column(name = "row_num")
+    private Long rowNum; // ✅ identifiant unique pour JPA
+
     @Column(name = "rule_id")
     private Long ruleId;
 
     @Column(name = "priority_order")
     private String priorityOrder;
-    
+
     @Column(name = "part")
     private String part;
 
@@ -41,13 +43,13 @@ public class RuleExportDto {
     @Column(name = "command")
     private String command;
 
-    @Column(name = "nestedConditionCommand_Id")
+    @Column(name = "nested_condition_command_id")
     private Long nestedConditionCommandId;
 
-    @Column(name = "nestedConditionCommand_Language")
+    @Column(name = "nested_condition_command_language")
     private String nestedConditionCommandLanguage;
 
-    @Column(name = "nestedConditionCommand_Command")
+    @Column(name = "nested_condition_command_command")
     private String nestedConditionCommandCommand;
 
     @Column(name = "comment")
